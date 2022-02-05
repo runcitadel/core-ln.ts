@@ -87,7 +87,7 @@ export default class RPCClient {
   constructor(public socketPath: string) {}
   protected call<ReturnType = unknown>(
     method: string,
-    params = null
+    params: unknown = null
   ): Promise<ReturnType> {
     return new Promise((resolve, reject) => {
       let client = net.createConnection(this.socketPath);
