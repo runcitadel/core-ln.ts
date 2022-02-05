@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "strict": true,
+        "moduleResolution": "node",
+        "incremental": true,
+        "target": "ES2021",
+        "declaration": true,
+        "strictFunctionTypes": true,
+        "lib": [
+            "ES2021"
+        ],
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "paths": {
+            "platform/*": ["src/platform/node/*"]
+        },
+        "declarationDir": "dist",
+        "plugins": [
+            {
+                "transform": "@zerollup/ts-transform-paths",
+                "exclude": ["*"]
+            }
+        ],
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "src/platform/browser"
+    ]
+}

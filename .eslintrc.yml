@@ -1,0 +1,17 @@
+env:
+  node: true
+extends:
+  - "plugin:@typescript-eslint/eslint-recommended"
+  - "plugin:@typescript-eslint/recommended"
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaVersion: 2020
+  project: "tsconfig.json"
+
+plugins:
+  - "@typescript-eslint"
+
+rules:
+  indent: "off"
+  semi: "off"
+  "@typescript-eslint/no-floating-promises": "error"

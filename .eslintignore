@@ -1,0 +1,12 @@
+coverage
+.yarn
+node_modules
+lnd
+lib
+dist
+browser
+rollup.config*.js
+*.js
+src/index.browser.ts
+src/platform/browser/*
+
