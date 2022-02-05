@@ -37,21 +37,21 @@ export interface OpenchannelBumpRequest {
 }
 
 export interface OpenchannelBumpResponse {
-  /**
-   * the channel id of the channel
-   */
-  channel_id: /* hex */ string;
-  /**
-   * the (incomplete) PSBT of the RBF transaction
-   */
-  psbt: string;
-  /**
-   * whether the *psbt* is complete
-   */
-  commitments_secured: false;
-  /**
-   * the serial_id of the funding output in the *psbt*
-   */
-  funding_serial: /* u64 */ number;
+    /**
+     * the channel id of the channel
+     */
+    channel_id: string;
+    /**
+     * whether the *psbt* is complete
+     */
+    commitments_secured: boolean;
+    /**
+     * the serial_id of the funding output in the *psbt*
+     */
+    funding_serial: number;
+    /**
+     * the (incomplete) PSBT of the RBF transaction
+     */
+    psbt: string;
 }
 

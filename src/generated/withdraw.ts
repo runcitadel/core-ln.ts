@@ -43,18 +43,17 @@ export interface WithdrawRequest {
 }
 
 export interface WithdrawResponse {
-  /**
-   * the fully signed bitcoin transaction
-   */
-  tx: /* hex */ string;
-  /**
-   * the transaction id of *tx*
-   */
-  txid: /* txid */ string;
-  /**
-   * the PSBT representing the unsigned transaction
-   */
-  psbt: string;
-  [k: string]: unknown;
+    /**
+     * the PSBT representing the unsigned transaction
+     */
+    psbt: string;
+    /**
+     * the fully signed bitcoin transaction
+     */
+    tx: string;
+    /**
+     * the transaction id of *tx*
+     */
+    txid: string;
 }
 

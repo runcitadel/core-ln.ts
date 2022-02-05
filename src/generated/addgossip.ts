@@ -20,5 +20,6 @@ export interface AddgossipRequest {
   message: string;
 }
 
-export interface AddgossipResponse {}
+export interface AddgossipResponse {
+}
 

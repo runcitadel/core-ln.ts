@@ -22,123 +22,113 @@ export interface ListtransactionsRequest {
 }
 
 export interface ListtransactionsResponse {
-  transactions: {
-    /**
-     * the transaction id
-     */
-    hash: /* txid */ string;
-    /**
-     * the raw transaction
-     */
-    rawtx: /* hex */ string;
+    transactions: Transaction[];
+}
+
+export interface Transaction {
     /**
      * the block height of this tx
      */
-    blockheight: /* u32 */ number;
-    /**
-     * the transaction number within the block
-     */
-    txindex: /* u32 */ number;
-    type?: (
-      | "theirs"
-      | "deposit"
-      | "withdraw"
-      | "channel_funding"
-      | "channel_mutual_close"
-      | "channel_unilateral_close"
-      | "channel_sweep"
-      | "channel_htlc_success"
-      | "channel_htlc_timeout"
-      | "channel_penalty"
-      | "channel_unilateral_cheat"
-    )[];
+    blockheight: number;
     /**
      * the channel this transaction is associated with (*EXPERIMENTAL_FEATURES* only)
      */
-    channel?: /* short_channel_id */ string;
+    channel?: string;
     /**
-     * The nLocktime for this tx
+     * the transaction id
      */
-    locktime: /* u32 */ number;
-    /**
-     * The nVersion for this tx
-     */
-    version: /* u32 */ number;
+    hash: string;
     /**
      * Each input, in order
      */
-    inputs: {
-      /**
-       * the transaction id spent
-       */
-      txid: /* txid */ string;
-      /**
-       * the output spent
-       */
-      index: /* u32 */ number;
-      /**
-       * the nSequence value
-       */
-      sequence: /* u32 */ number;
-      /**
-       * the purpose of this input (*EXPERIMENTAL_FEATURES* only)
-       */
-      type?:
-        | "theirs"
-        | "deposit"
-        | "withdraw"
-        | "channel_funding"
-        | "channel_mutual_close"
-        | "channel_unilateral_close"
-        | "channel_sweep"
-        | "channel_htlc_success"
-        | "channel_htlc_timeout"
-        | "channel_penalty"
-        | "channel_unilateral_cheat";
-      /**
-       * the channel this input is associated with (*EXPERIMENTAL_FEATURES* only)
-       */
-      channel?: /* short_channel_id */ string;
-    }[];
+    inputs: Input[];
+    /**
+     * The nLocktime for this tx
+     */
+    locktime: number;
     /**
      * Each output, in order
      */
-    outputs: {
-      /**
-       * the 0-based output number
-       */
-      index: /* u32 */ number;
-      satoshis?: {
-        [k: string]: unknown;
-      };
-      /**
-       * the amount of the output
-       */
-      msat: /* msat */ number;
-      /**
-       * the scriptPubKey
-       */
-      scriptPubKey: /* hex */ string;
-      /**
-       * the purpose of this output (*EXPERIMENTAL_FEATURES* only)
-       */
-      type?:
-        | "theirs"
-        | "deposit"
-        | "withdraw"
-        | "channel_funding"
-        | "channel_mutual_close"
-        | "channel_unilateral_close"
-        | "channel_sweep"
-        | "channel_htlc_success"
-        | "channel_htlc_timeout"
-        | "channel_penalty"
-        | "channel_unilateral_cheat";
-      /**
-       * the channel this output is associated with (*EXPERIMENTAL_FEATURES* only)
-       */
-      channel?: /* short_channel_id */ string;
-    }[];
-  }[];
+    outputs: Output[];
+    /**
+     * the raw transaction
+     */
+    rawtx: string;
+    /**
+     * the transaction number within the block
+     */
+    txindex: number;
+    type?:   Type[];
+    /**
+     * The nVersion for this tx
+     */
+    version: number;
+}
+
+export interface Input {
+    /**
+     * the channel this input is associated with (*EXPERIMENTAL_FEATURES* only)
+     */
+    channel?: string;
+    /**
+     * the output spent
+     */
+    index: number;
+    /**
+     * the nSequence value
+     */
+    sequence: number;
+    /**
+     * the transaction id spent
+     */
+    txid: string;
+    /**
+     * the purpose of this input (*EXPERIMENTAL_FEATURES* only)
+     */
+    type?: Type;
+}
+
+/**
+ * the purpose of this input (*EXPERIMENTAL_FEATURES* only)
+ *
+ * the purpose of this output (*EXPERIMENTAL_FEATURES* only)
+ *
+ * Reason we care about this transaction (*EXPERIMENTAL_FEATURES* only)
+ */
+export enum Type {
+    ChannelFunding = "channel_funding",
+    ChannelHtlcSuccess = "channel_htlc_success",
+    ChannelHtlcTimeout = "channel_htlc_timeout",
+    ChannelMutualClose = "channel_mutual_close",
+    ChannelPenalty = "channel_penalty",
+    ChannelSweep = "channel_sweep",
+    ChannelUnilateralCheat = "channel_unilateral_cheat",
+    ChannelUnilateralClose = "channel_unilateral_close",
+    Deposit = "deposit",
+    Theirs = "theirs",
+    Withdraw = "withdraw",
+}
+
+export interface Output {
+    /**
+     * the channel this output is associated with (*EXPERIMENTAL_FEATURES* only)
+     */
+    channel?: string;
+    /**
+     * the 0-based output number
+     */
+    index: number;
+    /**
+     * the amount of the output
+     */
+    msat: number;
+    /**
+     * the scriptPubKey
+     */
+    scriptPubKey: string;
+    /**
+     * the purpose of this output (*EXPERIMENTAL_FEATURES* only)
+     */
+    type?: Type;
 }
 

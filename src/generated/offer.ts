@@ -87,52 +87,52 @@
  * invoices will be expired (i.e. only one person can pay this offer).
 */
 export interface OfferRequest {
-  amount: number | string;
-  description: string;
-  issuer?: string;
+  amount: /* GUESSED */ string;
+  description: /* GUESSED */ string;
+  issuer?: /* GUESSED */ string;
   label?: /* GUESSED */ string;
   quantity_min?: /* GUESSED */ string;
   quantity_max?: /* GUESSED */ string;
   absolute_expiry?: /* GUESSED */ string;
   recurrence?: /* GUESSED */ string;
-  recurrence_base?: string | number;
+  recurrence_base?: /* GUESSED */ string;
   recurrence_paywindow?: /* GUESSED */ string;
   recurrence_limit?: /* GUESSED */ string;
-  single_use?: boolean;
+  single_use?: /* GUESSED */ string;
 }
 
 export interface OfferResponse {
-  /**
-   * the id of this offer (merkle hash of non-signature fields)
-   */
-  offer_id: /* hex */ string;
-  /**
-   * whether this can still be used
-   */
-  active: true;
-  /**
-   * whether this expires as soon as it's paid (reflects the *single_use* parameter)
-   */
-  single_use: boolean;
-  /**
-   * the bolt12 encoding of the offer
-   */
-  bolt12: string;
-  /**
-   * the bolt12 encoding of the offer, without a signature
-   */
-  bolt12_unsigned: string;
-  /**
-   * True if an associated invoice has been paid
-   */
-  used: boolean;
-  /**
-   * false if the offer already existed
-   */
-  created: boolean;
-  /**
-   * the (optional) user-specified label
-   */
-  label?: string;
+    /**
+     * whether this can still be used
+     */
+    active: boolean;
+    /**
+     * the bolt12 encoding of the offer
+     */
+    bolt12: string;
+    /**
+     * the bolt12 encoding of the offer, without a signature
+     */
+    bolt12_unsigned: string;
+    /**
+     * false if the offer already existed
+     */
+    created: boolean;
+    /**
+     * the (optional) user-specified label
+     */
+    label?: string;
+    /**
+     * the id of this offer (merkle hash of non-signature fields)
+     */
+    offer_id: string;
+    /**
+     * whether this expires as soon as it's paid (reflects the *single_use* parameter)
+     */
+    single_use: boolean;
+    /**
+     * True if an associated invoice has been paid
+     */
+    used: boolean;
 }
 

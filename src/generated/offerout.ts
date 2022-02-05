@@ -54,37 +54,37 @@ export interface OfferoutRequest {
 }
 
 export interface OfferoutResponse {
-  /**
-   * the id of this offer (merkle hash of non-signature fields)
-   */
-  offer_id: /* hex */ string;
-  /**
-   * whether this will pay a matching incoming invoice
-   */
-  active: true;
-  /**
-   * whether this expires as soon as it's paid out
-   */
-  single_use: true;
-  /**
-   * the bolt12 encoding of the offer
-   */
-  bolt12: string;
-  /**
-   * the bolt12 encoding of the offer, without a signature
-   */
-  bolt12_unsigned: string;
-  /**
-   * True if an incoming invoice has been paid
-   */
-  used: false;
-  /**
-   * false if the offer already existed
-   */
-  created: boolean;
-  /**
-   * the (optional) user-specified label
-   */
-  label?: string;
+    /**
+     * whether this will pay a matching incoming invoice
+     */
+    active: boolean;
+    /**
+     * the bolt12 encoding of the offer
+     */
+    bolt12: string;
+    /**
+     * the bolt12 encoding of the offer, without a signature
+     */
+    bolt12_unsigned: string;
+    /**
+     * false if the offer already existed
+     */
+    created: boolean;
+    /**
+     * the (optional) user-specified label
+     */
+    label?: string;
+    /**
+     * the id of this offer (merkle hash of non-signature fields)
+     */
+    offer_id: string;
+    /**
+     * whether this expires as soon as it's paid out
+     */
+    single_use: boolean;
+    /**
+     * True if an incoming invoice has been paid
+     */
+    used: boolean;
 }
 

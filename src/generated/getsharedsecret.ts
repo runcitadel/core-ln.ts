@@ -16,10 +16,9 @@ export interface GetsharedsecretRequest {
 }
 
 export interface GetsharedsecretResponse {
-  /**
-   * the SHA-2 of the compressed encoding of the shared secp256k1 point
-   */
-  shared_secret: /* hex */ string;
-  [k: string]: unknown;
+    /**
+     * the SHA-2 of the compressed encoding of the shared secp256k1 point
+     */
+    shared_secret: string;
 }
 

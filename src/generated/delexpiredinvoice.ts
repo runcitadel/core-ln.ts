@@ -16,5 +16,6 @@ export interface DelexpiredinvoiceRequest {
   maxexpirytime?: number;
 }
 
-export interface DelexpiredinvoiceResponse {}
+export interface DelexpiredinvoiceResponse {
+}
 

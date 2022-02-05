@@ -19,10 +19,9 @@ export interface WaitblockheightRequest {
 }
 
 export interface WaitblockheightResponse {
-  /**
-   * The current block height (>= *blockheight* parameter)
-   */
-  blockheight: /* u32 */ number;
-  [k: string]: unknown;
+    /**
+     * The current block height (>= *blockheight* parameter)
+     */
+    blockheight: number;
 }
 

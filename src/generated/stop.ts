@@ -21,5 +21,7 @@
 export interface StopRequest {
 }
 
-export type StopResponse = "Shutdown complete";
+export enum StopResponse {
+    ShutdownComplete = "Shutdown complete",
+}
 

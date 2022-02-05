@@ -81,47 +81,48 @@ export interface PayRequest {
 }
 
 export interface PayResponse {
-  /**
-   * the proof of payment: SHA256 of this **payment_hash**
-   */
-  payment_preimage: /* hex */ string;
-  /**
-   * the final destination of the payment
-   */
-  destination?: /* pubkey */ string;
-  /**
-   * the hash of the *payment_preimage* which will prove payment
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * the UNIX timestamp showing when this payment was initiated
-   */
-  created_at: number;
-  /**
-   * how many attempts this took
-   */
-  parts: /* u32 */ number;
-  msatoshi?: {
-    [k: string]: unknown;
-  };
-  /**
-   * Amount the recipient received
-   */
-  amount_msat: /* msat */ number;
-  msatoshi_sent?: {
-    [k: string]: unknown;
-  };
-  /**
-   * Total amount we sent (including fees)
-   */
-  amount_sent_msat: /* msat */ number;
-  /**
-   * Not all parts of a multi-part payment have completed
-   */
-  warning_partial_completion?: string;
-  /**
-   * status of payment
-   */
-  status: "complete";
+    /**
+     * Amount the recipient received
+     */
+    amount_msat: number;
+    /**
+     * Total amount we sent (including fees)
+     */
+    amount_sent_msat: number;
+    /**
+     * the UNIX timestamp showing when this payment was initiated
+     */
+    created_at: number;
+    /**
+     * the final destination of the payment
+     */
+    destination?: string;
+    /**
+     * how many attempts this took
+     */
+    parts: number;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * the proof of payment: SHA256 of this **payment_hash**
+     */
+    payment_preimage: string;
+    /**
+     * status of payment
+     */
+    status: Status;
+    /**
+     * Not all parts of a multi-part payment have completed
+     */
+    warning_partial_completion?: string;
+}
+
+/**
+ * status of payment
+ */
+export enum Status {
+    Complete = "complete",
 }
 

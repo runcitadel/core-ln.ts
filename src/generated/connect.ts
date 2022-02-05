@@ -34,31 +34,59 @@
  * lightning-fundchannel(7).
 */
 export type ConnectRequest = {
-  id: string;
-} | {
-  id: string;
-  host: string;
-  port: number;
-}
+    id: string;
+  } | {
+    id: string;
+    host: string;
+    port: number;
+  }
+  
 
 export interface ConnectResponse {
-  /**
-   * the peer we connected to
-   */
-  id: /* pubkey */ string;
-  /**
-   * BOLT 9 features bitmap offered by peer
-   */
-  features: /* hex */ string;
-  /**
-   * Whether they initiated connection or we did
-   */
-  direction: "in" | "out";
-  /**
-   * Address information (mainly useful if **direction** is *out*)
-   */
-  address: {
-    [k: string]: unknown;
-  };
+    /**
+     * Address information (mainly useful if **direction** is *out*)
+     */
+    address: Address;
+    /**
+     * Whether they initiated connection or we did
+     */
+    direction: Direction;
+    /**
+     * BOLT 9 features bitmap offered by peer
+     */
+    features: string;
+    /**
+     * the peer we connected to
+     */
+    id: string;
+}
+
+/**
+ * Address information (mainly useful if **direction** is *out*)
+ */
+export interface Address {
+    /**
+     * Type of connection (*torv2* / *torv3* only if **direction** is *out*)
+     */
+    type: Type;
+}
+
+/**
+ * Type of connection (*torv2* / *torv3* only if **direction** is *out*)
+ */
+export enum Type {
+    Ipv4 = "ipv4",
+    Ipv6 = "ipv6",
+    LocalSocket = "local socket",
+    Torv2 = "torv2",
+    Torv3 = "torv3",
+}
+
+/**
+ * Whether they initiated connection or we did
+ */
+export enum Direction {
+    In = "in",
+    Out = "out",
 }
 

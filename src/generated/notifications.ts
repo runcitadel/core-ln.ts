@@ -50,5 +50,6 @@ export interface NotificationsRequest {
   enable: /* GUESSED */ string;
 }
 
-export interface NotificationsResponse {}
+export interface NotificationsResponse {
+}
 

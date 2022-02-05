@@ -282,32 +282,41 @@ export interface GetrouteRequest {
 }
 
 export interface GetrouteResponse {
-  route: {
-    /**
-     * The node at the end of this hop
-     */
-    id: /* pubkey */ string;
-    /**
-     * The channel joining these nodes
-     */
-    channel: /* short_channel_id */ string;
-    /**
-     * 0 if this channel is traversed from lesser to greater **id**, otherwise 1
-     */
-    direction: /* u32 */ number;
-    msatoshi?: /* u64 */ number;
+    route: Route[];
+}
+
+export interface Route {
     /**
      * The amount expected by the node at the end of this hop
      */
-    amount_msat: /* msat */ number;
+    amount_msat: number;
+    /**
+     * The channel joining these nodes
+     */
+    channel: string;
     /**
      * The total CLTV expected by the node at the end of this hop
      */
-    delay: /* u32 */ number;
+    delay: number;
+    /**
+     * 0 if this channel is traversed from lesser to greater **id**, otherwise 1
+     */
+    direction: number;
+    /**
+     * The node at the end of this hop
+     */
+    id: string;
     /**
      * The features understood by the destination node
      */
-    style: "legacy" | "tlv";
-  }[];
+    style: Style;
+}
+
+/**
+ * The features understood by the destination node
+ */
+export enum Style {
+    Legacy = "legacy",
+    TLV = "tlv",
 }
 

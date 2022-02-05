@@ -46,30 +46,32 @@ export interface SetchannelfeeRequest {
 }
 
 export interface SetchannelfeeResponse {
-  /**
-   * The fee_base_msat value
-   */
-  base: /* u32 */ number;
-  /**
-   * The fee_proportional_millionths value
-   */
-  ppm: /* u32 */ number;
-  /**
-   * channel(s) whose rate is now set
-   */
-  channels: {
     /**
-     * The node_id of the peer
+     * The fee_base_msat value
      */
-    peer_id: /* pubkey */ string;
+    base: number;
+    /**
+     * channel(s) whose rate is now set
+     */
+    channels: Channel[];
+    /**
+     * The fee_proportional_millionths value
+     */
+    ppm: number;
+}
+
+export interface Channel {
     /**
      * The channel_id of the channel
      */
-    channel_id: /* hex */ string;
+    channel_id: string;
+    /**
+     * The node_id of the peer
+     */
+    peer_id: string;
     /**
      * the short_channel_id (if locked in)
      */
-    short_channel_id?: /* short_channel_id */ string;
-  }[];
+    short_channel_id?: string;
 }
 

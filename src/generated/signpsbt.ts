@@ -38,9 +38,9 @@ export interface SignpsbtRequest {
 }
 
 export interface SignpsbtResponse {
-  /**
-   * The fully signed PSBT
-   */
-  signed_psbt: string;
+    /**
+     * The fully signed PSBT
+     */
+    signed_psbt: string;
 }
 

@@ -14,14 +14,13 @@ export interface TxdiscardRequest {
 }
 
 export interface TxdiscardResponse {
-  /**
-   * the unsigned transaction
-   */
-  unsigned_tx: /* hex */ string;
-  /**
-   * the transaction id of *unsigned_tx*
-   */
-  txid: /* txid */ string;
-  [k: string]: unknown;
+    /**
+     * the transaction id of *unsigned_tx*
+     */
+    txid: string;
+    /**
+     * the unsigned transaction
+     */
+    unsigned_tx: string;
 }
 

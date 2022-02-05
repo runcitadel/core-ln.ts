@@ -25,27 +25,29 @@ export interface ReserveinputsRequest {
 }
 
 export interface ReserveinputsResponse {
-  reservations: {
+    reservations: Reservation[];
+}
+
+export interface Reservation {
+    /**
+     * whether the input is now reserved
+     */
+    reserved: boolean;
+    /**
+     * what blockheight the reservation will expire
+     */
+    reserved_to_block: number;
     /**
      * the transaction id
      */
-    txid: /* txid */ string;
+    txid: string;
     /**
      * the output number which was reserved
      */
-    vout: /* u32 */ number;
+    vout: number;
     /**
      * whether the input was already reserved
      */
     was_reserved: boolean;
-    /**
-     * whether the input is now reserved
-     */
-    reserved: true;
-    /**
-     * what blockheight the reservation will expire
-     */
-    reserved_to_block: /* u32 */ number;
-  }[];
 }
 

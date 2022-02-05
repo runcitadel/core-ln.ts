@@ -98,13 +98,13 @@ export interface CreateonionRequest {
 }
 
 export interface CreateonionResponse {
-  /**
-   * the onion packet (*onion_size* bytes)
-   */
-  onion: /* hex */ string;
-  /**
-   * one shared secret for each node in the *hops* parameter
-   */
-  shared_secrets: /* hex */ string[];
+    /**
+     * the onion packet (*onion_size* bytes)
+     */
+    onion: string;
+    /**
+     * one shared secret for each node in the *hops* parameter
+     */
+    shared_secrets: string[];
 }
 

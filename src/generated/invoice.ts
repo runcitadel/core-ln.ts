@@ -65,52 +65,56 @@
  * Otherwise, it's set to the parameter **cltv-final**.
 */
 export interface InvoiceRequest {
-  msatoshi: number | string;
-  label: string;
-  description: string;
-  expiry?: number | string;
-  fallbacks?: string[];
-  preimage?: string;
-  exposeprivatechannels?: boolean;
+  msatoshi: /* GUESSED */ string;
+  label: /* GUESSED */ string;
+  description: /* GUESSED */ string;
+  expiry?: /* GUESSED */ string;
+  fallbacks?: /* GUESSED */ string;
+  preimage?: /* GUESSED */ string;
+  exposeprivatechannels?: /* GUESSED */ string;
   cltv?: /* GUESSED */ string;
 }
 
 export interface InvoiceResponse {
-  /**
-   * the bolt11 string
-   */
-  bolt11: string;
-  /**
-   * the hash of the *payment_preimage* which will prove payment
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * the *payment_secret* to place in the onion
-   */
-  payment_secret: /* hex */ string;
-  /**
-   * UNIX timestamp of when invoice expires
-   */
-  expires_at: /* u64 */ number;
-  /**
-   * even using all possible channels, there's not enough incoming capacity to pay this invoice.
-   */
-  warning_capacity?: string;
-  /**
-   * there would be enough incoming capacity, but some channels are offline, so there isn't.
-   */
-  warning_offline?: string;
-  /**
-   * there would be enough incoming capacity, but some channels are dead-ends (no other public channels from those peers), so there isn't.
-   */
-  warning_deadends?: string;
-  /**
-   * there would be enough incoming capacity, but some channels are unannounced and *exposeprivatechannels* is *false*, so there isn't.
-   */
-  warning_private_unused?: string;
-  /**
-   * there is sufficient capacity, but not in a single channel, so the payer will have to use multi-part payments.
-   */
-  warning_mpp?: string;
+    /**
+     * the bolt11 string
+     */
+    bolt11: string;
+    /**
+     * UNIX timestamp of when invoice expires
+     */
+    expires_at: number;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * the *payment_secret* to place in the onion
+     */
+    payment_secret: string;
+    /**
+     * even using all possible channels, there's not enough incoming capacity to pay this
+     * invoice.
+     */
+    warning_capacity?: string;
+    /**
+     * there would be enough incoming capacity, but some channels are dead-ends (no other public
+     * channels from those peers), so there isn't.
+     */
+    warning_deadends?: string;
+    /**
+     * there is sufficient capacity, but not in a single channel, so the payer will have to use
+     * multi-part payments.
+     */
+    warning_mpp?: string;
+    /**
+     * there would be enough incoming capacity, but some channels are offline, so there isn't.
+     */
+    warning_offline?: string;
+    /**
+     * there would be enough incoming capacity, but some channels are unannounced and
+     * *exposeprivatechannels* is *false*, so there isn't.
+     */
+    warning_private_unused?: string;
 }
 

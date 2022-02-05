@@ -51,50 +51,54 @@ export interface UtxopsbtRequest {
 }
 
 export interface UtxopsbtResponse {
-  /**
-   * Unsigned PSBT which fulfills the parameters given
-   */
-  psbt: string;
-  /**
-   * The feerate used to create the PSBT, in satoshis-per-kiloweight
-   */
-  feerate_per_kw: /* u32 */ number;
-  /**
-   * The estimated weight of the transaction once fully signed
-   */
-  estimated_final_weight: /* u32 */ number;
-  /**
-   * The amount above *satoshi* which is available.  This could be zero, or dust; it will be zero if *change_outnum* is also returned
-   */
-  excess_msat: /* msat */ number;
-  /**
-   * The 0-based output number where change was placed (only if parameter *excess_as_change* was true and there was sufficient funds)
-   */
-  change_outnum?: /* u32 */ number;
-  /**
-   * If *reserve* was true or a non-zero number, just as per lightning-reserveinputs(7)
-   */
-  reservations?: {
+    /**
+     * The 0-based output number where change was placed (only if parameter *excess_as_change*
+     * was true and there was sufficient funds)
+     */
+    change_outnum?: number;
+    /**
+     * The estimated weight of the transaction once fully signed
+     */
+    estimated_final_weight: number;
+    /**
+     * The amount above *satoshi* which is available.  This could be zero, or dust; it will be
+     * zero if *change_outnum* is also returned
+     */
+    excess_msat: number;
+    /**
+     * The feerate used to create the PSBT, in satoshis-per-kiloweight
+     */
+    feerate_per_kw: number;
+    /**
+     * Unsigned PSBT which fulfills the parameters given
+     */
+    psbt: string;
+    /**
+     * If *reserve* was true or a non-zero number, just as per lightning-reserveinputs(7)
+     */
+    reservations?: Reservation[];
+}
+
+export interface Reservation {
+    /**
+     * Whether this output is now reserved
+     */
+    reserved: boolean;
+    /**
+     * The blockheight the reservation will expire
+     */
+    reserved_to_block: number;
     /**
      * The txid of the transaction
      */
-    txid: /* txid */ string;
+    txid: string;
     /**
      * The 0-based output number
      */
-    vout: /* u32 */ number;
+    vout: number;
     /**
      * Whether this output was previously reserved
      */
     was_reserved: boolean;
-    /**
-     * Whether this output is now reserved
-     */
-    reserved: true;
-    /**
-     * The blockheight the reservation will expire
-     */
-    reserved_to_block: /* u32 */ number;
-  }[];
 }
 

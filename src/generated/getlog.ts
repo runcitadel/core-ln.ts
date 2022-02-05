@@ -27,24 +27,32 @@ export interface GetlogRequest {
 }
 
 export interface GetlogResponse {
-  /**
-   * UNIX timestamp with 9 decimal places, when logging was initialized
-   */
-  created_at: string;
-  /**
-   * The number of bytes used by logging records
-   */
-  bytes_used: /* u32 */ number;
-  /**
-   * The bytes_used values at which records will be trimmed
-   */
-  bytes_max: /* u32 */ number;
-  log: ({
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  })[];
+    /**
+     * The bytes_used values at which records will be trimmed
+     */
+    bytes_max: number;
+    /**
+     * The number of bytes used by logging records
+     */
+    bytes_used: number;
+    /**
+     * UNIX timestamp with 9 decimal places, when logging was initialized
+     */
+    created_at: string;
+    log:        Log[];
+}
+
+export interface Log {
+    type: Type;
+}
+
+export enum Type {
+    Broken = "BROKEN",
+    Debug = "DEBUG",
+    Info = "INFO",
+    IoIn = "IO_IN",
+    IoOut = "IO_OUT",
+    Skipped = "SKIPPED",
+    Unusual = "UNUSUAL",
 }
 

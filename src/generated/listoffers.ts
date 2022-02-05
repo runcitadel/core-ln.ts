@@ -28,19 +28,14 @@ export interface ListoffersRequest {
 }
 
 export interface ListoffersResponse {
-  offers: {
-    /**
-     * the id of this offer (merkle hash of non-signature fields)
-     */
-    offer_id: /* hex */ string;
+    offers: Offer[];
+}
+
+export interface Offer {
     /**
      * whether this can still be used
      */
     active: boolean;
-    /**
-     * whether this expires as soon as it's paid
-     */
-    single_use: boolean;
     /**
      * the bolt12 encoding of the offer
      */
@@ -50,13 +45,20 @@ export interface ListoffersResponse {
      */
     bolt12_unsigned: string;
     /**
-     * True if an associated invoice has been paid
-     */
-    used: boolean;
-    /**
      * the (optional) user-specified label
      */
     label?: string;
-  }[];
+    /**
+     * the id of this offer (merkle hash of non-signature fields)
+     */
+    offer_id: string;
+    /**
+     * whether this expires as soon as it's paid
+     */
+    single_use: boolean;
+    /**
+     * True if an associated invoice has been paid
+     */
+    used: boolean;
 }
 

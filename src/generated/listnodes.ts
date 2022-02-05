@@ -25,10 +25,17 @@ export interface ListnodesRequest {
 }
 
 export interface ListnodesResponse {
-  nodes: ({
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  })[];
+    nodes: Node[];
+}
+
+export interface Node {
+    /**
+     * A node_announcement has been received for this node (UNIX timestamp)
+     */
+    last_timestamp?: number;
+    /**
+     * the public key of the node
+     */
+    nodeid: string;
 }
 

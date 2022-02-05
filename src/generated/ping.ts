@@ -36,9 +36,9 @@ export interface PingRequest {
 }
 
 export interface PingResponse {
-  /**
-   * the answer length of the reply message (including header: 0 means no reply expected)
-   */
-  totlen: /* u16 */ number;
+    /**
+     * the answer length of the reply message (including header: 0 means no reply expected)
+     */
+    totlen: number;
 }
 

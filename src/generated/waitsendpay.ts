@@ -32,63 +32,61 @@ export interface WaitsendpayRequest {
   partid?: /* GUESSED */ string;
 }
 
-export type WaitsendpayResponse = {
-  [k: string]: unknown;
-} & {
-  /**
-   * unique ID for this payment attempt
-   */
-  id: /* u64 */ number;
-  /**
-   * Grouping key to disambiguate multiple attempts to pay an invoice or the same payment_hash
-   */
-  groupid?: /* u64 */ number;
-  /**
-   * the hash of the *payment_preimage* which will prove payment
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * status of the payment
-   */
-  status: "complete";
-  msatoshi?: {
-    [k: string]: unknown;
-  };
-  /**
-   * The amount delivered to destination (if known)
-   */
-  amount_msat?: /* msat */ number;
-  /**
-   * the final destination of the payment if known
-   */
-  destination?: /* pubkey */ string;
-  /**
-   * the UNIX timestamp showing when this payment was initiated
-   */
-  created_at: /* u64 */ number;
-  msatoshi_sent?: {
-    [k: string]: unknown;
-  };
-  /**
-   * The amount sent
-   */
-  amount_sent_msat: /* msat */ number;
-  /**
-   * the label, if given to sendpay
-   */
-  label?: string;
-  /**
-   * the *partid*, if given to sendpay
-   */
-  partid?: /* u64 */ number;
-  /**
-   * the bolt11 string (if pay supplied one)
-   */
-  bolt11?: string;
-  /**
-   * the bolt12 string (if supplied for pay: **experimental-offers** only).
-   */
-  bolt12?: string;
-  [k: string]: unknown;
-};
+export interface WaitsendpayResponse {
+    /**
+     * The amount delivered to destination (if known)
+     */
+    amount_msat?: number;
+    /**
+     * The amount sent
+     */
+    amount_sent_msat: number;
+    /**
+     * the bolt11 string (if pay supplied one)
+     */
+    bolt11?: string;
+    /**
+     * the bolt12 string (if supplied for pay: **experimental-offers** only).
+     */
+    bolt12?: string;
+    /**
+     * the UNIX timestamp showing when this payment was initiated
+     */
+    created_at: number;
+    /**
+     * the final destination of the payment if known
+     */
+    destination?: string;
+    /**
+     * Grouping key to disambiguate multiple attempts to pay an invoice or the same payment_hash
+     */
+    groupid?: number;
+    /**
+     * unique ID for this payment attempt
+     */
+    id: number;
+    /**
+     * the label, if given to sendpay
+     */
+    label?: string;
+    /**
+     * the *partid*, if given to sendpay
+     */
+    partid?: number;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * status of the payment
+     */
+    status: Status;
+}
+
+/**
+ * status of the payment
+ */
+export enum Status {
+    Complete = "complete",
+}
 

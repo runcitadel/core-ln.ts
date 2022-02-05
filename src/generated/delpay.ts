@@ -31,57 +31,18 @@ export interface DelpayRequest {
 }
 
 export interface DelpayResponse {
-  payments: {
-    /**
-     * unique ID for this payment attempt
-     */
-    id: /* u64 */ number;
-    /**
-     * the hash of the *payment_preimage* which will prove payment
-     */
-    payment_hash: /* hex */ string;
-    /**
-     * status of the payment
-     */
-    status: "pending" | "failed" | "complete";
-    msatoshi_sent?: {
-      [k: string]: unknown;
-    };
-    /**
-     * the amount we actually sent, including fees
-     */
-    amount_sent_msat: /* msat */ number;
-    /**
-     * unique ID within this (multi-part) payment
-     */
-    partid?: /* u64 */ number;
-    /**
-     * the final destination of the payment if known
-     */
-    destination?: /* pubkey */ string;
-    msatoshi?: {
-      [k: string]: unknown;
-    };
+    payments: Payment[];
+}
+
+export interface Payment {
     /**
      * the amount the destination received, if known
      */
-    amount_msat?: /* msat */ number;
+    amount_msat?: number;
     /**
-     * the UNIX timestamp showing when this payment was initiated
+     * the amount we actually sent, including fees
      */
-    created_at: /* u64 */ number;
-    /**
-     * Grouping key to disambiguate multiple attempts to pay an invoice or the same payment_hash
-     */
-    groupid?: /* u64 */ number;
-    /**
-     * proof of payment
-     */
-    payment_preimage?: /* hex */ string;
-    /**
-     * the label, if given to sendpay
-     */
-    label?: string;
+    amount_sent_msat: number;
     /**
      * the bolt11 string (if pay supplied one)
      */
@@ -91,9 +52,53 @@ export interface DelpayResponse {
      */
     bolt12?: string;
     /**
+     * the UNIX timestamp showing when this payment was initiated
+     */
+    created_at: number;
+    /**
+     * the final destination of the payment if known
+     */
+    destination?: string;
+    /**
      * the error onion returned on failure, if any.
      */
-    erroronion?: /* hex */ string;
-  }[];
+    erroronion?: string;
+    /**
+     * Grouping key to disambiguate multiple attempts to pay an invoice or the same payment_hash
+     */
+    groupid?: number;
+    /**
+     * unique ID for this payment attempt
+     */
+    id: number;
+    /**
+     * the label, if given to sendpay
+     */
+    label?: string;
+    /**
+     * unique ID within this (multi-part) payment
+     */
+    partid?: number;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * proof of payment
+     */
+    payment_preimage?: string;
+    /**
+     * status of the payment
+     */
+    status: Status;
+}
+
+/**
+ * status of the payment
+ */
+export enum Status {
+    Complete = "complete",
+    Failed = "failed",
+    Pending = "pending",
 }
 

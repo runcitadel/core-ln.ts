@@ -26,13 +26,13 @@ export interface FundchannelCompleteRequest {
 }
 
 export interface FundchannelCompleteResponse {
-  /**
-   * The channel_id of the resulting channel
-   */
-  channel_id: /* hex */ string;
-  /**
-   * Indication that channel is safe to use
-   */
-  commitments_secured: true;
+    /**
+     * The channel_id of the resulting channel
+     */
+    channel_id: string;
+    /**
+     * Indication that channel is safe to use
+     */
+    commitments_secured: boolean;
 }
 

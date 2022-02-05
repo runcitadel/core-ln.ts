@@ -38,10 +38,9 @@ export interface SendcustommsgRequest {
 }
 
 export interface SendcustommsgResponse {
-  /**
-   * Information about where message was queued
-   */
-  status: string;
-  [k: string]: unknown;
+    /**
+     * Information about where message was queued
+     */
+    status: string;
 }
 

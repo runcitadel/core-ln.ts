@@ -39,109 +39,129 @@
  * which will override the recommended feerates returned by **feerates**.
 */
 export interface FeeratesRequest {
-  style: "perkw" | "perkb";
+ style: "perkw" | "perkb";
 }
 
 export interface FeeratesResponse {
-  /**
-   * Some fee estimates are missing
-   */
-  warning_missing_feerates?: string;
-  /**
-   * If *style* parameter was perkb
-   */
-  perkb?: {
+    onchain_fee_estimates?: OnchainFeeEstimates;
     /**
-     * The smallest feerate that you can use, usually the minimum relayed feerate of the backend
+     * If *style* parameter was perkb
      */
-    min_acceptable: /* u32 */ number;
+    perkb?: Perkb;
     /**
-     * The largest feerate we will accept from remote negotiations.  If a peer attempts to set the feerate higher than this we will unilaterally close the channel (or simply forget it if it's not open yet).
+     * If *style* parameter was perkw
      */
-    max_acceptable: /* u32 */ number;
+    perkw?: Perkw;
     /**
-     * Default feerate for lightning-fundchannel(7) and lightning-withdraw(7)
+     * Some fee estimates are missing
      */
-    opening?: /* u32 */ number;
-    /**
-     * Feerate to aim for in cooperative shutdown.  Note that since mutual close is a **negotiation**, the actual feerate used in mutual close will be somewhere between this and the corresponding mutual close feerate of the peer.
-     */
-    mutual_close?: /* u32 */ number;
-    /**
-     * Feerate for commitment_transaction in a live channel which we originally funded
-     */
-    unilateral_close?: /* u32 */ number;
-    /**
-     * Feerate for returning unilateral close funds to our wallet
-     */
-    delayed_to_us?: /* u32 */ number;
-    /**
-     * Feerate for returning unilateral close HTLC outputs to our wallet
-     */
-    htlc_resolution?: /* u32 */ number;
-    /**
-     * Feerate to start at when penalizing a cheat attempt
-     */
-    penalty?: /* u32 */ number;
-  };
-  /**
-   * If *style* parameter was perkw
-   */
-  perkw?: {
-    /**
-     * The smallest feerate that you can use, usually the minimum relayed feerate of the backend
-     */
-    min_acceptable: /* u32 */ number;
-    /**
-     * The largest feerate we will accept from remote negotiations.  If a peer attempts to set the feerate higher than this we will unilaterally close the channel (or simply forget it if it's not open yet).
-     */
-    max_acceptable: /* u32 */ number;
-    /**
-     * Default feerate for lightning-fundchannel(7) and lightning-withdraw(7)
-     */
-    opening?: /* u32 */ number;
-    /**
-     * Feerate to aim for in cooperative shutdown.  Note that since mutual close is a **negotiation**, the actual feerate used in mutual close will be somewhere between this and the corresponding mutual close feerate of the peer.
-     */
-    mutual_close?: /* u32 */ number;
-    /**
-     * Feerate for commitment_transaction in a live channel which we originally funded
-     */
-    unilateral_close?: /* u32 */ number;
-    /**
-     * Feerate for returning unilateral close funds to our wallet
-     */
-    delayed_to_us?: /* u32 */ number;
-    /**
-     * Feerate for returning unilateral close HTLC outputs to our wallet
-     */
-    htlc_resolution?: /* u32 */ number;
-    /**
-     * Feerate to start at when penalizing a cheat attempt
-     */
-    penalty?: /* u32 */ number;
-  };
-  onchain_fee_estimates?: {
-    /**
-     * Estimated cost of typical channel open
-     */
-    opening_channel_satoshis: /* u64 */ number;
-    /**
-     * Estimated cost of typical channel close
-     */
-    mutual_close_satoshis: /* u64 */ number;
-    /**
-     * Estimated cost of typical unilateral close (without HTLCs)
-     */
-    unilateral_close_satoshis: /* u64 */ number;
-    /**
-     * Estimated cost of typical HTLC timeout transaction
-     */
-    htlc_timeout_satoshis: /* u64 */ number;
+    warning_missing_feerates?: string;
+}
+
+export interface OnchainFeeEstimates {
     /**
      * Estimated cost of typical HTLC fulfillment transaction
      */
-    htlc_success_satoshis: /* u64 */ number;
-  };
+    htlc_success_satoshis: number;
+    /**
+     * Estimated cost of typical HTLC timeout transaction
+     */
+    htlc_timeout_satoshis: number;
+    /**
+     * Estimated cost of typical channel close
+     */
+    mutual_close_satoshis: number;
+    /**
+     * Estimated cost of typical channel open
+     */
+    opening_channel_satoshis: number;
+    /**
+     * Estimated cost of typical unilateral close (without HTLCs)
+     */
+    unilateral_close_satoshis: number;
+}
+
+/**
+ * If *style* parameter was perkb
+ */
+export interface Perkb {
+    /**
+     * Feerate for returning unilateral close funds to our wallet
+     */
+    delayed_to_us?: number;
+    /**
+     * Feerate for returning unilateral close HTLC outputs to our wallet
+     */
+    htlc_resolution?: number;
+    /**
+     * The largest feerate we will accept from remote negotiations.  If a peer attempts to set
+     * the feerate higher than this we will unilaterally close the channel (or simply forget it
+     * if it's not open yet).
+     */
+    max_acceptable: number;
+    /**
+     * The smallest feerate that you can use, usually the minimum relayed feerate of the backend
+     */
+    min_acceptable: number;
+    /**
+     * Feerate to aim for in cooperative shutdown.  Note that since mutual close is a
+     * **negotiation**, the actual feerate used in mutual close will be somewhere between this
+     * and the corresponding mutual close feerate of the peer.
+     */
+    mutual_close?: number;
+    /**
+     * Default feerate for lightning-fundchannel(7) and lightning-withdraw(7)
+     */
+    opening?: number;
+    /**
+     * Feerate to start at when penalizing a cheat attempt
+     */
+    penalty?: number;
+    /**
+     * Feerate for commitment_transaction in a live channel which we originally funded
+     */
+    unilateral_close?: number;
+}
+
+/**
+ * If *style* parameter was perkw
+ */
+export interface Perkw {
+    /**
+     * Feerate for returning unilateral close funds to our wallet
+     */
+    delayed_to_us?: number;
+    /**
+     * Feerate for returning unilateral close HTLC outputs to our wallet
+     */
+    htlc_resolution?: number;
+    /**
+     * The largest feerate we will accept from remote negotiations.  If a peer attempts to set
+     * the feerate higher than this we will unilaterally close the channel (or simply forget it
+     * if it's not open yet).
+     */
+    max_acceptable: number;
+    /**
+     * The smallest feerate that you can use, usually the minimum relayed feerate of the backend
+     */
+    min_acceptable: number;
+    /**
+     * Feerate to aim for in cooperative shutdown.  Note that since mutual close is a
+     * **negotiation**, the actual feerate used in mutual close will be somewhere between this
+     * and the corresponding mutual close feerate of the peer.
+     */
+    mutual_close?: number;
+    /**
+     * Default feerate for lightning-fundchannel(7) and lightning-withdraw(7)
+     */
+    opening?: number;
+    /**
+     * Feerate to start at when penalizing a cheat attempt
+     */
+    penalty?: number;
+    /**
+     * Feerate for commitment_transaction in a live channel which we originally funded
+     */
+    unilateral_close?: number;
 }
 

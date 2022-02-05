@@ -54,18 +54,18 @@ export interface TxprepareRequest {
 }
 
 export interface TxprepareResponse {
-  /**
-   * the PSBT representing the unsigned transaction
-   */
-  psbt: string;
-  /**
-   * the unsigned transaction
-   */
-  unsigned_tx: /* hex */ string;
-  /**
-   * the transaction id of *unsigned_tx*; you hand this to lightning-txsend(7) or lightning-txdiscard(7), as the inputs of this transaction are reserved.
-   */
-  txid: /* txid */ string;
-  [k: string]: unknown;
+    /**
+     * the PSBT representing the unsigned transaction
+     */
+    psbt: string;
+    /**
+     * the transaction id of *unsigned_tx*; you hand this to lightning-txsend(7) or
+     * lightning-txdiscard(7), as the inputs of this transaction are reserved.
+     */
+    txid: string;
+    /**
+     * the unsigned transaction
+     */
+    unsigned_tx: string;
 }
 

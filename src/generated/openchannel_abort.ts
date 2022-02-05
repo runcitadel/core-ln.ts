@@ -18,17 +18,18 @@ export interface OpenchannelAbortRequest {
 }
 
 export interface OpenchannelAbortResponse {
-  /**
-   * the channel id of the aborted channel
-   */
-  channel_id: /* hex */ string;
-  /**
-   * whether this is completely canceled (there may be remaining in-flight transactions)
-   */
-  channel_canceled: boolean;
-  /**
-   * usually "Abort requested", but if it happened to fail at the same time it could be different
-   */
-  reason: string;
+    /**
+     * whether this is completely canceled (there may be remaining in-flight transactions)
+     */
+    channel_canceled: boolean;
+    /**
+     * the channel id of the aborted channel
+     */
+    channel_id: string;
+    /**
+     * usually "Abort requested", but if it happened to fail at the same time it could be
+     * different
+     */
+    reason: string;
 }
 

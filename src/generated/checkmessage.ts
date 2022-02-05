@@ -23,13 +23,10 @@ export interface CheckmessageRequest {
   pubkey?: string;
 }
 
-export type CheckmessageResponse = {
-  [k: string]: unknown;
-} & {
-  /**
-   * Whether the signature was valid
-   */
-  verified: boolean;
-  [k: string]: unknown;
-};
+export interface CheckmessageResponse {
+    /**
+     * Whether the signature was valid
+     */
+    verified: boolean;
+}
 

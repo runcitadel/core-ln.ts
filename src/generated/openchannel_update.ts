@@ -28,25 +28,26 @@ export interface OpenchannelUpdateRequest {
 }
 
 export interface OpenchannelUpdateResponse {
-  /**
-   * the channel id of the channel
-   */
-  channel_id: /* hex */ string;
-  /**
-   * the PSBT of the funding transaction
-   */
-  psbt: string;
-  /**
-   * whether the *psbt* is complete (if true, sign *psbt* and call `openchannel_signed` to complete the channel open)
-   */
-  commitments_secured: boolean;
-  /**
-   * The index of the funding output in the psbt
-   */
-  funding_outnum: /* u32 */ number;
-  /**
-   * scriptPubkey which we have to close to if we mutual close
-   */
-  close_to?: /* hex */ string;
+    /**
+     * the channel id of the channel
+     */
+    channel_id: string;
+    /**
+     * scriptPubkey which we have to close to if we mutual close
+     */
+    close_to?: string;
+    /**
+     * whether the *psbt* is complete (if true, sign *psbt* and call `openchannel_signed` to
+     * complete the channel open)
+     */
+    commitments_secured: boolean;
+    /**
+     * The index of the funding output in the psbt
+     */
+    funding_outnum: number;
+    /**
+     * the PSBT of the funding transaction
+     */
+    psbt: string;
 }
 

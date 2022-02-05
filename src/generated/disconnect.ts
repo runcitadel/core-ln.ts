@@ -32,5 +32,6 @@ export interface DisconnectRequest {
   force?: boolean;
 }
 
-export interface DisconnectResponse {}
+export interface DisconnectResponse {
+}
 

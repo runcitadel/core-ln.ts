@@ -25,5 +25,6 @@ export interface SendonionmessageRequest {
   reply_path?: /* GUESSED */ string;
 }
 
-export interface SendonionmessageResponse {}
+export interface SendonionmessageResponse {
+}
 

@@ -21,10 +21,9 @@ export interface AutocleaninvoiceRequest {
 }
 
 export interface AutocleaninvoiceResponse {
-  /**
-   * whether invoice autocleaning is active
-   */
-  enabled: boolean;
-  [k: string]: unknown;
+    /**
+     * whether invoice autocleaning is active
+     */
+    enabled: boolean;
 }
 

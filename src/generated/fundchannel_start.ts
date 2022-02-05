@@ -42,17 +42,18 @@ export interface FundchannelStartRequest {
 }
 
 export interface FundchannelStartResponse {
-  /**
-   * The address to send funding to for the channel
-   */
-  funding_address: string;
-  /**
-   * The raw scriptPubkey for the address
-   */
-  scriptpubkey: /* hex */ string;
-  /**
-   * The raw scriptPubkey which mutual close will go to; only present if *close_to* parameter was specified and peer supports `option_upfront_shutdown_script`
-   */
-  close_to?: /* hex */ string;
+    /**
+     * The raw scriptPubkey which mutual close will go to; only present if *close_to* parameter
+     * was specified and peer supports `option_upfront_shutdown_script`
+     */
+    close_to?: string;
+    /**
+     * The address to send funding to for the channel
+     */
+    funding_address: string;
+    /**
+     * The raw scriptPubkey for the address
+     */
+    scriptpubkey: string;
 }
 

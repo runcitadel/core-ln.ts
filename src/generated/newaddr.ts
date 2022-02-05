@@ -26,13 +26,13 @@ export interface NewaddrRequest {
 }
 
 export interface NewaddrResponse {
-  /**
-   * The bech32 (native segwit) address
-   */
-  bech32?: string;
-  /**
-   * The p2sh-wrapped address
-   */
-  "p2sh-segwit"?: string;
+    /**
+     * The bech32 (native segwit) address
+     */
+    bech32?: string;
+    /**
+     * The p2sh-wrapped address
+     */
+    "p2sh-segwit"?: string;
 }
 

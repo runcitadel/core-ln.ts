@@ -94,60 +94,76 @@ export interface MultifundchannelRequest {
 }
 
 export interface MultifundchannelResponse {
-  /**
-   * The raw transaction which funded the channel
-   */
-  tx: /* hex */ string;
-  /**
-   * The txid of the transaction which funded the channel
-   */
-  txid: /* txid */ string;
-  channel_ids: {
+    channel_ids: ChannelID[];
     /**
-     * The peer we opened the channel with
+     * any peers we failed to open with (if *minchannels* was specified less than the number of
+     * destinations)
      */
-    id: /* pubkey */ string;
+    failed?: Failed[];
     /**
-     * The 0-based output index showing which output funded the channel
+     * The raw transaction which funded the channel
      */
-    outnum: /* u32 */ number;
+    tx: string;
+    /**
+     * The txid of the transaction which funded the channel
+     */
+    txid: string;
+}
+
+export interface ChannelID {
     /**
      * The channel_id of the resulting channel
      */
-    channel_id: /* hex */ string;
+    channel_id: string;
     /**
-     * The raw scriptPubkey which mutual close will go to; only present if *close_to* parameter was specified and peer supports `option_upfront_shutdown_script`
+     * The raw scriptPubkey which mutual close will go to; only present if *close_to* parameter
+     * was specified and peer supports `option_upfront_shutdown_script`
      */
-    close_to?: /* hex */ string;
-  }[];
-  /**
-   * any peers we failed to open with (if *minchannels* was specified less than the number of destinations)
-   */
-  failed?: {
+    close_to?: string;
+    /**
+     * The peer we opened the channel with
+     */
+    id: string;
+    /**
+     * The 0-based output index showing which output funded the channel
+     */
+    outnum: number;
+}
+
+export interface Failed {
+    error: Error;
     /**
      * The peer we failed to open the channel with
      */
-    id: /* pubkey */ string;
+    id: string;
     /**
      * What stage we failed at
      */
-    method: "connect" | "openchannel_init" | "fundchannel_start" | "fundchannel_complete";
-    error: {
-      /**
-       * JSON error code from failing stage
-       */
-      code: number;
-      /**
-       * Message from stage
-       */
-      message: string;
-      /**
-       * Additional error data
-       */
-      data?: {
-        [k: string]: unknown;
-      };
-    };
-  }[];
+    method: Method;
+}
+
+export interface Error {
+    /**
+     * JSON error code from failing stage
+     */
+    code: number;
+    /**
+     * Additional error data
+     */
+    data?: any;
+    /**
+     * Message from stage
+     */
+    message: string;
+}
+
+/**
+ * What stage we failed at
+ */
+export enum Method {
+    Connect = "connect",
+    FundchannelComplete = "fundchannel_complete",
+    FundchannelStart = "fundchannel_start",
+    OpenchannelInit = "openchannel_init",
 }
 

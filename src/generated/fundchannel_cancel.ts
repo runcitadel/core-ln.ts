@@ -24,9 +24,9 @@ export interface FundchannelCancelRequest {
 }
 
 export interface FundchannelCancelResponse {
-  /**
-   * A message indicating it was cancelled by RPC
-   */
-  cancelled: string;
+    /**
+     * A message indicating it was cancelled by RPC
+     */
+    cancelled: string;
 }
 

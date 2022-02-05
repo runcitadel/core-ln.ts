@@ -45,33 +45,33 @@
  * 
 */
 export interface OpenchannelInitRequest {
-  id: string;
-  amount: string | number;
-  initalpsbt: string;
-  commitment_feerate?: string;
-  funding_feerate?: string;
-  announce?: boolean;
-  close_to?: string;
-  request_amt?: string | number;
-  compact_lease?: string;
+  id: /* GUESSED */ string;
+  amount: /* GUESSED */ string;
+  initalpsbt: /* GUESSED */ string;
+  commitment_feerate?: /* GUESSED */ string;
+  funding_feerate?: /* GUESSED */ string;
+  announce?: /* GUESSED */ string;
+  close_to?: /* GUESSED */ string;
+  request_amt?: /* GUESSED */ string;
+  compact_lease?: /* GUESSED */ string;
 }
 
 export interface OpenchannelInitResponse {
-  /**
-   * the channel id of the channel
-   */
-  channel_id: /* hex */ string;
-  /**
-   * the (incomplete) PSBT of the funding transaction
-   */
-  psbt: string;
-  /**
-   * whether the *psbt* is complete
-   */
-  commitments_secured: false;
-  /**
-   * the serial_id of the funding output in the *psbt*
-   */
-  funding_serial: /* u64 */ number;
+    /**
+     * the channel id of the channel
+     */
+    channel_id: string;
+    /**
+     * whether the *psbt* is complete
+     */
+    commitments_secured: boolean;
+    /**
+     * the serial_id of the funding output in the *psbt*
+     */
+    funding_serial: number;
+    /**
+     * the (incomplete) PSBT of the funding transaction
+     */
+    psbt: string;
 }
 

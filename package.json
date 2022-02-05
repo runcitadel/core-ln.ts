@@ -1,6 +1,6 @@
 {
   "name": "@runcitadel/c-lightning-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "packageManager": "yarn@3.1.1",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.1.3",

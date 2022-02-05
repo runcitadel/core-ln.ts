@@ -38,40 +38,43 @@ export interface SendinvoiceRequest {
   quantity?: /* GUESSED */ string;
 }
 
-export type SendinvoiceResponse = {
-  [k: string]: unknown;
-} & {
-  /**
-   * unique label supplied at invoice creation
-   */
-  label: string;
-  /**
-   * description used in the invoice
-   */
-  description: string;
-  /**
-   * the hash of the *payment_preimage* which will prove payment
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * Whether it's paid, unpaid or unpayable
-   */
-  status: "unpaid" | "paid" | "expired";
-  /**
-   * UNIX timestamp of when it will become / became unpayable
-   */
-  expires_at: /* u64 */ number;
-  msatoshi?: {
-    [k: string]: unknown;
-  };
-  /**
-   * the amount required to pay this invoice
-   */
-  amount_msat?: /* msat */ number;
-  /**
-   * the BOLT12 string
-   */
-  bolt12?: string;
-  [k: string]: unknown;
-};
+export interface SendinvoiceResponse {
+    /**
+     * the amount required to pay this invoice
+     */
+    amount_msat?: number;
+    /**
+     * the BOLT12 string
+     */
+    bolt12?: string;
+    /**
+     * description used in the invoice
+     */
+    description: string;
+    /**
+     * UNIX timestamp of when it will become / became unpayable
+     */
+    expires_at: number;
+    /**
+     * unique label supplied at invoice creation
+     */
+    label: string;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * Whether it's paid, unpaid or unpayable
+     */
+    status: Status;
+}
+
+/**
+ * Whether it's paid, unpaid or unpayable
+ */
+export enum Status {
+    Expired = "expired",
+    Paid = "paid",
+    Unpaid = "unpaid",
+}
 

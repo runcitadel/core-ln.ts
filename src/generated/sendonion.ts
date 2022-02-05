@@ -91,55 +91,54 @@ export interface SendonionRequest {
   destination?: /* GUESSED */ string;
 }
 
-export type SendonionResponse = {
-  [k: string]: unknown;
-} & {
-  /**
-   * unique ID for this payment attempt
-   */
-  id: /* u64 */ number;
-  /**
-   * the hash of the *payment_preimage* which will prove payment
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * status of the payment (could be complete if already sent previously)
-   */
-  status: "pending" | "complete";
-  msatoshi?: {
-    [k: string]: unknown;
-  };
-  /**
-   * The amount delivered to destination (if known)
-   */
-  amount_msat?: /* msat */ number;
-  /**
-   * the final destination of the payment if known
-   */
-  destination?: /* pubkey */ string;
-  /**
-   * the UNIX timestamp showing when this payment was initiated
-   */
-  created_at: /* u64 */ number;
-  msatoshi_sent?: {
-    [k: string]: unknown;
-  };
-  /**
-   * The amount sent
-   */
-  amount_sent_msat: /* msat */ number;
-  /**
-   * the label, if given to sendpay
-   */
-  label?: string;
-  /**
-   * the bolt11 string (if supplied)
-   */
-  bolt11?: string;
-  /**
-   * the bolt12 string (if supplied: **experimental-offers** only).
-   */
-  bolt12?: string;
-  [k: string]: unknown;
-};
+export interface SendonionResponse {
+    /**
+     * The amount delivered to destination (if known)
+     */
+    amount_msat?: number;
+    /**
+     * The amount sent
+     */
+    amount_sent_msat: number;
+    /**
+     * the bolt11 string (if supplied)
+     */
+    bolt11?: string;
+    /**
+     * the bolt12 string (if supplied: **experimental-offers** only).
+     */
+    bolt12?: string;
+    /**
+     * the UNIX timestamp showing when this payment was initiated
+     */
+    created_at: number;
+    /**
+     * the final destination of the payment if known
+     */
+    destination?: string;
+    /**
+     * unique ID for this payment attempt
+     */
+    id: number;
+    /**
+     * the label, if given to sendpay
+     */
+    label?: string;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * status of the payment (could be complete if already sent previously)
+     */
+    status: Status;
+}
+
+/**
+ * status of the payment (could be complete if already sent previously)
+ */
+export enum Status {
+    Complete = "complete",
+    Pending = "pending",
+}
 

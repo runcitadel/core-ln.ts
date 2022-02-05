@@ -116,74 +116,87 @@ export interface FunderupdateRequest {
 }
 
 export interface FunderupdateResponse {
-  /**
-   * Summary of the current funding policy e.g. (match 100)
-   */
-  summary: string;
-  /**
-   * Policy funder plugin will use to decide how much captial to commit to a v2 open channel request
-   */
-  policy: "match" | "available" | "fixed";
-  /**
-   * The *policy_mod* is the number or 'modification' to apply to the policy.
-   */
-  policy_mod: /* u32 */ number;
-  /**
-   * Only contribute funds to `option_will_fund` lease requests.
-   */
-  leases_only: boolean;
-  /**
-   * The minimum funding sats that we require from peer to activate our funding policy.
-   */
-  min_their_funding_msat: /* msat */ number;
-  /**
-   * The maximum funding sats that we'll allow from peer to activate our funding policy.
-   */
-  max_their_funding_msat: /* msat */ number;
-  /**
-   * The minimum amount that we will fund a channel open with.
-   */
-  per_channel_min_msat: /* msat */ number;
-  /**
-   * The maximum amount that we will fund a channel open with.
-   */
-  per_channel_max_msat: /* msat */ number;
-  /**
-   * Amount of sats to leave available in the node wallet.
-   */
-  reserve_tank_msat: /* msat */ number;
-  /**
-   * Percentage to fuzz our funding amount by.
-   */
-  fuzz_percent: /* u32 */ number;
-  /**
-   * Percent of opens to consider funding. 100 means we'll consider funding every requested open channel request.
-   */
-  fund_probability: /* u32 */ number;
-  /**
-   * Flat fee to charge for a channel lease.
-   */
-  lease_fee_base_msat?: /* msat */ number;
-  /**
-   * Proportional fee to charge for a channel lease, calculated as 1/10,000th of requested funds.
-   */
-  lease_fee_basis?: /* u32 */ number;
-  /**
-   * Transaction weight the channel opener will pay us for a leased funding transaction.
-   */
-  funding_weight?: /* u32 */ number;
-  /**
-   * Maximum channel_fee_base_msat we'll charge for routing funds leased on this channel.
-   */
-  channel_fee_max_base_msat?: /* msat */ number;
-  /**
-   * Maximum channel_fee_proportional_millitionths we'll charge for routing funds leased on this channel, in thousandths.
-   */
-  channel_fee_max_proportional_thousandths?: /* u32 */ number;
-  /**
-   * Compact description of the channel lease parameters.
-   */
-  compact_lease?: /* hex */ string;
-  [k: string]: unknown;
+    /**
+     * Maximum channel_fee_base_msat we'll charge for routing funds leased on this channel.
+     */
+    channel_fee_max_base_msat?: number;
+    /**
+     * Maximum channel_fee_proportional_millitionths we'll charge for routing funds leased on
+     * this channel, in thousandths.
+     */
+    channel_fee_max_proportional_thousandths?: number;
+    /**
+     * Compact description of the channel lease parameters.
+     */
+    compact_lease?: string;
+    /**
+     * Percent of opens to consider funding. 100 means we'll consider funding every requested
+     * open channel request.
+     */
+    fund_probability: number;
+    /**
+     * Transaction weight the channel opener will pay us for a leased funding transaction.
+     */
+    funding_weight?: number;
+    /**
+     * Percentage to fuzz our funding amount by.
+     */
+    fuzz_percent: number;
+    /**
+     * Flat fee to charge for a channel lease.
+     */
+    lease_fee_base_msat?: number;
+    /**
+     * Proportional fee to charge for a channel lease, calculated as 1/10,000th of requested
+     * funds.
+     */
+    lease_fee_basis?: number;
+    /**
+     * Only contribute funds to `option_will_fund` lease requests.
+     */
+    leases_only: boolean;
+    /**
+     * The maximum funding sats that we'll allow from peer to activate our funding policy.
+     */
+    max_their_funding_msat: number;
+    /**
+     * The minimum funding sats that we require from peer to activate our funding policy.
+     */
+    min_their_funding_msat: number;
+    /**
+     * The maximum amount that we will fund a channel open with.
+     */
+    per_channel_max_msat: number;
+    /**
+     * The minimum amount that we will fund a channel open with.
+     */
+    per_channel_min_msat: number;
+    /**
+     * Policy funder plugin will use to decide how much captial to commit to a v2 open channel
+     * request
+     */
+    policy: Policy;
+    /**
+     * The *policy_mod* is the number or 'modification' to apply to the policy.
+     */
+    policy_mod: number;
+    /**
+     * Amount of sats to leave available in the node wallet.
+     */
+    reserve_tank_msat: number;
+    /**
+     * Summary of the current funding policy e.g. (match 100)
+     */
+    summary: string;
+}
+
+/**
+ * Policy funder plugin will use to decide how much captial to commit to a v2 open channel
+ * request
+ */
+export enum Policy {
+    Available = "available",
+    Fixed = "fixed",
+    Match = "match",
 }
 

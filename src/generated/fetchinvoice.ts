@@ -41,70 +41,81 @@
  * *payer_note* is an optional payer note to include in the fetched invoice.
 */
 export interface FetchinvoiceRequest {
-  offer: string;
-  msatoshi?: string | number;
-  quantity?: string  | number;
-  recurrence_counter?: string  | number;
-  recurrence_start?: string  | number;
-  recurrence_label?: string;
-  timeout?: string  | number;
-  payer_note?: string;
-}
+    offer: string;
+    msatoshi?: string | number;
+    quantity?: string  | number;
+    recurrence_counter?: string  | number;
+    recurrence_start?: string  | number;
+    recurrence_label?: string;
+    timeout?: string  | number;
+    payer_note?: string;
+  }
 
 export interface FetchinvoiceResponse {
-  /**
-   * The BOLT12 invoice we fetched
-   */
-  invoice: string;
-  /**
-   * Summary of changes from offer
-   */
-  changes: {
     /**
-     * extra characters appended to the *description* field.
+     * Summary of changes from offer
      */
-    description_appended?: string;
+    changes: Changes;
+    /**
+     * The BOLT12 invoice we fetched
+     */
+    invoice: string;
+    /**
+     * Only for recurring invoices if the next period is under the *recurrence_limit*
+     */
+    next_period?: NextPeriod;
+}
+
+/**
+ * Summary of changes from offer
+ */
+export interface Changes {
     /**
      * a completely replaced *description* field
      */
     description?: string;
     /**
-     * The *vendor* from the offer, which is missing in the invoice
+     * extra characters appended to the *description* field.
      */
-    vendor_removed?: string;
+    description_appended?: string;
+    /**
+     * the amount, if different from the offer amount multiplied by any *quantity* (or the offer
+     * had no amount, or was not in BTC).
+     */
+    msat?: number;
     /**
      * a completely replaced *vendor* field
      */
     vendor?: string;
     /**
-     * the amount, if different from the offer amount multiplied by any *quantity* (or the offer had no amount, or was not in BTC).
+     * The *vendor* from the offer, which is missing in the invoice
      */
-    msat?: /* msat */ number;
-  };
-  /**
-   * Only for recurring invoices if the next period is under the *recurrence_limit*
-   */
-  next_period?: {
+    vendor_removed?: string;
+}
+
+/**
+ * Only for recurring invoices if the next period is under the *recurrence_limit*
+ */
+export interface NextPeriod {
     /**
      * the index of the next period to fetchinvoice
      */
-    counter: /* u64 */ number;
-    /**
-     * UNIX timestamp that the next period starts
-     */
-    starttime: /* u64 */ number;
+    counter: number;
     /**
      * UNIX timestamp that the next period ends
      */
-    endtime: /* u64 */ number;
-    /**
-     * UNIX timestamp of the earliest time that the next invoice can be fetched
-     */
-    paywindow_start: /* u64 */ number;
+    endtime: number;
     /**
      * UNIX timestamp of the latest time that the next invoice can be fetched
      */
-    paywindow_end: /* u64 */ number;
-  };
+    paywindow_end: number;
+    /**
+     * UNIX timestamp of the earliest time that the next invoice can be fetched
+     */
+    paywindow_start: number;
+    /**
+     * UNIX timestamp that the next period starts
+     */
+    starttime: number;
 }
 

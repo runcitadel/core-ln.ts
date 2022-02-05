@@ -35,18 +35,18 @@ export interface DatastoreRequest {
 }
 
 export interface DatastoreResponse {
-  key: string[];
-  /**
-   * The number of times this has been updated
-   */
-  generation?: /* u64 */ number;
-  /**
-   * The hex data which has been added to the datastore
-   */
-  hex?: /* hex */ string;
-  /**
-   * The data as a string, if it's valid utf-8
-   */
-  string?: string;
+    /**
+     * The number of times this has been updated
+     */
+    generation?: number;
+    /**
+     * The hex data which has been added to the datastore
+     */
+    hex?: string;
+    key:  string[];
+    /**
+     * The data as a string, if it's valid utf-8
+     */
+    string?: string;
 }
 

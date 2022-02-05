@@ -15,9 +15,9 @@ export interface ParsefeerateRequest {
 }
 
 export interface ParsefeerateResponse {
-  /**
-   * Value of *feerate_str* in kilosipa
-   */
-  perkw?: /* u32 */ number;
+    /**
+     * Value of *feerate_str* in kilosipa
+     */
+    perkw?: number;
 }
 

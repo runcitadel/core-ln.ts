@@ -27,15 +27,19 @@ export interface HelpRequest {
 }
 
 export interface HelpResponse {
-  help: {
-    /**
-     * the command
-     */
-    command: string;
+    "format-hint"?: any;
+    help:           Help[];
+}
+
+export interface Help {
     /**
      * the category for this command (useful for grouping)
      */
     category: string;
+    /**
+     * the command
+     */
+    command: string;
     /**
      * a one-line description of the purpose of this command
      */
@@ -44,8 +48,5 @@ export interface HelpResponse {
      * a full description of this command (including whether it's deprecated)
      */
     verbose: string;
-    [k: string]: unknown;
-  }[];
-  "format-hint"?: unknown;
 }
 

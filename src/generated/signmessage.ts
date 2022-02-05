@@ -18,17 +18,18 @@ export interface SignmessageRequest {
 }
 
 export interface SignmessageResponse {
-  /**
-   * The signature
-   */
-  signature: /* hex */ string;
-  /**
-   * The recovery id (0, 1, 2 or 3)
-   */
-  recid: /* hex */ string;
-  /**
-   * *signature* and *recid* encoded in a style compatible with **lnd**'s [SignMessageRequest](https://api.lightning.community/#grpc-request-signmessagerequest)
-   */
-  zbase: string;
+    /**
+     * The recovery id (0, 1, 2 or 3)
+     */
+    recid: string;
+    /**
+     * The signature
+     */
+    signature: string;
+    /**
+     * *signature* and *recid* encoded in a style compatible with **lnd**'s
+     * [SignMessageRequest](https://api.lightning.community/#grpc-request-signmessagerequest)
+     */
+    zbase: string;
 }
 

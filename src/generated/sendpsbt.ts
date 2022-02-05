@@ -30,13 +30,13 @@ export interface SendpsbtRequest {
 }
 
 export interface SendpsbtResponse {
-  /**
-   * The raw transaction which was sent
-   */
-  tx: /* hex */ string;
-  /**
-   * The txid of the **tx**
-   */
-  txid: /* txid */ string;
+    /**
+     * The raw transaction which was sent
+     */
+    tx: string;
+    /**
+     * The txid of the **tx**
+     */
+    txid: string;
 }
 

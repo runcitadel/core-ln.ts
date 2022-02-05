@@ -23,9 +23,9 @@ export interface CheckRequest {
 }
 
 export interface CheckResponse {
-  /**
-   * the *command_to_check* argument
-   */
-  command_to_check: string;
+    /**
+     * the *command_to_check* argument
+     */
+    command_to_check: string;
 }
 

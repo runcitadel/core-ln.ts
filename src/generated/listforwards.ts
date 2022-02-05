@@ -22,12 +22,43 @@ export interface ListforwardsRequest {
 }
 
 export interface ListforwardsResponse {
-  forwards: ({
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  })[];
+    forwards: Forward[];
+}
+
+export interface Forward {
+    /**
+     * the channel that received the HTLC
+     */
+    in_channel: string;
+    /**
+     * the value of the incoming HTLC
+     */
+    in_msat: number;
+    /**
+     * the channel that the HTLC was forwarded to
+     */
+    out_channel?: string;
+    /**
+     * payment hash sought by HTLC
+     */
+    payment_hash?: string;
+    /**
+     * the UNIX timestamp when this was received
+     */
+    received_time: number;
+    /**
+     * still ongoing, completed, failed locally, or failed after forwarding
+     */
+    status: Status;
+}
+
+/**
+ * still ongoing, completed, failed locally, or failed after forwarding
+ */
+export enum Status {
+    Failed = "failed",
+    LocalFailed = "local_failed",
+    Offered = "offered",
+    Settled = "settled",
 }
 

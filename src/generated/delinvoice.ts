@@ -17,44 +17,47 @@ export interface DelinvoiceRequest {
   status: "paid" | "expired" | "unpaid";
 }
 
-export type DelinvoiceResponse = {
-  [k: string]: unknown;
-} & {
-  /**
-   * Unique label given at creation time
-   */
-  label: string;
-  /**
-   * BOLT11 string
-   */
-  bolt11?: string;
-  /**
-   * BOLT12 string
-   */
-  bolt12?: string;
-  msatoshi?: {
-    [k: string]: unknown;
-  };
-  /**
-   * the amount required to pay this invoice
-   */
-  amount_msat?: /* msat */ number;
-  /**
-   * description used in the invoice
-   */
-  description?: string;
-  /**
-   * the hash of the *payment_preimage* which will prove payment
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * State of invoice
-   */
-  status: "paid" | "expired" | "unpaid";
-  /**
-   * UNIX timestamp when invoice expires (or expired)
-   */
-  expires_at: /* u64 */ number;
-  [k: string]: unknown;
-};
+export interface DelinvoiceResponse {
+    /**
+     * the amount required to pay this invoice
+     */
+    amount_msat?: number;
+    /**
+     * BOLT11 string
+     */
+    bolt11?: string;
+    /**
+     * BOLT12 string
+     */
+    bolt12?: string;
+    /**
+     * description used in the invoice
+     */
+    description?: string;
+    /**
+     * UNIX timestamp when invoice expires (or expired)
+     */
+    expires_at: number;
+    /**
+     * Unique label given at creation time
+     */
+    label: string;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * State of invoice
+     */
+    status: Status;
+}
+
+/**
+ * State of invoice
+ */
+export enum Status {
+    Expired = "expired",
+    Paid = "paid",
+    Unpaid = "unpaid",
+}
 

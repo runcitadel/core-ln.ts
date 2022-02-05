@@ -17,12 +17,46 @@ export interface ListpaysRequest {
 }
 
 export interface ListpaysResponse {
-  pays: ({
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  })[];
+    pays: Pay[];
+}
+
+export interface Pay {
+    /**
+     * the bolt11 string (if pay supplied one)
+     */
+    bolt11?: string;
+    /**
+     * the bolt12 string (if supplied for pay: **experimental-offers** only).
+     */
+    bolt12?: string;
+    /**
+     * the UNIX timestamp showing when this payment was initiated
+     */
+    created_at: number;
+    /**
+     * the final destination of the payment if known
+     */
+    destination?: string;
+    /**
+     * the label, if given to sendpay
+     */
+    label?: string;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * status of the payment
+     */
+    status: Status;
+}
+
+/**
+ * status of the payment
+ */
+export enum Status {
+    Complete = "complete",
+    Failed = "failed",
+    Pending = "pending",
 }
 

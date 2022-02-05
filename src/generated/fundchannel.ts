@@ -89,25 +89,26 @@ export interface FundchannelRequest {
 }
 
 export interface FundchannelResponse {
-  /**
-   * The raw transaction which funded the channel
-   */
-  tx: /* hex */ string;
-  /**
-   * The txid of the transaction which funded the channel
-   */
-  txid: /* txid */ string;
-  /**
-   * The 0-based output index showing which output funded the channel
-   */
-  outnum: /* u32 */ number;
-  /**
-   * The channel_id of the resulting channel
-   */
-  channel_id: /* hex */ string;
-  /**
-   * The raw scriptPubkey which mutual close will go to; only present if *close_to* parameter was specified and peer supports `option_upfront_shutdown_script`
-   */
-  close_to?: /* hex */ string;
+    /**
+     * The channel_id of the resulting channel
+     */
+    channel_id: string;
+    /**
+     * The raw scriptPubkey which mutual close will go to; only present if *close_to* parameter
+     * was specified and peer supports `option_upfront_shutdown_script`
+     */
+    close_to?: string;
+    /**
+     * The 0-based output index showing which output funded the channel
+     */
+    outnum: number;
+    /**
+     * The raw transaction which funded the channel
+     */
+    tx: string;
+    /**
+     * The txid of the transaction which funded the channel
+     */
+    txid: string;
 }
 

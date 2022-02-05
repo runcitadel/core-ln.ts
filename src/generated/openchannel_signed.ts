@@ -29,17 +29,17 @@ export interface OpenchannelSignedRequest {
 }
 
 export interface OpenchannelSignedResponse {
-  /**
-   * the channel id of the channel
-   */
-  channel_id: /* hex */ string;
-  /**
-   * the funding transaction
-   */
-  tx: /* hex */ string;
-  /**
-   * The txid of the **tx**
-   */
-  txid: /* txid */ string;
+    /**
+     * the channel id of the channel
+     */
+    channel_id: string;
+    /**
+     * the funding transaction
+     */
+    tx: string;
+    /**
+     * The txid of the **tx**
+     */
+    txid: string;
 }
 

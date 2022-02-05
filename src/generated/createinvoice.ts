@@ -29,61 +29,71 @@ export interface CreateinvoiceRequest {
 }
 
 export interface CreateinvoiceResponse {
-  /**
-   * the label for the invoice
-   */
-  label: string;
-  /**
-   * the bolt11 string (always present unless **bolt12** is)
-   */
-  bolt11?: string;
-  /**
-   * the bolt12 string instead of **bolt11** (**experimental-offers** only)
-   */
-  bolt12?: string;
-  /**
-   * the hash of the *payment_preimage* which will prove payment
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * The amount of the invoice (if it has one)
-   */
-  amount_msat?: /* msat */ number;
-  /**
-   * Whether it has been paid, or can no longer be paid
-   */
-  status: "paid" | "expired" | "unpaid";
-  /**
-   * Description extracted from **bolt11** or **bolt12**
-   */
-  description: string;
-  /**
-   * UNIX timestamp of when invoice expires (or expired)
-   */
-  expires_at: /* u64 */ number;
-  /**
-   * Incrementing id for when this was paid (**status** *paid* only)
-   */
-  pay_index?: /* u64 */ number;
-  /**
-   * Amount actually received (**status** *paid* only)
-   */
-  amount_received_msat?: /* msat */ number;
-  /**
-   * UNIX timestamp of when invoice was paid (**status** *paid* only)
-   */
-  paid_at?: /* u64 */ number;
-  /**
-   * the proof of payment: SHA256 of this **payment_hash**
-   */
-  payment_preimage?: /* hex */ string;
-  /**
-   * the *id* of our offer which created this invoice (**experimental-offers** only).
-   */
-  local_offer_id?: /* hex */ string;
-  /**
-   * the optional *payer_note* from invoice_request which created this invoice (**experimental-offers** only).
-   */
-  payer_note?: string;
+    /**
+     * The amount of the invoice (if it has one)
+     */
+    amount_msat?: number;
+    /**
+     * Amount actually received (**status** *paid* only)
+     */
+    amount_received_msat?: number;
+    /**
+     * the bolt11 string (always present unless **bolt12** is)
+     */
+    bolt11?: string;
+    /**
+     * the bolt12 string instead of **bolt11** (**experimental-offers** only)
+     */
+    bolt12?: string;
+    /**
+     * Description extracted from **bolt11** or **bolt12**
+     */
+    description: string;
+    /**
+     * UNIX timestamp of when invoice expires (or expired)
+     */
+    expires_at: number;
+    /**
+     * the label for the invoice
+     */
+    label: string;
+    /**
+     * the *id* of our offer which created this invoice (**experimental-offers** only).
+     */
+    local_offer_id?: string;
+    /**
+     * UNIX timestamp of when invoice was paid (**status** *paid* only)
+     */
+    paid_at?: number;
+    /**
+     * Incrementing id for when this was paid (**status** *paid* only)
+     */
+    pay_index?: number;
+    /**
+     * the optional *payer_note* from invoice_request which created this invoice
+     * (**experimental-offers** only).
+     */
+    payer_note?: string;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * the proof of payment: SHA256 of this **payment_hash**
+     */
+    payment_preimage?: string;
+    /**
+     * Whether it has been paid, or can no longer be paid
+     */
+    status: Status;
+}
+
+/**
+ * Whether it has been paid, or can no longer be paid
+ */
+export enum Status {
+    Expired = "expired",
+    Paid = "paid",
+    Unpaid = "unpaid",
 }
 

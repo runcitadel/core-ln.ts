@@ -10,68 +10,85 @@
  * specified by the BOLT 11 specification.
 */
 export interface DecodepayRequest {
-  bolt11: string;
-  description?: string;
+    bolt11: string;
+    description?: string;
 }
 
 export interface DecodepayResponse {
-  /**
-   * the BIP173 name for the currency
-   */
-  currency: string;
-  /**
-   * the UNIX-style timestamp of the invoice
-   */
-  created_at: /* u64 */ number;
-  /**
-   * the number of seconds this is valid after *timestamp*
-   */
-  expiry: /* u64 */ number;
-  /**
-   * the public key of the recipient
-   */
-  payee: /* pubkey */ string;
-  msatoshi?: /* u64 */ number;
-  /**
-   * Amount the invoice asked for
-   */
-  amount_msat?: /* msat */ number;
-  /**
-   * the hash of the *payment_preimage*
-   */
-  payment_hash: /* hex */ string;
-  /**
-   * signature of the *payee* on this invoice
-   */
-  signature: /* signature */ string;
-  /**
-   * the description of the purpose of the purchase
-   */
-  description?: string;
-  /**
-   * the hash of the description, in place of *description*
-   */
-  description_hash?: /* hex */ string;
-  /**
-   * the minimum CLTV delay for the final node
-   */
-  min_final_cltv_expiry: /* u32 */ number;
-  /**
-   * the secret to hand to the payee node
-   */
-  payment_secret?: /* hex */ string;
-  /**
-   * the features bitmap for this invoice
-   */
-  features?: /* hex */ string;
-  /**
-   * onchain addresses
-   */
-  fallbacks?: {
     /**
-     * the address type (if known)
+     * Amount the invoice asked for
      */
-    type: "P2PKH" | "P2SH" | "P2WPKH" | "P2WSH";
+    amount_msat?: number;
+    /**
+     * the UNIX-style timestamp of the invoice
+     */
+    created_at: number;
+    /**
+     * the BIP173 name for the currency
+     */
+    currency: string;
+    /**
+     * the description of the purpose of the purchase
+     */
+    description?: string;
+    /**
+     * the hash of the description, in place of *description*
+     */
+    description_hash?: string;
+    /**
+     * the number of seconds this is valid after *timestamp*
+     */
+    expiry: number;
+    /**
+     * Any extra fields we didn't know how to parse
+     */
+    extra?: Extra[];
+    /**
+     * onchain addresses
+     */
+    fallbacks?: Fallback[];
+    /**
+     * the features bitmap for this invoice
+     */
+    features?: string;
+    /**
+     * the minimum CLTV delay for the final node
+     */
+    min_final_cltv_expiry: number;
+    /**
+     * the public key of the recipient
+     */
+    payee: string;
+    /**
+     * the hash of the *payment_preimage*
+     */
+    payment_hash: string;
+    /**
+     * the secret to hand to the payee node
+     */
+    payment_secret?: string;
+    /**
+     * Route hints to the *payee*
+     */
+    routes?: Array<Route[]>;
+    /**
+     * signature of the *payee* on this invoice
+     */
+    signature: string;
+}
+
+export interface Extra {
+    /**
+     * The bech32 data for this field
+     */
+    data: string;
+    /**
+     * The bech32 letter which identifies this field
+     */
+    tag: string;
+}
+
+export interface Fallback {
     /**
      * the address in appropriate format for *type*
      */
@@ -79,45 +96,46 @@ export interface DecodepayResponse {
     /**
      * Raw encoded address
      */
-    hex: /* hex */ string;
-  }[];
-  /**
-   * Route hints to the *payee*
-   */
-  routes?: {
+    hex: string;
     /**
-     * the public key of the node
+     * the address type (if known)
      */
-    pubkey: /* pubkey */ string;
-    /**
-     * a channel to the next peer
-     */
-    short_channel_id: /* short_channel_id */ string;
-    /**
-     * the base fee for payments
-     */
-    fee_base_msat: /* u32 */ number;
-    /**
-     * the parts-per-million fee for payments
-     */
-    fee_proportional_millionths: /* u32 */ number;
+    type: Type;
+}
+
+/**
+ * the address type (if known)
+ */
+export enum Type {
+    P2Pkh = "P2PKH",
+    P2Sh = "P2SH",
+    P2Wpkh = "P2WPKH",
+    P2Wsh = "P2WSH",
+}
+
+/**
+ * hops in the route
+ */
+export interface Route {
     /**
      * the CLTV delta across this hop
      */
-    cltv_expiry_delta: /* u32 */ number;
-  }[][];
-  /**
-   * Any extra fields we didn't know how to parse
-   */
-  extra?: {
+    cltv_expiry_delta: number;
     /**
-     * The bech32 letter which identifies this field
+     * the base fee for payments
      */
-    tag: string;
+    fee_base_msat: number;
     /**
-     * The bech32 data for this field
+     * the parts-per-million fee for payments
      */
-    data: string;
-  }[];
+    fee_proportional_millionths: number;
+    /**
+     * the public key of the node
+     */
+    pubkey: string;
+    /**
+     * a channel to the next peer
+     */
+    short_channel_id: string;
 }
 

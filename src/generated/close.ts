@@ -59,33 +59,6 @@
  * *force_lease_closed* if the channel has funds leased to the peer
  * (option_will_fund), we prevent initiation of a mutual close
  * unless this flag is passed in. Defaults to false.
- * 
- * *feerange* is an optional array [ *min*, *max* ], indicating the
- * minimum and maximum feerates to offer: the peer will obey these if it
- * supports the quick-close protocol.  *slow* and *unilateral_close* are
- * the defaults.
- * 
- * Rates are one of the strings *urgent* (aim for next block), *normal*
- * (next 4 blocks or so) or *slow* (next 100 blocks or so) to use
- * lightningd's internal estimates, or one of the names from
- * lightning-feerates(7).  Otherwise, they can be numbers with
- * an optional suffix: *perkw* means the number is interpreted as
- * satoshi-per-kilosipa (weight), and *perkb* means it is interpreted
- * bitcoind-style as satoshi-per-kilobyte. Omitting the suffix is
- * equivalent to *perkb*.
- * 
- * Note that the maximum fee will be capped at the final commitment
- * transaction fee (unless the experimental anchor-outputs option is
- * negotiated).
- * 
- * The peer needs to be live and connected in order to negotiate a mutual
- * close. The default of unilaterally closing after 48 hours is usually a
- * reasonable indication that you can no longer contact the peer.
- * 
- * NOTIFICATIONS
- * -------------
- * Notifications may be returned indicating what is going on, especially
- * if the peer is offline and we are waiting.
 */
 export interface CloseRequest {
   id: string;
@@ -117,10 +90,20 @@ export interface CloseRequest {
 }
 
 export interface CloseResponse {
-  /**
-   * Whether we successfully negotiated a mutual close, closed without them, or discarded not-yet-opened channel
-   */
-  type: "mutual" | "unilateral" | "unopened";
-  [k: string]: unknown;
+    /**
+     * Whether we successfully negotiated a mutual close, closed without them, or discarded
+     * not-yet-opened channel
+     */
+    type: Type;
+}
+
+/**
+ * Whether we successfully negotiated a mutual close, closed without them, or discarded
+ * not-yet-opened channel
+ */
+export enum Type {
+    Mutual = "mutual",
+    Unilateral = "unilateral",
+    Unopened = "unopened",
 }
 

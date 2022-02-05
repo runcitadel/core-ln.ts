@@ -31,67 +31,67 @@ export interface ListchannelsRequest {
 }
 
 export interface ListchannelsResponse {
-  channels: {
+    channels: Channel[];
+}
+
+export interface Channel {
     /**
-     * the source node
+     * true unless source has disabled it, or it's a local channel and the peer is disconnected
+     * or it's still opening or closing
      */
-    source: /* pubkey */ string;
+    active: boolean;
+    /**
+     * the total capacity of this channel (always a whole number of satoshis)
+     */
+    amount_msat: number;
+    /**
+     * Base fee changed by *source* to use this channel
+     */
+    base_fee_millisatoshi: number;
+    /**
+     * as defined by BOLT #7
+     */
+    channel_flags: number;
+    /**
+     * The number of blocks delay required by *source* to use this channel
+     */
+    delay: number;
     /**
      * the destination node
      */
-    destination: /* pubkey */ string;
+    destination: string;
+    /**
+     * BOLT #9 features bitmap for this channel
+     */
+    features: string;
+    /**
+     * Proportional fee changed by *source* to use this channel, in parts-per-million
+     */
+    fee_per_millionth: number;
+    /**
+     * The largest payment *source* will allow via this channel
+     */
+    htlc_maximum_msat?: number;
+    /**
+     * The smallest payment *source* will allow via this channel
+     */
+    htlc_minimum_msat: number;
+    /**
+     * UNIX timestamp on the last channel_update from *source*
+     */
+    last_update: number;
+    /**
+     * as defined by BOLT #7
+     */
+    message_flags: number;
     /**
      * true if this is announced (otherwise it must be our channel)
      */
     public: boolean;
     /**
-     * the total capacity of this channel (always a whole number of satoshis)
+     * the source node
      */
-    amount_msat: /* msat */ number;
-    /**
-     * as defined by BOLT #7
-     */
-    message_flags: /* u8 */ number;
-    /**
-     * as defined by BOLT #7
-     */
-    channel_flags: /* u8 */ number;
-    /**
-     * true unless source has disabled it, or it's a local channel and the peer is disconnected or it's still opening or closing
-     */
-    active: boolean;
-    /**
-     * UNIX timestamp on the last channel_update from *source*
-     */
-    last_update: /* u32 */ number;
-    /**
-     * Base fee changed by *source* to use this channel
-     */
-    base_fee_millisatoshi: /* u32 */ number;
-    /**
-     * Proportional fee changed by *source* to use this channel, in parts-per-million
-     */
-    fee_per_millionth: /* u32 */ number;
-    /**
-     * The number of blocks delay required by *source* to use this channel
-     */
-    delay: /* u32 */ number;
-    /**
-     * The smallest payment *source* will allow via this channel
-     */
-    htlc_minimum_msat: /* msat */ number;
-    satoshis?: {
-      [k: string]: unknown;
-    };
-    /**
-     * The largest payment *source* will allow via this channel
-     */
-    htlc_maximum_msat?: /* msat */ number;
-    /**
-     * BOLT #9 features bitmap for this channel
-     */
-    features: /* hex */ string;
-    [k: string]: unknown;
-  }[];
+    source:           string;
+    short_channel_id: any;
 }
 

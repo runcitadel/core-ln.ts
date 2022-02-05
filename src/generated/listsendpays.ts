@@ -21,12 +21,62 @@ export interface ListsendpaysRequest {
 }
 
 export interface ListsendpaysResponse {
-  payments: ({
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  } & {
-    [k: string]: unknown;
-  })[];
+    payments: Payment[];
+}
+
+export interface Payment {
+    /**
+     * The amount delivered to destination (if known)
+     */
+    amount_msat?: number;
+    /**
+     * The amount sent
+     */
+    amount_sent_msat: number;
+    /**
+     * the bolt11 string (if pay supplied one)
+     */
+    bolt11?: string;
+    /**
+     * the bolt12 string (if supplied for pay: **experimental-offers** only).
+     */
+    bolt12?: string;
+    /**
+     * the UNIX timestamp showing when this payment was initiated
+     */
+    created_at: number;
+    /**
+     * the final destination of the payment if known
+     */
+    destination?: string;
+    /**
+     * Grouping key to disambiguate multiple attempts to pay an invoice or the same payment_hash
+     */
+    groupid?: number;
+    /**
+     * unique ID for this payment attempt
+     */
+    id: number;
+    /**
+     * the label, if given to sendpay
+     */
+    label?: string;
+    /**
+     * the hash of the *payment_preimage* which will prove payment
+     */
+    payment_hash: string;
+    /**
+     * status of the payment
+     */
+    status: Status;
+}
+
+/**
+ * status of the payment
+ */
+export enum Status {
+    Complete = "complete",
+    Failed = "failed",
+    Pending = "pending",
 }
 

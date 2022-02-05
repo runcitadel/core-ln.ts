@@ -35,13 +35,21 @@ export interface PluginRequest {
   second_parameter?: /* GUESSED */ string;
 }
 
-export type PluginResponse = {
-  [k: string]: unknown;
-} & {
-  /**
-   * the subcommand this is responding to
-   */
-  command: "start" | "stop" | "rescan" | "startdir" | "list";
-  [k: string]: unknown;
-};
+export interface PluginResponse {
+    /**
+     * the subcommand this is responding to
+     */
+    command: Command;
+}
+
+/**
+ * the subcommand this is responding to
+ */
+export enum Command {
+    List = "list",
+    Rescan = "rescan",
+    Start = "start",
+    Startdir = "startdir",
+    Stop = "stop",
+}
 

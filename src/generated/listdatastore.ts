@@ -17,20 +17,22 @@ export interface ListdatastoreRequest {
 }
 
 export interface ListdatastoreResponse {
-  datastore: {
-    key: string[];
+    datastore: Datastore[];
+}
+
+export interface Datastore {
     /**
      * The number of times this has been updated
      */
-    generation?: /* u64 */ number;
+    generation?: number;
     /**
      * The hex data from the datastore
      */
-    hex?: /* hex */ string;
+    hex?: string;
+    key:  string[];
     /**
      * The data as a string, if it's valid utf-8
      */
     string?: string;
-  }[];
 }
 
