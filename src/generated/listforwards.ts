@@ -50,6 +50,14 @@ export interface Forward {
      * still ongoing, completed, failed locally, or failed after forwarding
      */
     status: Status;
+    /**
+     * the amount this paid in fees
+     */
+    fee_msat?: number;
+    /**
+     * the amount we sent out the *out_channel*
+     */
+    out_msat?: number;
 }
 
 /**

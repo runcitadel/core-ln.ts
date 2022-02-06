@@ -26,8 +26,8 @@
  * ```
 */
 export interface DelpayRequest {
-  payment_hash: string;
-  status: "failed" | "complete";
+    payment_hash: string;
+    status: "failed" | "complete";
 }
 
 export interface DelpayResponse {
