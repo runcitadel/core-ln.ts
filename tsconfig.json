@@ -13,21 +13,9 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "baseUrl": ".",
-        "paths": {
-            "platform/*": ["src/platform/node/*"]
-        },
         "declarationDir": "dist",
-        "plugins": [
-            {
-                "transform": "@zerollup/ts-transform-paths",
-                "exclude": ["*"]
-            }
-        ],
     },
     "include": [
         "src"
     ],
-    "exclude": [
-        "src/platform/browser"
-    ]
 }
