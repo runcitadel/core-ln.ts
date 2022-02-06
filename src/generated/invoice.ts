@@ -65,14 +65,14 @@
  * Otherwise, it's set to the parameter **cltv-final**.
 */
 export interface InvoiceRequest {
-  msatoshi: /* GUESSED */ string;
-  label: /* GUESSED */ string;
-  description: /* GUESSED */ string;
-  expiry?: /* GUESSED */ string;
-  fallbacks?: /* GUESSED */ string;
-  preimage?: /* GUESSED */ string;
-  exposeprivatechannels?: /* GUESSED */ string;
-  cltv?: /* GUESSED */ string;
+  msatoshi: string | number;
+  label: string;
+  description: string;
+  expiry?: number | string;
+  fallbacks?: string[];
+  preimage?: string;
+  exposeprivatechannels?: boolean;
+  cltv?: number | string;
 }
 
 export interface InvoiceResponse {
