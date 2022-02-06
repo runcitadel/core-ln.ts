@@ -1,5 +1,4 @@
 import { terser } from "rollup-plugin-terser";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
 import ts from "rollup-plugin-ts";
 
 export default {
@@ -10,6 +9,12 @@ export default {
       format: "esm",
     },
   ],
-  plugins: [ts(), nodeResolve(), terser()],
-  external: ["undici"],
+  plugins: [ts(), terser({
+    mangle: {
+      properties: {
+        regex: /^_/,
+      },
+    },
+  })],
+  external: ["net"],
 };
