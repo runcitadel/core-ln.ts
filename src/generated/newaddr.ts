@@ -22,17 +22,18 @@
  * If no *addresstype* is specified the address generated is a *bech32* address.
 */
 export interface NewaddrRequest {
-  addresstype?: /* GUESSED */ string;
+  addresstype?: "p2sh-segwit" | "bech32";
 }
 
-export interface NewaddrResponse {
+export type NewaddrResponse = {
     /**
      * The bech32 (native segwit) address
      */
-    bech32?: string;
+    bech32: string;
+} | {
     /**
      * The p2sh-wrapped address
      */
-    "p2sh-segwit"?: string;
+    "p2sh-segwit": string;
 }
 

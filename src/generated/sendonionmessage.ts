@@ -21,8 +21,11 @@
  * value, optional for final element).
 */
 export interface SendonionmessageRequest {
-  hops: /* GUESSED */ string;
-  reply_path?: /* GUESSED */ string;
+  hops: string[];
+  reply_path?: {
+    blinding: string;
+    path?: string[];
+  }
 }
 
 export interface SendonionmessageResponse {

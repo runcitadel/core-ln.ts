@@ -271,14 +271,14 @@
  * factor for larger amounts, and is basically ignored for tiny ones.
 */
 export interface GetrouteRequest {
-  id: /* GUESSED */ string;
-  msatoshi: /* GUESSED */ string;
-  riskfactor: /* GUESSED */ string;
-  cltv?: /* GUESSED */ string;
-  fromid?: /* GUESSED */ string;
-  fuzzpercent?: /* GUESSED */ string;
-  exclude?: /* GUESSED */ string;
-  maxhops?: /* GUESSED */ string;
+  id: string;
+  msatoshi: number | string;
+  riskfactor: number | string;
+  cltv?: number | string;
+  fromid?: string;
+  fuzzpercent?: number | string;
+  exclude?: string[];
+  maxhops?: number | string;
 }
 
 export interface GetrouteResponse {

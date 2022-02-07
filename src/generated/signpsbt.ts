@@ -33,8 +33,8 @@
  * ```
 */
 export interface SignpsbtRequest {
-  psbt: /* GUESSED */ string;
-  signonly?: /* GUESSED */ string;
+  psbt: string;
+  signonly?: (string | number)[];
 }
 
 export interface SignpsbtResponse {

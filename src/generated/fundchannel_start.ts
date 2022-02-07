@@ -36,9 +36,9 @@
  * transaction before that can lead to unrecoverable loss of funds.
 */
 export interface FundchannelStartRequest {
-  id: /* GUESSED */ string;
-  amount: /* GUESSED */ string;
-  feerate?: /* GUESSED */ string;
+  id: string;
+  amount: number | string;
+  feerate?: number | string;
 }
 
 export interface FundchannelStartResponse {

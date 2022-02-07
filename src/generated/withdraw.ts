@@ -35,11 +35,11 @@
  * of "txid:vout". These must be drawn from the node's available UTXO set.
 */
 export interface WithdrawRequest {
-  destination: /* GUESSED */ string;
-  satoshi: /* GUESSED */ string;
-  feerate?: /* GUESSED */ string;
-  minconf?: /* GUESSED */ string;
-  utxos?: /* GUESSED */ string;
+  destination: string;
+  satoshi: number | string;
+  feerate?: number | string;
+  minconf?: number | string;
+  utxos?: string[];
 }
 
 export interface WithdrawResponse {
