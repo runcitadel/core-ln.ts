@@ -76,15 +76,15 @@
  * 	lightning-cli -k fundchannel id=03f...fc1 amount=all feerate=normal utxos='["bcc1...39c:0"]'
 */
 export interface FundchannelRequest {
-  id: /* GUESSED */ string;
-  amount: /* GUESSED */ string;
-  feerate?: /* GUESSED */ string;
-  announce?: /* GUESSED */ string;
-  minconf?: /* GUESSED */ string;
-  utxos?: /* GUESSED */ string;
-  push_msat?: /* GUESSED */ string;
-  close_to?: /* GUESSED */ string;
-  request_amt?: /* GUESSED */ string;
+  id: string;
+  amount: number | string;
+  feerate?: "urgent"  | "normal" | "slow" | number | string;
+  announce?: boolean;
+  minconf?: number | string;
+  utxos?: string[];
+  push_msat?: number | string;
+  close_to?: string;
+  request_amt?: number | string;
   compact_lease?: /* GUESSED */ string;
 }
 
