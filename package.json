@@ -16,7 +16,7 @@
   },
   "type": "module",
   "scripts": {
-    "lint": "eslint --fix . && prettier -w \"src/**/*.ts\"",
+    "lint": "eslint --fix src && prettier -w \"src/**/*.ts\"",
     "build": "rm -rf dist && rollup -c",
     "docs": "typedoc --out docs src/index.ts",
     "prepublish": "yarn build"
