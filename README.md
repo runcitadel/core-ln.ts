@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="300" src="https://github.com/runcitadel/c-lightning-client/raw/main/c-lightning-ts-dark.png">
+  <img width="700" src="https://github.com/runcitadel/c-lightning-client/raw/main/c-lightning-ts-dark.png">
   <h1 align="center">c-lightning.ts</h1>
 </p>
 
