@@ -96,7 +96,15 @@ export interface Output {
      * the ID of the spendable transaction
      */
     txid:     string;
-    reserved: any;
+    reserved?: boolean;
+    /**
+     * Block height where reservation will expire
+     */
+    reserved_to_block?: number;
+    /**
+     * Block height where it was confirmed
+     */
+    blockheight?: number;
 }
 
 export enum Status {

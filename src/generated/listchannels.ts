@@ -92,6 +92,6 @@ export interface Channel {
      * the source node
      */
     source:           string;
-    short_channel_id: any;
+    short_channel_id: string;
 }
 
