@@ -48,7 +48,6 @@ import type { ListsendpaysRequest, ListsendpaysResponse } from "./listsendpays";
 import type { ListtransactionsRequest, ListtransactionsResponse } from "./listtransactions";
 import type { MultifundchannelRequest, MultifundchannelResponse } from "./multifundchannel";
 import type { MultiwithdrawRequest, MultiwithdrawResponse } from "./multiwithdraw";
-import type { NewaddrRequest, NewaddrResponse } from "./newaddr";
 import type { NotificationsRequest, NotificationsResponse } from "./notifications";
 import type { OfferRequest, OfferResponse } from "./offer";
 import type { OfferoutRequest, OfferoutResponse } from "./offerout";
@@ -1733,8 +1732,15 @@ export default class RPCClient {
    * 
    * If no *addresstype* is specified the address generated is a *bech32* address.
   */
-  newaddr(payload: NewaddrRequest = {}): Promise<NewaddrResponse> {
-    return this._call<NewaddrResponse>("newaddr", payload);
+  async newaddr(addressType: "p2sh-segwit" | "bech32" = "bech32"): Promise<string> {
+    return (
+      await this._call<{
+        bech32: string;
+        "p2sh-segwit": string;
+      }>("newaddr", {
+        addresstype: addressType,
+      })
+    )[addressType];
   }
     
   /**
