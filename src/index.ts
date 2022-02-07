@@ -48,7 +48,6 @@ export type { ListsendpaysRequest, ListsendpaysResponse } from "./generated/list
 export type { ListtransactionsRequest, ListtransactionsResponse } from "./generated/listtransactions";
 export type { MultifundchannelRequest, MultifundchannelResponse } from "./generated/multifundchannel";
 export type { MultiwithdrawRequest, MultiwithdrawResponse } from "./generated/multiwithdraw";
-export type { NewaddrRequest, NewaddrResponse } from "./generated/newaddr";
 export type { NotificationsRequest, NotificationsResponse } from "./generated/notifications";
 export type { OfferRequest, OfferResponse } from "./generated/offer";
 export type { OfferoutRequest, OfferoutResponse } from "./generated/offerout";
