@@ -83,18 +83,24 @@ import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay";
 import type { WithdrawRequest, WithdrawResponse } from "./withdraw";
 
 export default class RPCClient {
-  constructor(private _socketPath: string) {}
+  private _call_id = 0;
+  private _client_id;
+  constructor(private _socketPath: string) {
+    this._client_id = Math.round(Math.random() * 10000000000000000) * 100000;
+  }
   private _call<ReturnType = unknown>(
     method: string,
     params: unknown = null
   ): Promise<ReturnType> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const client = net.createConnection(this._socketPath);
       const payload = {
+        jsonrpc: "2.0",
         method: method,
         params: params,
-        id: 0,
+        id: this._client_id + this._call_id,
       };
+      this._call_id++;
       client.write(JSON.stringify(payload));
 
       client.on("data", (data) => {
