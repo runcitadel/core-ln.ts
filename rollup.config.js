@@ -30,5 +30,28 @@ export default [
       dts(),
     ],
     external: ["events"],
-  }
+  },
+  {
+    input: "src/index.ts",
+    output: [
+      {
+        dir: "cjs",
+        format: "cjs",
+        exports: "named"
+      },
+    ],
+    plugins: [
+      typescript({
+        declarationDir: "cjs"
+      }),
+      terser({
+        mangle: {
+          properties: {
+            regex: /^_/,
+          },
+        },
+      })
+    ],
+    external: ["net", "events", "path"],
+  },
 ];

@@ -25,4 +25,5 @@ coverage
 dist
 #*.cjs
 docs
+cjs
 
