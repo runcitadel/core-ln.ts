@@ -73,11 +73,11 @@ export interface KeysendResponse {
     /**
      * Amount the recipient received
      */
-    amount_msat: number;
+    amount_msat: bigint;
     /**
      * Total amount we sent (including fees)
      */
-    amount_sent_msat: number;
+    amount_sent_msat: bigint;
     /**
      * the UNIX timestamp showing when this payment was initiated
      */

@@ -289,7 +289,7 @@ export interface Route {
     /**
      * The amount expected by the node at the end of this hop
      */
-    amount_msat: number;
+    amount_msat: bigint;
     /**
      * The channel joining these nodes
      */

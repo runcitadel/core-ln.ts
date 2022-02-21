@@ -36,7 +36,7 @@ export interface WaitanyinvoiceResponse {
     /**
      * the amount required to pay this invoice
      */
-    amount_msat?: number;
+    amount_msat?: bigint;
     /**
      * the BOLT11 string (always present unless *bolt12* is)
      */

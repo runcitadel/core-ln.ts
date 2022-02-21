@@ -82,7 +82,7 @@ export interface Changes {
      * the amount, if different from the offer amount multiplied by any *quantity* (or the offer
      * had no amount, or was not in BTC).
      */
-    msat?: number;
+    msat?: bigint;
     /**
      * a completely replaced *vendor* field
      */

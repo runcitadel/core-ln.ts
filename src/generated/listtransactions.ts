@@ -121,7 +121,7 @@ export interface Output {
     /**
      * the amount of the output
      */
-    msat: number;
+    msat: bigint;
     /**
      * the scriptPubKey
      */

@@ -16,8 +16,8 @@ export interface DecodeRequest {
 }
 
 export type DecodeResponse =
-  | { type: string; valid: false }
-  | {
+| { type: string; valid: false }
+| {
       type: "bolt12 offer";
       valid: true;
       /**
@@ -55,7 +55,7 @@ export type DecodeResponse =
       /**
        * the amount in bitcoin (if specified, and no *currency*)
        */
-      amount_msat?: /* msat */ number;
+      amount_msat?: /* msat */ bigint;
       /**
        * present if this is a send_invoice offer
        */
@@ -179,7 +179,7 @@ export type DecodeResponse =
       /**
        * the amount in bitcoin
        */
-      amount_msat: /* msat */ number;
+      amount_msat: /* msat */ bigint;
       /**
        * present if this offer was a send_invoice offer
        */
@@ -298,7 +298,7 @@ export type DecodeResponse =
       /**
        * the amount in bitcoin
        */
-      amount_msat?: /* msat */ number;
+      amount_msat?: /* msat */ bigint;
       /**
        * the array of feature bits for this offer
        */
@@ -351,7 +351,7 @@ export type DecodeResponse =
       /**
        * Amount the invoice asked for
        */
-      amount_msat?: /* msat */ number;
+      amount_msat?: /* msat */ bigint;
       /**
        * the hash of the *payment_preimage*
        */

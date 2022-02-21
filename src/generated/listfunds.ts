@@ -26,7 +26,7 @@ export interface Channel {
     /**
      * total channel value
      */
-    amount_msat: number;
+    amount_msat: bigint;
     /**
      * whether the channel peer is connected
      */
@@ -42,7 +42,7 @@ export interface Channel {
     /**
      * available satoshis on our node’s end of the channel
      */
-    our_amount_msat: number;
+    our_amount_msat: bigint;
     /**
      * the peer with which the channel is opened
      */
@@ -78,7 +78,7 @@ export interface Output {
     /**
      * the amount of the output
      */
-    amount_msat: number;
+    amount_msat: bigint;
     /**
      * the index within *txid*
      */

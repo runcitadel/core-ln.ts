@@ -119,7 +119,7 @@ export interface FunderupdateResponse {
     /**
      * Maximum channel_fee_base_msat we'll charge for routing funds leased on this channel.
      */
-    channel_fee_max_base_msat?: number;
+    channel_fee_max_base_msat?: bigint;
     /**
      * Maximum channel_fee_proportional_millitionths we'll charge for routing funds leased on
      * this channel, in thousandths.
@@ -145,7 +145,7 @@ export interface FunderupdateResponse {
     /**
      * Flat fee to charge for a channel lease.
      */
-    lease_fee_base_msat?: number;
+    lease_fee_base_msat?: bigint;
     /**
      * Proportional fee to charge for a channel lease, calculated as 1/10,000th of requested
      * funds.
@@ -158,19 +158,19 @@ export interface FunderupdateResponse {
     /**
      * The maximum funding sats that we'll allow from peer to activate our funding policy.
      */
-    max_their_funding_msat: number;
+    max_their_funding_msat: bigint;
     /**
      * The minimum funding sats that we require from peer to activate our funding policy.
      */
-    min_their_funding_msat: number;
+    min_their_funding_msat: bigint;
     /**
      * The maximum amount that we will fund a channel open with.
      */
-    per_channel_max_msat: number;
+    per_channel_max_msat: bigint;
     /**
      * The minimum amount that we will fund a channel open with.
      */
-    per_channel_min_msat: number;
+    per_channel_min_msat: bigint;
     /**
      * Policy funder plugin will use to decide how much captial to commit to a v2 open channel
      * request
@@ -183,7 +183,7 @@ export interface FunderupdateResponse {
     /**
      * Amount of sats to leave available in the node wallet.
      */
-    reserve_tank_msat: number;
+    reserve_tank_msat: bigint;
     /**
      * Summary of the current funding policy e.g. (match 100)
      */

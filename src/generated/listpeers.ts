@@ -73,12 +73,12 @@ export interface Channel {
     /**
      * minimum amount for an output on the channel transactions
      */
-    dust_limit_msat?: number;
+    dust_limit_msat?: bigint;
     features:         Feature[];
     /**
      * amount we charge to use the channel
      */
-    fee_base_msat?: number;
+    fee_base_msat?: bigint;
     /**
      * amount we charge to use the channel in parts-per-million
      */
@@ -99,11 +99,11 @@ export interface Channel {
     /**
      * Total amount of successful incoming payment attempts
      */
-    in_fulfilled_msat?: number;
+    in_fulfilled_msat?: bigint;
     /**
      * Total amount of incoming payment attempts
      */
-    in_offered_msat?: number;
+    in_offered_msat?: bigint;
     /**
      * Number of successful incoming payment attempts
      */
@@ -131,19 +131,19 @@ export interface Channel {
     /**
      * most amount owed to us ever
      */
-    max_to_us_msat?: number;
+    max_to_us_msat?: bigint;
     /**
      * max amount accept in a single payment
      */
-    max_total_htlc_in_msat?: number;
+    max_total_htlc_in_msat?: bigint;
     /**
      * least amount owed to us ever
      */
-    min_to_us_msat?: number;
+    min_to_us_msat?: bigint;
     /**
      * the minimum amount HTLC we accept
      */
-    minimum_htlc_in_msat?: number;
+    minimum_htlc_in_msat?: bigint;
     /**
      * For inflight opens, the next feerate step we'll use for the channel open
      */
@@ -159,7 +159,7 @@ export interface Channel {
     /**
      * minimum they insist we keep in channel
      */
-    our_reserve_msat?: number;
+    our_reserve_msat?: bigint;
     /**
      * the number of blocks before we can take our funds if we unilateral close
      */
@@ -167,11 +167,11 @@ export interface Channel {
     /**
      * Total amount of successful outgoing payment attempts
      */
-    out_fulfilled_msat?: number;
+    out_fulfilled_msat?: bigint;
     /**
      * Total amount of outgoing payment attempts
      */
-    out_offered_msat?: number;
+    out_offered_msat?: bigint;
     /**
      * Number of successful outgoing payment attempts
      */
@@ -191,7 +191,7 @@ export interface Channel {
     /**
      * total peer could send through channel
      */
-    receivable_msat?: number;
+    receivable_msat?: bigint;
     /**
      * The txid we would use if we went onchain now
      */
@@ -203,7 +203,7 @@ export interface Channel {
     /**
      * total we could send through channel
      */
-    spendable_msat?: number;
+    spendable_msat?: bigint;
     /**
      * the channel state, in particular "CHANNELD_NORMAL" means the channel can be used normally
      */
@@ -216,7 +216,7 @@ export interface Channel {
     /**
      * minimum we insist they keep in channel
      */
-    their_reserve_msat?: number;
+    their_reserve_msat?: bigint;
     /**
      * the number of blocks before they can take their funds if they unilateral close
      */
@@ -228,7 +228,7 @@ export interface Channel {
     /**
      * total amount in the channel
      */
-    total_msat?: number;
+    total_msat?: bigint;
 }
 
 /**
@@ -265,18 +265,18 @@ export interface Funding {
     /**
      * Amount of channel we funded
      */
-    local_msat: number;
+    local_msat: bigint;
     /**
      * Amount of channel they funded
      */
-    remote_msat: number;
+    remote_msat: bigint;
 }
 
 export interface Htlc {
     /**
      * Amount send/received for this HTLC
      */
-    amount_msat: number;
+    amount_msat: bigint;
     /**
      * Whether it came from peer, or is going to peer
      */
@@ -328,7 +328,7 @@ export interface Inflight {
     /**
      * amount we have in the channel
      */
-    our_funding_msat: number;
+    our_funding_msat: bigint;
     /**
      * The commitment transaction txid we would use if we went onchain now
      */
@@ -336,7 +336,7 @@ export interface Inflight {
     /**
      * total amount in the channel
      */
-    total_funding_msat: number;
+    total_funding_msat: bigint;
 }
 
 /**

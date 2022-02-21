@@ -33,7 +33,7 @@ export interface Forward {
     /**
      * the value of the incoming HTLC
      */
-    in_msat: number;
+    in_msat: bigint;
     /**
      * the channel that the HTLC was forwarded to
      */

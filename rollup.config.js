@@ -1,20 +1,33 @@
 import { terser } from "rollup-plugin-terser";
-import ts from "rollup-plugin-ts";
+import typescript from '@rollup/plugin-typescript';
+import dts from "rollup-plugin-dts";
 
-export default {
-  input: "src/index.ts",
-  output: [
-    {
-      dir: "dist",
-      format: "esm",
-    },
-  ],
-  plugins: [ts(), terser({
-    mangle: {
-      properties: {
-        regex: /^_/,
+export default [
+  {
+    input: "src/index.ts",
+    output: [
+      {
+        dir: "dist",
+        format: "esm",
       },
-    },
-  })],
-  external: ["net"],
-};
+    ],
+    plugins: [
+      typescript(),
+      terser({
+        mangle: {
+          properties: {
+            regex: /^_/,
+          },
+        },
+      })
+    ],
+    external: ["net"],
+  },
+  {
+    input: "dist/index.d.ts",
+    output: [{ file: "dist/c-lightning.d.ts", format: "es" }],
+    plugins: [
+      dts(),
+    ],
+  }
+];

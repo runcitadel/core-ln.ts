@@ -1,6 +1,4 @@
-
-import * as net from "net";
-
+import { createConnection } from "net";
 
 import type { AddgossipRequest, AddgossipResponse } from "./addgossip";
 import type { AutocleaninvoiceRequest, AutocleaninvoiceResponse } from "./autocleaninvoice";
@@ -82,31 +80,244 @@ import type { WaitinvoiceRequest, WaitinvoiceResponse } from "./waitinvoice";
 import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay";
 import type { WithdrawRequest, WithdrawResponse } from "./withdraw";
 
-export default class RPCClient {
-  private _call_id = 0;
-  private _client_id;
-  constructor(private _socketPath: string) {
-    this._client_id = Math.round(Math.random() * 10000000000000000) * 100000;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const transformMap: any = {
+  "createinvoice": {
+    "amount_msat": "msat",
+    "amount_received_msat": "msat"
+  },
+  "decode": {
+    "amount_msat": "msat"
+  },
+  "decodepay": {
+    "amount_msat": "msat"
+  },
+  "delinvoice": {
+    "amount_msat": "msat",
+    "amount_received_msat": "msat"
+  },
+  "delpay": {
+    "payments": {
+      "amount_sent_msat": "msat",
+      "amount_msat": "msat"
+    }
+  },
+  "fetchinvoice": {
+    "changes": {
+      "msat": "msat"
+    }
+  },
+  "funderupdate": {
+    "min_their_funding_msat": "msat",
+    "max_their_funding_msat": "msat",
+    "per_channel_min_msat": "msat",
+    "per_channel_max_msat": "msat",
+    "reserve_tank_msat": "msat",
+    "lease_fee_base_msat": "msat",
+    "channel_fee_max_base_msat": "msat"
+  },
+  "fundpsbt": {
+    "excess_msat": "msat"
+  },
+  "getinfo": {
+    "fees_collected_msat": "msat"
+  },
+  "getroute": {
+    "route": {
+      "amount_msat": "msat"
+    }
+  },
+  "keysend": {
+    "amount_msat": "msat",
+    "amount_sent_msat": "msat"
+  },
+  "listchannels": {
+    "channels": {
+      "amount_msat": "msat",
+      "htlc_minimum_msat": "msat",
+      "htlc_maximum_msat": "msat"
+    }
+  },
+  "listconfigs": {
+    "max-dust-htlc-exposure-msat": "msat"
+  },
+  "listforwards": {
+    "forwards": {
+      "in_msat": "msat",
+      "fee_msat": "msat",
+      "out_msat": "msat"
+    }
+  },
+  "listfunds": {
+    "outputs": {
+      "amount_msat": "msat"
+    },
+    "channels": {
+      "our_amount_msat": "msat",
+      "amount_msat": "msat"
+    }
+  },
+  "listinvoices": {
+    "invoices": {
+      "amount_msat": "msat",
+      "amount_received_msat": "msat"
+    }
+  },
+  "listnodes": {
+    "nodes": {
+      "option_will_fund": {
+        "lease_fee_base_msat": "msat",
+        "channel_fee_max_base_msat": "msat"
+      }
+    }
+  },
+  "listpays": {
+    "pays": {
+      "amount_msat": "msat",
+      "amount_sent_msat": "msat"
+    }
+  },
+  "listpeers": {
+    "peers": {
+      "channels": {
+        "inflight": {
+          "total_funding_msat": "msat",
+          "our_funding_msat": "msat"
+        },
+        "funding": {
+          "local_msat": "msat",
+          "remote_msat": "msat"
+        },
+        "to_us_msat": "msat",
+        "min_to_us_msat": "msat",
+        "max_to_us_msat": "msat",
+        "total_msat": "msat",
+        "fee_base_msat": "msat",
+        "dust_limit_msat": "msat",
+        "max_total_htlc_in_msat": "msat",
+        "their_reserve_msat": "msat",
+        "our_reserve_msat": "msat",
+        "spendable_msat": "msat",
+        "receivable_msat": "msat",
+        "minimum_htlc_in_msat": "msat",
+        "in_offered_msat": "msat",
+        "in_fulfilled_msat": "msat",
+        "out_offered_msat": "msat",
+        "out_fulfilled_msat": "msat",
+        "htlcs": {
+          "amount_msat": "msat"
+        },
+        "last_tx_fee_msat": "msat"
+      }
+    }
+  },
+  "listsendpays": {
+    "payments": {
+      "amount_msat": "msat",
+      "amount_sent_msat": "msat"
+    }
+  },
+  "listtransactions": {
+    "transactions": {
+      "outputs": {
+        "msat": "msat"
+      }
+    }
+  },
+  "pay": {
+    "amount_msat": "msat",
+    "amount_sent_msat": "msat"
+  },
+  "sendinvoice": {
+    "amount_msat": "msat",
+    "amount_received_msat": "msat"
+  },
+  "sendonion": {
+    "amount_msat": "msat",
+    "amount_sent_msat": "msat"
+  },
+  "sendpay": {
+    "amount_msat": "msat",
+    "amount_sent_msat": "msat"
+  },
+  "utxopsbt": {
+    "excess_msat": "msat"
+  },
+  "waitanyinvoice": {
+    "amount_msat": "msat",
+    "amount_received_msat": "msat"
+  },
+  "waitinvoice": {
+    "amount_msat": "msat",
+    "amount_received_msat": "msat"
+  },
+  "waitsendpay": {
+    "amount_msat": "msat",
+    "amount_sent_msat": "msat"
   }
+}
+
+
+function transformOne(element: string, to: "msat" | string): string | number | bigint {
+  if(to === "msat") {
+    // If element ends with msat, remove it and convert to bigint
+    return BigInt(element.endsWith("msat") ? element.slice(0, -4) : element);
+  }
+  throw new Error("Transform not supported");
+}
+function transform<ReturnType = unknown>(
+  method: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+): ReturnType {
+  let key: string | Record<string, string> | Record<string, Record<string, string>>
+  for(key of Object.keys(transformMap[method])) {
+    if(!data[key]) continue;
+    if(Array.isArray(data[key])) {
+      //transformMap[method][key] is an object.
+      // For every key of that object, transform the value by converting every array element which matches the key
+      // with _transformOne
+      // data[key] is an array of objects
+      data[key] = data[key].map((obj: Record<string, string | number | bigint>) => {
+        for(const objKey of Object.keys(transformMap[method][key as string])) {
+          obj[objKey] = transformOne(obj[objKey] as string, transformMap[method][key as string][objKey]);
+        }
+        return obj;
+      });
+    } else if(typeof data[key] !== "string") {
+      // data[key] is an object
+      //transformMap[method][key] is an object.
+      // For every key of transformMap[method][key], transform the corresponing value of data[key] by converting with _transformOne
+      for(const objKey of Object.keys(transformMap[method][key as string])) {
+        data[key][objKey] = transformOne(data[key][objKey] as string, transformMap[method][key as string][objKey]);
+      }
+    } else {
+      transformOne(data[key], transformMap[method][key as string]);
+    }
+  }
+    return data;
+}
+
+export default class RPCClient {
+  constructor(private _socketPath: string) {}
+
   private _call<ReturnType = unknown>(
     method: string,
     params: unknown = null
   ): Promise<ReturnType> {
     return new Promise((resolve) => {
-      const client = net.createConnection(this._socketPath);
+      const client = createConnection(this._socketPath);
       const payload = {
-        jsonrpc: "2.0",
         method: method,
         params: params,
-        id: this._client_id + this._call_id,
+        id: 0,
       };
-      this._call_id++;
       client.write(JSON.stringify(payload));
 
       client.on("data", (data) => {
         client.end();
         const parsed = JSON.parse(data.toString("utf8"));
-        return resolve(parsed.result as ReturnType);
+        return resolve(transform<ReturnType>(method, parsed.result as ReturnType));
       });
     });
   }
@@ -2737,3 +2948,84 @@ export default class RPCClient {
   }
     
 }
+
+
+export type { AddgossipRequest, AddgossipResponse } from "./addgossip";
+export type { AutocleaninvoiceRequest, AutocleaninvoiceResponse } from "./autocleaninvoice";
+export type { CheckRequest, CheckResponse } from "./check";
+export type { CheckmessageRequest, CheckmessageResponse } from "./checkmessage";
+export type { CloseRequest, CloseResponse, Type as CloseType } from "./close";
+export type { ConnectRequest, ConnectResponse, Address as ConnectAddress, Type as ConnectType, Direction as ConnectDirection } from "./connect";
+export type { CreateinvoiceRequest, CreateinvoiceResponse, Status as CreateinvoiceStatus } from "./createinvoice";
+export type { CreateonionRequest, CreateonionResponse } from "./createonion";
+export type { DatastoreRequest, DatastoreResponse } from "./datastore";
+export type { DecodeRequest, DecodeResponse } from "./decode";
+export type { DecodepayRequest, DecodepayResponse, Extra as DecodepayExtra, Fallback as DecodepayFallback, Type as DecodepayType, Route as DecodepayRoute } from "./decodepay";
+export type { DeldatastoreRequest, DeldatastoreResponse } from "./deldatastore";
+export type { DelexpiredinvoiceRequest, DelexpiredinvoiceResponse } from "./delexpiredinvoice";
+export type { DelinvoiceRequest, DelinvoiceResponse, Status as DelinvoiceStatus } from "./delinvoice";
+export type { DelpayRequest, DelpayResponse, Payment as DelpayPayment, Status as DelpayStatus } from "./delpay";
+export type { DisableofferRequest, DisableofferResponse } from "./disableoffer";
+export type { DisconnectRequest, DisconnectResponse } from "./disconnect";
+export type { FeeratesRequest, FeeratesResponse, OnchainFeeEstimates as FeeratesOnchainFeeEstimates, Perkb as FeeratesPerkb, Perkw as FeeratesPerkw } from "./feerates";
+export type { FetchinvoiceRequest, FetchinvoiceResponse, Changes as FetchinvoiceChanges, NextPeriod as FetchinvoiceNextPeriod } from "./fetchinvoice";
+export type { FundchannelRequest, FundchannelResponse } from "./fundchannel";
+export type { FundchannelCancelRequest, FundchannelCancelResponse } from "./fundchannel_cancel";
+export type { FundchannelCompleteRequest, FundchannelCompleteResponse } from "./fundchannel_complete";
+export type { FundchannelStartRequest, FundchannelStartResponse } from "./fundchannel_start";
+export type { FunderupdateRequest, FunderupdateResponse, Policy as FunderupdatePolicy } from "./funderupdate";
+export type { FundpsbtRequest, FundpsbtResponse, Reservation as FundpsbtReservation } from "./fundpsbt";
+export type { GetinfoRequest, GetinfoResponse, Address as GetinfoAddress, AddressType as GetinfoAddressType, Binding as GetinfoBinding, BindingType as GetinfoBindingType } from "./getinfo";
+export type { GetlogRequest, GetlogResponse, Log as GetlogLog, Type as GetlogType } from "./getlog";
+export type { GetrouteRequest, GetrouteResponse, Route as GetrouteRoute, Style as GetrouteStyle } from "./getroute";
+export type { GetsharedsecretRequest, GetsharedsecretResponse } from "./getsharedsecret";
+export type { HelpRequest, HelpResponse, Help as HelpHelp } from "./help";
+export type { InvoiceRequest, InvoiceResponse } from "./invoice";
+export type { KeysendRequest, KeysendResponse, Status as KeysendStatus } from "./keysend";
+export type { ListchannelsRequest, ListchannelsResponse, Channel as ListchannelsChannel } from "./listchannels";
+export type { ListconfigsRequest, ListconfigsResponse, ImportantPlugin as ListconfigsImportantPlugin, Plugin as ListconfigsPlugin } from "./listconfigs";
+export type { ListdatastoreRequest, ListdatastoreResponse, Datastore as ListdatastoreDatastore } from "./listdatastore";
+export type { ListforwardsRequest, ListforwardsResponse, Forward as ListforwardsForward, Status as ListforwardsStatus } from "./listforwards";
+export type { ListfundsRequest, ListfundsResponse, Channel as ListfundsChannel, State as ListfundsState, Output as ListfundsOutput, Status as ListfundsStatus } from "./listfunds";
+export type { ListinvoicesRequest, ListinvoicesResponse, Invoice as ListinvoicesInvoice, Status as ListinvoicesStatus } from "./listinvoices";
+export type { ListnodesRequest, ListnodesResponse, Node as ListnodesNode } from "./listnodes";
+export type { ListoffersRequest, ListoffersResponse, Offer as ListoffersOffer } from "./listoffers";
+export type { ListpaysRequest, ListpaysResponse, Pay as ListpaysPay, Status as ListpaysStatus } from "./listpays";
+export type { ListpeersRequest, ListpeersResponse, Peer as ListpeersPeer, Channel as ListpeersChannel, Closer as ListpeersCloser, Feature as ListpeersFeature, Feerate as ListpeersFeerate, Funding as ListpeersFunding, Htlc as ListpeersHtlc, Direction as ListpeersDirection, Inflight as ListpeersInflight, State as ListpeersState, StateChange as ListpeersStateChange, Cause as ListpeersCause, Log as ListpeersLog, Type as ListpeersType } from "./listpeers";
+export type { ListsendpaysRequest, ListsendpaysResponse, Payment as ListsendpaysPayment, Status as ListsendpaysStatus } from "./listsendpays";
+export type { ListtransactionsRequest, ListtransactionsResponse, Transaction as ListtransactionsTransaction, Input as ListtransactionsInput, Type as ListtransactionsType, Output as ListtransactionsOutput } from "./listtransactions";
+export type { MultifundchannelRequest, MultifundchannelResponse, ChannelID as MultifundchannelChannelID, Failed as MultifundchannelFailed, Error as MultifundchannelError, Method as MultifundchannelMethod } from "./multifundchannel";
+export type { MultiwithdrawRequest, MultiwithdrawResponse } from "./multiwithdraw";
+export type { NotificationsRequest, NotificationsResponse } from "./notifications";
+export type { OfferRequest, OfferResponse } from "./offer";
+export type { OfferoutRequest, OfferoutResponse } from "./offerout";
+export type { OpenchannelAbortRequest, OpenchannelAbortResponse } from "./openchannel_abort";
+export type { OpenchannelBumpRequest, OpenchannelBumpResponse } from "./openchannel_bump";
+export type { OpenchannelInitRequest, OpenchannelInitResponse } from "./openchannel_init";
+export type { OpenchannelSignedRequest, OpenchannelSignedResponse } from "./openchannel_signed";
+export type { OpenchannelUpdateRequest, OpenchannelUpdateResponse } from "./openchannel_update";
+export type { ParsefeerateRequest, ParsefeerateResponse } from "./parsefeerate";
+export type { PayRequest, PayResponse, Status as PayStatus } from "./pay";
+export type { PingRequest, PingResponse } from "./ping";
+export type { PluginRequest, PluginResponse, Command as PluginCommand } from "./plugin";
+export type { ReserveinputsRequest, ReserveinputsResponse, Reservation as ReserveinputsReservation } from "./reserveinputs";
+export type { SendcustommsgRequest, SendcustommsgResponse } from "./sendcustommsg";
+export type { SendinvoiceRequest, SendinvoiceResponse, Status as SendinvoiceStatus } from "./sendinvoice";
+export type { SendonionRequest, SendonionResponse, Status as SendonionStatus } from "./sendonion";
+export type { SendonionmessageRequest, SendonionmessageResponse } from "./sendonionmessage";
+export type { SendpayRequest, SendpayResponse, Status as SendpayStatus } from "./sendpay";
+export type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt";
+export type { SetchannelfeeRequest, SetchannelfeeResponse, Channel as SetchannelfeeChannel } from "./setchannelfee";
+export type { SignmessageRequest, SignmessageResponse } from "./signmessage";
+export type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt";
+export type { StopRequest, StopResponse } from "./stop";
+export type { TxdiscardRequest, TxdiscardResponse } from "./txdiscard";
+export type { TxprepareRequest, TxprepareResponse } from "./txprepare";
+export type { TxsendRequest, TxsendResponse } from "./txsend";
+export type { UnreserveinputsRequest, UnreserveinputsResponse, Reservation as UnreserveinputsReservation } from "./unreserveinputs";
+export type { UtxopsbtRequest, UtxopsbtResponse, Reservation as UtxopsbtReservation } from "./utxopsbt";
+export type { WaitanyinvoiceRequest, WaitanyinvoiceResponse, Status as WaitanyinvoiceStatus } from "./waitanyinvoice";
+export type { WaitblockheightRequest, WaitblockheightResponse } from "./waitblockheight";
+export type { WaitinvoiceRequest, WaitinvoiceResponse, Status as WaitinvoiceStatus } from "./waitinvoice";
+export type { WaitsendpayRequest, WaitsendpayResponse, Status as WaitsendpayStatus } from "./waitsendpay";
+export type { WithdrawRequest, WithdrawResponse } from "./withdraw";
