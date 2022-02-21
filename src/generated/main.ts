@@ -299,7 +299,12 @@ function transform<ReturnType = unknown>(
 }
 
 export default class RPCClient {
-  constructor(private _socketPath: string) {}
+  /**
+   * A client for C-lightning
+   * @param _socketPath Path to c-lightning's unix socket
+   * @param _transform set this to false if you want msat values to be respresented as a string with the suffix msat instead of a bigint
+   */
+  constructor(private _socketPath: string, private _transform = true) {}
 
   private _call<ReturnType = unknown>(
     method: string,
@@ -317,7 +322,7 @@ export default class RPCClient {
       client.on("data", (data) => {
         client.end();
         const parsed = JSON.parse(data.toString("utf8"));
-        return resolve(transform<ReturnType>(method, parsed.result as ReturnType));
+        return resolve(this._transform ? transform<ReturnType>(method, parsed.result as ReturnType): parsed.result);
       });
     });
   }

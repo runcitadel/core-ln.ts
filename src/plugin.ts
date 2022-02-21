@@ -45,17 +45,19 @@ export default class Plugin {
         value: unknown;
     }> = {};
     hooks: Record<string, (params: unknown) => Promise<unknown>> = {};
-    constructor(params: { dynamic: boolean } | boolean) {
+    private _compatMode: boolean;
+    constructor(params: { dynamic?: boolean; compatMode?: boolean } | boolean) {
+        this._compatMode = false;
         // Plugins are dynamic by default
         this.dynamic = true;
-        if (typeof params != "undefined") {
-            // Backward compat
-            // TODO: Make sure nobody relies on it anymore
-            if (typeof params === "boolean") {
-                this.dynamic = params;
-            } else if (params.hasOwnProperty("dynamic")) {
-                this.dynamic = params.dynamic;
-            }
+        // Backward compat
+        // TODO: Make sure nobody relies on it anymore
+        if (typeof params === "boolean") {
+            this.dynamic = params;
+        } else if (typeof params != "undefined") {
+            // Plugins are dynamic by default
+            this.dynamic = params.dynamic || true;
+            this._compatMode = params.compatMode || false;
         }
     }
 
@@ -120,7 +122,7 @@ export default class Plugin {
             params.configuration["lightning-dir"],
             params.configuration["rpc-file"]
         );
-        this.rpc = new RpcClient(socketPath);
+        this.rpc = new RpcClient(socketPath, !this._compatMode);
         for (const opt in params.options) {
             this.options[opt].value = params.options[opt];
         }

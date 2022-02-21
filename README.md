@@ -23,9 +23,12 @@ Please note that this API is still in bta and may not work as expected.
 
 ## Migrating from clightningjs
 
-Simply replace `const Plugin = require('clightningjs');` with `const { Plugin } = require('c-lightning.ts/cjs/index.cjs');`.
+Simply replace `const Plugin = require('clightningjs');` with `const { Plugin } = require('c-lightning.ts/cjs/index.cjs');`,
+and replace `new Plugin()` with `new Plugin({ compatMode: true });`.
+Please note that some type definitions will be wrong in compat mode to preserve compatibility with clightningjs.
+All msat values which are normally typed as bigint will be strings with the suffix "msat" instead if compat mode is enabled.
 
-Currently, the only other difference is that `newaddr()` directly returns an address as a string instead of an object.
+Please note that regardless of the compatMode, `newaddr()` directly returns an address as a string instead of an object in `c-lightning.ts`.
 
 ## Usage
 
