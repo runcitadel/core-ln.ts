@@ -21,6 +21,12 @@ c-lightning.ts exposes a plugin API very similar to that of [clightningjs](https
 
 Please note that this API is still in bta and may not work as expected.
 
+## Migrating from clightningjs
+
+Simply replace `const Plugin = require('clightningjs');` with `const { Plugin } = require('c-lightning.ts/cjs/index.cjs');`.
+
+Currently, the only other difference is that `newaddr()` directly returns an address as a string instead of an object.
+
 ## Usage
 
 
@@ -31,7 +37,6 @@ Please note that this API is still in bta and may not work as expected.
 - [Notifications](#notifications-subscription)
 - [Hooks](#hooks-subscription)
 - [Advanced usage](#more)
-- [Changelog](CHANGELOG.md)
 
 ### Methods
 
