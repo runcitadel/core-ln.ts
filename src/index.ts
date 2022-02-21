@@ -1,6 +1,7 @@
 import ApiClient from "./generated/main.js";
 
 export default ApiClient;
+export { default as Plugin, RpcMethod as PluginRpcMethod, InitParams as PluginInitParams } from "./plugin";
 
 export type { AddgossipRequest, AddgossipResponse } from "./generated/addgossip";
 export type { AutocleaninvoiceRequest, AutocleaninvoiceResponse } from "./generated/autocleaninvoice";

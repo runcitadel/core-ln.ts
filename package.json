@@ -18,7 +18,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint --fix src && prettier -w \"src/**/*.ts\"",
-    "build": "rm -rf dist && rollup -c && rm -rf dist/generated dist/index.d.ts && mv dist/c-lightning.d.ts dist/index.d.ts",
+    "build": "rm -rf dist && rollup -c && rm -rf dist/generated dist/index.d.ts dist/plugin.d.ts && mv dist/c-lightning.d.ts dist/index.d.ts",
     "docs": "typedoc --out docs src/index.ts",
     "prepublish": "yarn build"
   },

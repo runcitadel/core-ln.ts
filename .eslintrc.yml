@@ -12,6 +12,6 @@ plugins:
   - "@typescript-eslint"
 
 rules:
-  indent: "off"
-  semi: "off"
+  indent: "warn"
+  semi: "warn"
   "@typescript-eslint/no-floating-promises": "error"

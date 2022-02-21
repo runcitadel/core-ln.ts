@@ -21,7 +21,7 @@ export default [
         },
       })
     ],
-    external: ["net"],
+    external: ["net", "events", "path"],
   },
   {
     input: "dist/index.d.ts",
@@ -29,5 +29,6 @@ export default [
     plugins: [
       dts(),
     ],
+    external: ["events"],
   }
 ];
