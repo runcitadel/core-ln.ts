@@ -16,6 +16,12 @@
 <p>c-lightning.ts exposes a plugin API very similar to that of <a href="https://github.com/lightningd/clightningjs">clightningjs</a>.</p>
 <p>Please note that this API is still in bta and may not work as expected.</p>
 
+<a href="#migrating-from-clightningjs" id="migrating-from-clightningjs" style="color: inherit; text-decoration: none;">
+  <h2>Migrating from clightningjs</h2>
+</a>
+<p>Simply replace <code>const Plugin = require(&#39;clightningjs&#39;);</code> with <code>const { Plugin } = require(&#39;c-lightning.ts/cjs/index.cjs&#39;);</code>.</p>
+<p>Currently, the only other difference is that <code>newaddr()</code> directly returns an address as a string instead of an object.</p>
+
 <a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
   <h2>Usage</h2>
 </a>
@@ -29,7 +35,6 @@
 <li><a href="#notifications-subscription">Notifications</a></li>
 <li><a href="#hooks-subscription">Hooks</a></li>
 <li><a href="#more">Advanced usage</a></li>
-<li><a href="CHANGELOG.md">Changelog</a></li>
 </ul>
 
 <a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
