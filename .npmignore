@@ -6,3 +6,4 @@ tsconfig.json
 yarn.lock
 rollup.config*.js
 c-lightning-ts-dark.png
+tsconfig.tsbuildinfo
