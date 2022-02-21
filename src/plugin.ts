@@ -243,7 +243,7 @@ export default class Plugin {
                     throw e;
                 }
                 // JSONRPC2 sanity checks
-                if (!msg || msg.method || msg.jsonrpc !== "2.0") {
+                if (!msg || !msg.method || msg.jsonrpc !== "2.0") {
                     this.log("Got bad JSONRPC2", "error");
                     throw new Error("Bad JSONRPC(2)!");
                 }
