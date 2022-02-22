@@ -54,7 +54,7 @@ export default class Plugin {
         // TODO: Make sure nobody relies on it anymore
         if (typeof params === "boolean") {
             this.dynamic = params;
-        } else if (typeof params != "undefined") {
+        } else if (params) {
             // Plugins are dynamic by default
             this.dynamic = params.dynamic || true;
             this._compatMode = params.compatMode || false;

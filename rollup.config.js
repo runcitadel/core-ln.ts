@@ -1,6 +1,7 @@
 import { terser } from "rollup-plugin-terser";
 import typescript from '@rollup/plugin-typescript';
 import dts from "rollup-plugin-dts";
+import commonjs from "@rollup/plugin-commonjs";
 
 export default [
   {
@@ -13,6 +14,7 @@ export default [
     ],
     plugins: [
       typescript(),
+      commonjs(),
       terser({
         mangle: {
           properties: {
@@ -44,13 +46,14 @@ export default [
       typescript({
         declarationDir: "cjs"
       }),
-      terser({
+      commonjs(),
+      /*terser({
         mangle: {
           properties: {
             regex: /^_/,
           },
         },
-      })
+      })*/
     ],
     external: ["net", "events", "path"],
   },

@@ -1,4 +1,7 @@
-import { createConnection } from "net";
+import { EventEmitter } from "events";
+import { createConnection, type Socket } from "net";
+// @ts-ignore
+import JSONParser from 'jsonparse';
 
 import type { AddgossipRequest, AddgossipResponse } from "./addgossip";
 import type { AutocleaninvoiceRequest, AutocleaninvoiceResponse } from "./autocleaninvoice";
@@ -259,12 +262,16 @@ const transformMap: any = {
 
 
 function transformOne(element: string, to: "msat" | string): string | number | bigint {
+  if(!element) {
+    return element;
+  }
   if(to === "msat") {
     // If element ends with msat, remove it and convert to bigint
     return BigInt(element.endsWith("msat") ? element.slice(0, -4) : element);
   }
   throw new Error("Transform not supported");
 }
+
 function transform<ReturnType = unknown>(
   method: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -297,34 +304,94 @@ function transform<ReturnType = unknown>(
   }
     return data;
 }
+export default class RPCClient extends EventEmitter {
+  private _reconnectWait: number = 0.5;
+  private _client: Socket;
+  private _reqcount: number = 0;
+  private _parser: any;
+  private _reconnectTimeout: NodeJS.Timeout | null = null;
+  private _clientConnectionPromise: Promise<void>;
+  constructor(private _socketPath: string, private _transform = true) {
+      super();
+      this._reconnectWait = 0.5;
+      this._reconnectTimeout = null;
+      this._parser = new JSONParser();
 
-export default class RPCClient {
-  /**
-   * A client for C-lightning
-   * @param _socketPath Path to c-lightning's unix socket
-   * @param _transform set this to false if you want msat values to be respresented as a string with the suffix msat instead of a bigint
-   */
-  constructor(private _socketPath: string, private _transform = true) {}
+      const _self = this;
 
-  private _call<ReturnType = unknown>(
-    method: string,
-    params: unknown = null
-  ): Promise<ReturnType> {
-    return new Promise((resolve) => {
-      const client = createConnection(this._socketPath);
-      const payload = {
-        method: method,
-        params: params,
-        id: 0,
-      };
-      client.write(JSON.stringify(payload));
+      this._client = createConnection(_socketPath);
+      this._clientConnectionPromise = new Promise(resolve => {
+        this._client.on('connect', () => {
+              this._reconnectWait = 1;
+              resolve();
+          });
 
-      client.on("data", (data) => {
-        client.end();
-        const parsed = JSON.parse(data.toString("utf8"));
-        return resolve(this._transform ? transform<ReturnType>(method, parsed.result as ReturnType): parsed.result);
+          this._client.on('end', () => {
+              this.increaseWaitTime();
+              this.reconnect();
+          });
+
+          this._client.on('error', error => {
+              this.emit('error', error);
+              this.increaseWaitTime();
+              this.reconnect();
+          });
       });
-    });
+
+      this._client.on('data', data => _self._handledata(data));
+
+      this._parser.onValue = function(val: any) {
+        if (this.stack.length) return; // top-level objects only
+        _self.emit('res:' + val.id, val);
+      }
+  }
+
+  increaseWaitTime() {
+      if (this._reconnectWait >= 16) {
+          this._reconnectWait = 16;
+      } else {
+          this._reconnectWait *= 2;
+      }
+  }
+
+  reconnect() {
+      if (this._reconnectTimeout) {
+          return;
+      }
+
+      this._reconnectTimeout = setTimeout(() => {
+          this._client.connect(this._socketPath);
+          this._reconnectTimeout = null;
+      }, this._reconnectWait * 1000);
+  }
+
+  call<ReturnType extends {} = {}>(method: string, params: unknown): Promise<ReturnType> {
+      const _self = this;
+
+      const callInt = ++this._reqcount;
+      const sendObj = {
+          jsonrpc: "2.0",
+          method,
+          params,
+          id: `${callInt}`
+      };
+
+      // Wait for the client to connect
+      return this._clientConnectionPromise
+          .then(() => new Promise((resolve, reject) => {
+              // Send the command
+              _self._client.write(JSON.stringify(sendObj));
+
+              // Wait for a response
+              this.once('res:' + callInt, res => res.error == null
+                ? resolve(this._transform ? transform<ReturnType>(method, res.result) : res.result)
+                : reject(res.error)
+              );
+          }));
+  }
+
+  private _handledata(data: unknown) {
+      this._parser.write(data);
   }
 
   
@@ -340,7 +407,7 @@ export default class RPCClient {
    * messages within error replies.
   */
   addgossip(payload: AddgossipRequest): Promise<AddgossipResponse> {
-    return this._call<AddgossipResponse>("addgossip", payload);
+    return this.call<AddgossipResponse>("addgossip", payload);
   }
     
   /**
@@ -358,7 +425,7 @@ export default class RPCClient {
    * On startup of the daemon, no autoclean is set up.
   */
   autocleaninvoice(payload: AutocleaninvoiceRequest = {}): Promise<AutocleaninvoiceResponse> {
-    return this._call<AutocleaninvoiceResponse>("autocleaninvoice", payload);
+    return this.call<AutocleaninvoiceResponse>("autocleaninvoice", payload);
   }
     
   /**
@@ -374,7 +441,7 @@ export default class RPCClient {
    * find a route even if checking the parameters succeeds.
   */
   check(payload: CheckRequest): Promise<CheckResponse> {
-    return this._call<CheckResponse>("check", payload);
+    return this.call<CheckResponse>("check", payload);
   }
     
   /**
@@ -390,7 +457,7 @@ export default class RPCClient {
    * efficiently than trying each one, so performance is not a concern.
   */
   checkmessage(payload: CheckmessageRequest): Promise<CheckmessageResponse> {
-    return this._call<CheckmessageResponse>("checkmessage", payload);
+    return this.call<CheckmessageResponse>("checkmessage", payload);
   }
     
   /**
@@ -485,7 +552,7 @@ export default class RPCClient {
    * if the peer is offline and we are waiting.
   */
   close(payload: CloseRequest): Promise<CloseResponse> {
-    return this._call<CloseResponse>("close", payload);
+    return this.call<CloseResponse>("close", payload);
   }
     
   /**
@@ -517,7 +584,7 @@ export default class RPCClient {
    * lightning-fundchannel(7).
   */
   connect(payload: ConnectRequest): Promise<ConnectResponse> {
-    return this._call<ConnectResponse>("connect", payload);
+    return this.call<ConnectResponse>("connect", payload);
   }
     
   /**
@@ -538,7 +605,7 @@ export default class RPCClient {
    * the invoice.
   */
   createinvoice(payload: CreateinvoiceRequest): Promise<CreateinvoiceResponse> {
-    return this._call<CreateinvoiceResponse>("createinvoice", payload);
+    return this.call<CreateinvoiceResponse>("createinvoice", payload);
   }
     
   /**
@@ -623,7 +690,7 @@ export default class RPCClient {
    * routing.
   */
   createonion(payload: CreateonionRequest): Promise<CreateonionResponse> {
-    return this._call<CreateonionResponse>("createonion", payload);
+    return this.call<CreateonionResponse>("createonion", payload);
   }
     
   /**
@@ -648,7 +715,7 @@ export default class RPCClient {
    * or "must-append".
   */
   datastore(payload: DatastoreRequest): Promise<DatastoreResponse> {
-    return this._call<DatastoreResponse>("datastore", payload);
+    return this.call<DatastoreResponse>("datastore", payload);
   }
     
   /**
@@ -658,7 +725,7 @@ export default class RPCClient {
    * other formats in future.
   */
   decode(payload: DecodeRequest): Promise<DecodeResponse> {
-    return this._call<DecodeResponse>("decode", payload);
+    return this.call<DecodeResponse>("decode", payload);
   }
     
   /**
@@ -666,7 +733,7 @@ export default class RPCClient {
    * specified by the BOLT 11 specification.
   */
   decodepay(payload: DecodepayRequest): Promise<DecodepayResponse> {
-    return this._call<DecodepayResponse>("decodepay", payload);
+    return this.call<DecodepayResponse>("decodepay", payload);
   }
     
   /**
@@ -677,7 +744,7 @@ export default class RPCClient {
    * is specified and the generation of the data does not exactly match.
   */
   deldatastore(payload: DeldatastoreRequest): Promise<DeldatastoreResponse> {
-    return this._call<DeldatastoreResponse>("deldatastore", payload);
+    return this.call<DeldatastoreResponse>("deldatastore", payload);
   }
     
   /**
@@ -688,7 +755,7 @@ export default class RPCClient {
    * deleted.
   */
   delexpiredinvoice(payload: DelexpiredinvoiceRequest = {}): Promise<DelexpiredinvoiceResponse> {
-    return this._call<DelexpiredinvoiceResponse>("delexpiredinvoice", payload);
+    return this.call<DelexpiredinvoiceResponse>("delexpiredinvoice", payload);
   }
     
   /**
@@ -699,7 +766,7 @@ export default class RPCClient {
    * *status* changing just before this command is invoked!
   */
   delinvoice(payload: DelinvoiceRequest): Promise<DelinvoiceResponse> {
-    return this._call<DelinvoiceResponse>("delinvoice", payload);
+    return this.call<DelinvoiceResponse>("delinvoice", payload);
   }
     
   /**
@@ -723,7 +790,7 @@ export default class RPCClient {
    * ```
   */
   delpay(payload: DelpayRequest): Promise<DelpayResponse> {
-    return this._call<DelpayResponse>("delpay", payload);
+    return this.call<DelpayResponse>("delpay", payload);
   }
     
   /**
@@ -747,7 +814,7 @@ export default class RPCClient {
    * ```
   */
   disableoffer(payload: DisableofferRequest): Promise<DisableofferResponse> {
-    return this._call<DisableofferResponse>("disableoffer", payload);
+    return this.call<DisableofferResponse>("disableoffer", payload);
   }
     
   /**
@@ -773,7 +840,7 @@ export default class RPCClient {
    * connection.
   */
   disconnect(payload: DisconnectRequest): Promise<DisconnectResponse> {
-    return this._call<DisconnectResponse>("disconnect", payload);
+    return this.call<DisconnectResponse>("disconnect", payload);
   }
     
   /**
@@ -810,7 +877,7 @@ export default class RPCClient {
    * which will override the recommended feerates returned by **feerates**.
   */
   feerates(payload: FeeratesRequest): Promise<FeeratesResponse> {
-    return this._call<FeeratesResponse>("feerates", payload);
+    return this.call<FeeratesResponse>("feerates", payload);
   }
     
   /**
@@ -849,7 +916,7 @@ export default class RPCClient {
    * *payer_note* is an optional payer note to include in the fetched invoice.
   */
   fetchinvoice(payload: FetchinvoiceRequest): Promise<FetchinvoiceResponse> {
-    return this._call<FetchinvoiceResponse>("fetchinvoice", payload);
+    return this.call<FetchinvoiceResponse>("fetchinvoice", payload);
   }
     
   /**
@@ -923,7 +990,7 @@ export default class RPCClient {
    * 	lightning-cli -k fundchannel id=03f...fc1 amount=all feerate=normal utxos='["bcc1...39c:0"]'
   */
   fundchannel(payload: FundchannelRequest): Promise<FundchannelResponse> {
-    return this._call<FundchannelResponse>("fundchannel", payload);
+    return this.call<FundchannelResponse>("fundchannel", payload);
   }
     
   /**
@@ -941,7 +1008,7 @@ export default class RPCClient {
    * to remote peer again before opening channel.
   */
   fundchannelCancel(payload: FundchannelCancelRequest): Promise<FundchannelCancelResponse> {
-    return this._call<FundchannelCancelResponse>("fundchannel_cancel", payload);
+    return this.call<FundchannelCancelResponse>("fundchannel_cancel", payload);
   }
     
   /**
@@ -960,7 +1027,7 @@ export default class RPCClient {
    * unrecoverable loss of funds.
   */
   fundchannelComplete(payload: FundchannelCompleteRequest): Promise<FundchannelCompleteResponse> {
-    return this._call<FundchannelCompleteResponse>("fundchannel_complete", payload);
+    return this.call<FundchannelCompleteResponse>("fundchannel_complete", payload);
   }
     
   /**
@@ -994,7 +1061,7 @@ export default class RPCClient {
    * transaction before that can lead to unrecoverable loss of funds.
   */
   fundchannelStart(payload: FundchannelStartRequest): Promise<FundchannelStartResponse> {
-    return this._call<FundchannelStartResponse>("fundchannel_start", payload);
+    return this.call<FundchannelStartResponse>("fundchannel_start", payload);
   }
     
   /**
@@ -1089,7 +1156,7 @@ export default class RPCClient {
    * expect from the peer.
   */
   funderupdate(payload: FunderupdateRequest = {}): Promise<FunderupdateResponse> {
-    return this._call<FunderupdateResponse>("funderupdate", payload);
+    return this.call<FunderupdateResponse>("funderupdate", payload);
   }
     
   /**
@@ -1153,7 +1220,7 @@ export default class RPCClient {
    * if *excess_msat* was greater or equal to 31 + 546.
   */
   fundpsbt(payload: FundpsbtRequest): Promise<FundpsbtResponse> {
-    return this._call<FundpsbtResponse>("fundpsbt", payload);
+    return this.call<FundpsbtResponse>("fundpsbt", payload);
   }
     
   /**
@@ -1171,7 +1238,7 @@ export default class RPCClient {
    * ```
   */
   getinfo(payload: GetinfoRequest = {}): Promise<GetinfoResponse> {
-    return this._call<GetinfoResponse>("getinfo", payload);
+    return this.call<GetinfoResponse>("getinfo", payload);
   }
     
   /**
@@ -1192,7 +1259,7 @@ export default class RPCClient {
    * ```
   */
   getlog(payload: GetlogRequest = {}): Promise<GetlogResponse> {
-    return this._call<GetlogResponse>("getlog", payload);
+    return this.call<GetlogResponse>("getlog", payload);
   }
     
   /**
@@ -1461,7 +1528,7 @@ export default class RPCClient {
    * factor for larger amounts, and is basically ignored for tiny ones.
   */
   getroute(payload: GetrouteRequest): Promise<GetrouteResponse> {
-    return this._call<GetrouteResponse>("getroute", payload);
+    return this.call<GetrouteResponse>("getroute", payload);
   }
     
   /**
@@ -1471,7 +1538,7 @@ export default class RPCClient {
    * key DER-encoding of the SECP256K1 point.
   */
   getsharedsecret(payload: GetsharedsecretRequest): Promise<GetsharedsecretResponse> {
-    return this._call<GetsharedsecretResponse>("getsharedsecret", payload);
+    return this.call<GetsharedsecretResponse>("getsharedsecret", payload);
   }
     
   /**
@@ -1492,7 +1559,7 @@ export default class RPCClient {
    * ```
   */
   help(payload: HelpRequest = {}): Promise<HelpResponse> {
-    return this._call<HelpResponse>("help", payload);
+    return this.call<HelpResponse>("help", payload);
   }
     
   /**
@@ -1555,7 +1622,7 @@ export default class RPCClient {
    * Otherwise, it's set to the parameter **cltv-final**.
   */
   invoice(payload: InvoiceRequest): Promise<InvoiceResponse> {
-    return this._call<InvoiceResponse>("invoice", payload);
+    return this.call<InvoiceResponse>("invoice", payload);
   }
     
   /**
@@ -1613,7 +1680,7 @@ export default class RPCClient {
    * exceed *maxdelay*.
   */
   keysend(payload: KeysendRequest): Promise<KeysendResponse> {
-    return this._call<KeysendResponse>("keysend", payload);
+    return this.call<KeysendResponse>("keysend", payload);
   }
     
   /**
@@ -1636,7 +1703,7 @@ export default class RPCClient {
    * broadcast on the gossip network.
   */
   listchannels(payload: ListchannelsRequest = {}): Promise<ListchannelsResponse> {
-    return this._call<ListchannelsResponse>("listchannels", payload);
+    return this.call<ListchannelsResponse>("listchannels", payload);
   }
     
   /**
@@ -1659,7 +1726,7 @@ export default class RPCClient {
    * ```
   */
   listconfigs(payload: ListconfigsRequest = {}): Promise<ListconfigsResponse> {
-    return this._call<ListconfigsResponse>("listconfigs", payload);
+    return this.call<ListconfigsResponse>("listconfigs", payload);
   }
     
   /**
@@ -1670,7 +1737,7 @@ export default class RPCClient {
    * a *key* with children won't have a *hex* or *generation* entry.
   */
   listdatastore(payload: ListdatastoreRequest = {}): Promise<ListdatastoreResponse> {
-    return this._call<ListdatastoreResponse>("listdatastore", payload);
+    return this.call<ListdatastoreResponse>("listdatastore", payload);
   }
     
   /**
@@ -1684,7 +1751,7 @@ export default class RPCClient {
    * on the given in/out channel are returned.
   */
   listforwards(payload: ListforwardsRequest = {}): Promise<ListforwardsResponse> {
-    return this._call<ListforwardsResponse>("listforwards", payload);
+    return this.call<ListforwardsResponse>("listforwards", payload);
   }
     
   /**
@@ -1696,7 +1763,7 @@ export default class RPCClient {
    * in addition to the unspent ones. Default is false.
   */
   listfunds(payload: ListfundsRequest = {}): Promise<ListfundsResponse> {
-    return this._call<ListfundsResponse>("listfunds", payload);
+    return this.call<ListfundsResponse>("listfunds", payload);
   }
     
   /**
@@ -1709,7 +1776,7 @@ export default class RPCClient {
    * this invoice was issued for. Only one of the query parameters can be used at once.
   */
   listinvoices(payload: ListinvoicesRequest = {}): Promise<ListinvoicesResponse> {
-    return this._call<ListinvoicesResponse>("listinvoices", payload);
+    return this.call<ListinvoicesResponse>("listinvoices", payload);
   }
     
   /**
@@ -1728,7 +1795,7 @@ export default class RPCClient {
    * ```
   */
   listnodes(payload: ListnodesRequest = {}): Promise<ListnodesResponse> {
-    return this._call<ListnodesResponse>("listnodes", payload);
+    return this.call<ListnodesResponse>("listnodes", payload);
   }
     
   /**
@@ -1749,7 +1816,7 @@ export default class RPCClient {
    * ```
   */
   listoffers(payload: ListoffersRequest = {}): Promise<ListoffersResponse> {
-    return this._call<ListoffersResponse>("listoffers", payload);
+    return this.call<ListoffersResponse>("listoffers", payload);
   }
     
   /**
@@ -1758,7 +1825,7 @@ export default class RPCClient {
    * It is possible filter the payments also by *status*.
   */
   listpays(payload: ListpaysRequest = {}): Promise<ListpaysResponse> {
-    return this._call<ListpaysResponse>("listpays", payload);
+    return this.call<ListpaysResponse>("listpays", payload);
   }
     
   /**
@@ -1789,7 +1856,7 @@ export default class RPCClient {
    * node will no longer appear in the command output.
   */
   listpeers(payload: ListpeersRequest = {}): Promise<ListpeersResponse> {
-    return this._call<ListpeersResponse>("listpeers", payload);
+    return this.call<ListpeersResponse>("listpeers", payload);
   }
     
   /**
@@ -1802,7 +1869,7 @@ export default class RPCClient {
    * command per *pay*, so this command should be used with caution.
   */
   listsendpays(payload: ListsendpaysRequest = {}): Promise<ListsendpaysResponse> {
-    return this._call<ListsendpaysResponse>("listsendpays", payload);
+    return this.call<ListsendpaysResponse>("listsendpays", payload);
   }
     
   /**
@@ -1819,7 +1886,7 @@ export default class RPCClient {
    * ```
   */
   listtransactions(payload: ListtransactionsRequest = {}): Promise<ListtransactionsResponse> {
-    return this._call<ListtransactionsResponse>("listtransactions", payload);
+    return this.call<ListtransactionsResponse>("listtransactions", payload);
   }
     
   /**
@@ -1902,7 +1969,7 @@ export default class RPCClient {
    * transactions. See *feerate* for valid values.
   */
   multifundchannel(payload: MultifundchannelRequest): Promise<MultifundchannelResponse> {
-    return this._call<MultifundchannelResponse>("multifundchannel", payload);
+    return this.call<MultifundchannelResponse>("multifundchannel", payload);
   }
     
   /**
@@ -1935,7 +2002,7 @@ export default class RPCClient {
    * of "txid:vout". These must be drawn from the node's available UTXO set.
   */
   multiwithdraw(payload: MultiwithdrawRequest): Promise<MultiwithdrawResponse> {
-    return this._call<MultiwithdrawResponse>("multiwithdraw", payload);
+    return this.call<MultiwithdrawResponse>("multiwithdraw", payload);
   }
     
   /**
@@ -1956,7 +2023,7 @@ export default class RPCClient {
   */
   async newaddr(addressType: "p2sh-segwit" | "bech32" = "bech32"): Promise<string> {
     return (
-      await this._call<{
+      await this.call<{
         bech32: string;
         "p2sh-segwit": string;
       }>("newaddr", {
@@ -2007,7 +2074,7 @@ export default class RPCClient {
    *   indicating what stage we are progressing through.
   */
   notifications(payload: NotificationsRequest): Promise<NotificationsResponse> {
-    return this._call<NotificationsResponse>("notifications", payload);
+    return this.call<NotificationsResponse>("notifications", payload);
   }
     
   /**
@@ -2092,7 +2159,7 @@ export default class RPCClient {
    * invoices will be expired (i.e. only one person can pay this offer).
   */
   offer(payload: OfferRequest): Promise<OfferResponse> {
-    return this._call<OfferResponse>("offer", payload);
+    return this.call<OfferResponse>("offer", payload);
   }
     
   /**
@@ -2135,7 +2202,7 @@ export default class RPCClient {
    * that previous `payer_key`.
   */
   offerout(payload: OfferoutRequest): Promise<OfferoutResponse> {
-    return this._call<OfferoutResponse>("offerout", payload);
+    return this.call<OfferoutResponse>("offerout", payload);
   }
     
   /**
@@ -2147,7 +2214,7 @@ export default class RPCClient {
    * 
   */
   openchannelAbort(payload: OpenchannelAbortRequest): Promise<OpenchannelAbortResponse> {
-    return this._call<OpenchannelAbortResponse>("openchannel_abort", payload);
+    return this.call<OpenchannelAbortResponse>("openchannel_abort", payload);
   }
     
   /**
@@ -2175,7 +2242,7 @@ export default class RPCClient {
    * Warning: bumping a leased channel will lose the lease.
   */
   openchannelBump(payload: OpenchannelBumpRequest): Promise<OpenchannelBumpResponse> {
-    return this._call<OpenchannelBumpResponse>("openchannel_bump", payload);
+    return this.call<OpenchannelBumpResponse>("openchannel_bump", payload);
   }
     
   /**
@@ -2218,7 +2285,7 @@ export default class RPCClient {
    * 
   */
   openchannelInit(payload: OpenchannelInitRequest): Promise<OpenchannelInitResponse> {
-    return this._call<OpenchannelInitResponse>("openchannel_init", payload);
+    return this.call<OpenchannelInitResponse>("openchannel_init", payload);
   }
     
   /**
@@ -2240,7 +2307,7 @@ export default class RPCClient {
    * PSBT.
   */
   openchannelSigned(payload: OpenchannelSignedRequest): Promise<OpenchannelSignedResponse> {
-    return this._call<OpenchannelSignedResponse>("openchannel_signed", payload);
+    return this.call<OpenchannelSignedResponse>("openchannel_signed", payload);
   }
     
   /**
@@ -2261,7 +2328,7 @@ export default class RPCClient {
    * the PSBT last returned by either `openchannel_init` or `openchannel_update`.
   */
   openchannelUpdate(payload: OpenchannelUpdateRequest): Promise<OpenchannelUpdateResponse> {
-    return this._call<OpenchannelUpdateResponse>("openchannel_update", payload);
+    return this.call<OpenchannelUpdateResponse>("openchannel_update", payload);
   }
     
   /**
@@ -2270,7 +2337,7 @@ export default class RPCClient {
    * **fundpsbt** or **utxopsbt** command might use.
   */
   parsefeerate(payload: ParsefeerateRequest): Promise<ParsefeerateResponse> {
-    return this._call<ParsefeerateResponse>("parsefeerate", payload);
+    return this.call<ParsefeerateResponse>("parsefeerate", payload);
   }
     
   /**
@@ -2337,7 +2404,7 @@ export default class RPCClient {
    * exceed *maxdelay*.
   */
   pay(payload: PayRequest): Promise<PayResponse> {
-    return this._call<PayResponse>("pay", payload);
+    return this.call<PayResponse>("pay", payload);
   }
     
   /**
@@ -2365,7 +2432,7 @@ export default class RPCClient {
    * ```
   */
   ping(payload: PingRequest): Promise<PingResponse> {
-    return this._call<PingResponse>("ping", payload);
+    return this.call<PingResponse>("ping", payload);
   }
     
   /**
@@ -2393,7 +2460,7 @@ export default class RPCClient {
    * The *list* command will return all the active plugins.
   */
   plugin(payload: PluginRequest): Promise<PluginResponse> {
-    return this._call<PluginResponse>("plugin", payload);
+    return this.call<PluginResponse>("plugin", payload);
   }
     
   /**
@@ -2410,7 +2477,7 @@ export default class RPCClient {
    * hours), but this can be changed by setting *reserve*.
   */
   reserveinputs(payload: ReserveinputsRequest): Promise<ReserveinputsResponse> {
-    return this._call<ReserveinputsResponse>("reserveinputs", payload);
+    return this.call<ReserveinputsResponse>("reserveinputs", payload);
   }
     
   /**
@@ -2441,7 +2508,7 @@ export default class RPCClient {
    * get notified about incoming messages.
   */
   sendcustommsg(payload: SendcustommsgRequest): Promise<SendcustommsgResponse> {
-    return this._call<SendcustommsgResponse>("sendcustommsg", payload);
+    return this.call<SendcustommsgResponse>("sendcustommsg", payload);
   }
     
   /**
@@ -2470,7 +2537,7 @@ export default class RPCClient {
    * *quantity_min* or *quantity_max*, otherwise it is not allowed.
   */
   sendinvoice(payload: SendinvoiceRequest): Promise<SendinvoiceResponse> {
-    return this._call<SendinvoiceResponse>("sendinvoice", payload);
+    return this.call<SendinvoiceResponse>("sendinvoice", payload);
   }
     
   /**
@@ -2548,7 +2615,7 @@ export default class RPCClient {
    * *waitsendpay* and *listsendpays*.
   */
   sendonion(payload: SendonionRequest): Promise<SendonionResponse> {
-    return this._call<SendonionResponse>("sendonion", payload);
+    return this.call<SendonionResponse>("sendonion", payload);
   }
     
   /**
@@ -2567,7 +2634,7 @@ export default class RPCClient {
    * value, optional for final element).
   */
   sendonionmessage(payload: SendonionmessageRequest): Promise<SendonionmessageResponse> {
-    return this._call<SendonionmessageResponse>("sendonionmessage", payload);
+    return this.call<SendonionmessageResponse>("sendonionmessage", payload);
   }
     
   /**
@@ -2613,7 +2680,7 @@ export default class RPCClient {
    * with success.
   */
   sendpay(payload: SendpayRequest): Promise<SendpayResponse> {
-    return this._call<SendpayResponse>("sendpay", payload);
+    return this.call<SendpayResponse>("sendpay", payload);
   }
     
   /**
@@ -2636,7 +2703,7 @@ export default class RPCClient {
    * ```
   */
   sendpsbt(payload: SendpsbtRequest): Promise<SendpsbtResponse> {
-    return this._call<SendpsbtResponse>("sendpsbt", payload);
+    return this.call<SendpsbtResponse>("sendpsbt", payload);
   }
     
   /**
@@ -2673,7 +2740,7 @@ export default class RPCClient {
    * immediately.
   */
   setchannelfee(payload: SetchannelfeeRequest): Promise<SetchannelfeeResponse> {
-    return this._call<SetchannelfeeResponse>("setchannelfee", payload);
+    return this.call<SetchannelfeeResponse>("setchannelfee", payload);
   }
     
   /**
@@ -2685,7 +2752,7 @@ export default class RPCClient {
    * *message* must be less that 65536 characters.
   */
   signmessage(payload: SignmessageRequest): Promise<SignmessageResponse> {
-    return this._call<SignmessageResponse>("signmessage", payload);
+    return this.call<SignmessageResponse>("signmessage", payload);
   }
     
   /**
@@ -2716,7 +2783,7 @@ export default class RPCClient {
    * ```
   */
   signpsbt(payload: SignpsbtRequest): Promise<SignpsbtResponse> {
-    return this._call<SignpsbtResponse>("signpsbt", payload);
+    return this.call<SignpsbtResponse>("signpsbt", payload);
   }
     
   /**
@@ -2733,7 +2800,7 @@ export default class RPCClient {
    * ```
   */
   stop(payload: StopRequest = {}): Promise<StopResponse> {
-    return this._call<StopResponse>("stop", payload);
+    return this.call<StopResponse>("stop", payload);
   }
     
   /**
@@ -2741,7 +2808,7 @@ export default class RPCClient {
    * use of the *txid* from lightning-txprepare(7).
   */
   txdiscard(payload: TxdiscardRequest): Promise<TxdiscardResponse> {
-    return this._call<TxdiscardResponse>("txdiscard", payload);
+    return this.call<TxdiscardResponse>("txdiscard", payload);
   }
     
   /**
@@ -2786,7 +2853,7 @@ export default class RPCClient {
    * is provided by **txsend**.
   */
   txprepare(payload: TxprepareRequest): Promise<TxprepareResponse> {
-    return this._call<TxprepareResponse>("txprepare", payload);
+    return this.call<TxprepareResponse>("txprepare", payload);
   }
     
   /**
@@ -2794,7 +2861,7 @@ export default class RPCClient {
    * **txprepare**.
   */
   txsend(payload: TxsendRequest): Promise<TxsendResponse> {
-    return this._call<TxsendResponse>("txsend", payload);
+    return this.call<TxsendResponse>("txsend", payload);
   }
     
   /**
@@ -2808,7 +2875,7 @@ export default class RPCClient {
    * reservation by; default is 72.
   */
   unreserveinputs(payload: UnreserveinputsRequest): Promise<UnreserveinputsResponse> {
-    return this._call<UnreserveinputsResponse>("unreserveinputs", payload);
+    return this.call<UnreserveinputsResponse>("unreserveinputs", payload);
   }
     
   /**
@@ -2845,7 +2912,7 @@ export default class RPCClient {
    * for the excess sats.
   */
   utxopsbt(payload: UtxopsbtRequest): Promise<UtxopsbtResponse> {
-    return this._call<UtxopsbtResponse>("utxopsbt", payload);
+    return this.call<UtxopsbtResponse>("utxopsbt", payload);
   }
     
   /**
@@ -2871,7 +2938,7 @@ export default class RPCClient {
    * If unspecified, this command will wait indefinitely.
   */
   waitanyinvoice(payload: WaitanyinvoiceRequest = {}): Promise<WaitanyinvoiceResponse> {
-    return this._call<WaitanyinvoiceResponse>("waitanyinvoice", payload);
+    return this.call<WaitanyinvoiceResponse>("waitanyinvoice", payload);
   }
     
   /**
@@ -2883,7 +2950,7 @@ export default class RPCClient {
    * command returns immediately.
   */
   waitblockheight(payload: WaitblockheightRequest): Promise<WaitblockheightResponse> {
-    return this._call<WaitblockheightResponse>("waitblockheight", payload);
+    return this.call<WaitblockheightResponse>("waitblockheight", payload);
   }
     
   /**
@@ -2891,7 +2958,7 @@ export default class RPCClient {
    * then returns that single entry as per **listinvoice**.
   */
   waitinvoice(payload: WaitinvoiceRequest): Promise<WaitinvoiceResponse> {
-    return this._call<WaitinvoiceResponse>("waitinvoice", payload);
+    return this.call<WaitinvoiceResponse>("waitinvoice", payload);
   }
     
   /**
@@ -2916,7 +2983,7 @@ export default class RPCClient {
    * returns an error.
   */
   waitsendpay(payload: WaitsendpayRequest): Promise<WaitsendpayResponse> {
-    return this._call<WaitsendpayResponse>("waitsendpay", payload);
+    return this.call<WaitsendpayResponse>("waitsendpay", payload);
   }
     
   /**
@@ -2949,7 +3016,7 @@ export default class RPCClient {
    * of "txid:vout". These must be drawn from the node's available UTXO set.
   */
   withdraw(payload: WithdrawRequest): Promise<WithdrawResponse> {
-    return this._call<WithdrawResponse>("withdraw", payload);
+    return this.call<WithdrawResponse>("withdraw", payload);
   }
     
 }
