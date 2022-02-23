@@ -47,13 +47,13 @@ export default [
         declarationDir: "cjs"
       }),
       commonjs(),
-      /*terser({
+      terser({
         mangle: {
           properties: {
             regex: /^_/,
           },
         },
-      })*/
+      }),
     ],
     external: ["net", "events", "path"],
   },

@@ -287,6 +287,7 @@ function transform<ReturnType = unknown>(
       // data[key] is an array of objects
       data[key] = data[key].map((obj: Record<string, string | number | bigint>) => {
         for(const objKey of Object.keys(transformMap[method][key as string])) {
+          if(!obj || !obj[objKey]) continue;
           obj[objKey] = transformOne(obj[objKey] as string, transformMap[method][key as string][objKey]);
         }
         return obj;
@@ -296,6 +297,7 @@ function transform<ReturnType = unknown>(
       //transformMap[method][key] is an object.
       // For every key of transformMap[method][key], transform the corresponing value of data[key] by converting with _transformOne
       for(const objKey of Object.keys(transformMap[method][key as string])) {
+        if(!data[key][objKey]) continue;
         data[key][objKey] = transformOne(data[key][objKey] as string, transformMap[method][key as string][objKey]);
       }
     } else {

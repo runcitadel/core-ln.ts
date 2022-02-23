@@ -63,7 +63,7 @@ export default class Plugin {
 
     // Beware with writing on stdout
     // https://nodejs.org/api/process.html#process_a_note_on_process_i_o
-    protected async _write(content: string): Promise<void> {
+    private async _write(content: string): Promise<void> {
     // We append \n\n, not that is still mandatory but it's way more
     // readable to a human debugger
         content += "\n";
@@ -82,7 +82,7 @@ export default class Plugin {
 
     // The getmanifest call, all about us
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected _getmanifest(params?: unknown) {
+    private _getmanifest(params?: unknown) {
         const opts = [];
         for (const name in this.options) {
             opts.push({
@@ -117,7 +117,7 @@ export default class Plugin {
     }
 
     // We are almost done Lightningd sends this once it receives our manifest.
-    protected _init(params: InitParams) {
+    private _init(params: InitParams) {
         const socketPath = path.join(
             params.configuration["lightning-dir"],
             params.configuration["rpc-file"]
@@ -132,7 +132,7 @@ export default class Plugin {
         return {};
     }
 
-    protected async _writeJsonrpcNotification(method: string, params: unknown) {
+    private async _writeJsonrpcNotification(method: string, params: unknown) {
         const payload = {
             jsonrpc: "2.0",
             method: method,
@@ -142,7 +142,7 @@ export default class Plugin {
         await this._write(notif);
     }
 
-    protected async _writeJsonrpcResponse(
+    private async _writeJsonrpcResponse(
         result: unknown,
         id: string | number,
         isError = false
