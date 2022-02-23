@@ -53,11 +53,11 @@ export interface Forward {
     /**
      * the amount this paid in fees
      */
-    fee_msat?: number;
+    fee_msat?: bigint;
     /**
      * the amount we sent out the *out_channel*
      */
-    out_msat?: number;
+    out_msat?: bigint;
 }
 
 /**
