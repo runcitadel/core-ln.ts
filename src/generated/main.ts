@@ -278,8 +278,8 @@ function transform<ReturnType = unknown>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transformMapData: any,
 ): ReturnType {
-  if(typeof transformMapData === "string") return transformOne(data, transformMapData) as unknown as      ReturnType;
-  let key: string | Record<string, string> | Record<string, Record<string, string>>
+  if(typeof transformMapData === "string") return transformOne(data, transformMapData) as unknown as ReturnType;
+  let key: string | Record<string, string> | Record<string, Record<string, string>>;
   for(key of Object.keys(transformMapData)) {
     if(!data[key]) continue;
     if(Array.isArray(data[key])) {
