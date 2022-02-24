@@ -273,35 +273,37 @@ function transformOne(element: string, to: "msat" | string): string | number | b
 }
 
 function transform<ReturnType = unknown>(
-  method: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
+  data: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transformMapData: any,
 ): ReturnType {
+  if(typeof transformMapData === "string") return transformOne(data, transformMapData) as unknown as      ReturnType;
   let key: string | Record<string, string> | Record<string, Record<string, string>>
-  for(key of Object.keys(transformMap[method])) {
+  for(key of Object.keys(transformMapData)) {
     if(!data[key]) continue;
     if(Array.isArray(data[key])) {
-      //transformMap[method][key] is an object.
+      //transformMapData[key] is an object.
       // For every key of that object, transform the value by converting every array element which matches the key
       // with _transformOne
       // data[key] is an array of objects
       data[key] = data[key].map((obj: Record<string, string | number | bigint>) => {
-        for(const objKey of Object.keys(transformMap[method][key as string])) {
-          if(!obj || !obj[objKey]) continue;
-          obj[objKey] = transformOne(obj[objKey] as string, transformMap[method][key as string][objKey]);
+        for(const objKey of Object.keys(transformMapData[key as string])) {
+          if(!obj || !obj[objKey] || !transformMapData[key as string][objKey]) continue;
+          obj[objKey] = transform(obj[objKey] as string, transformMapData[key as string][objKey]);
         }
         return obj;
       });
     } else if(typeof data[key] !== "string") {
       // data[key] is an object
-      //transformMap[method][key] is an object.
-      // For every key of transformMap[method][key], transform the corresponing value of data[key] by converting with _transformOne
-      for(const objKey of Object.keys(transformMap[method][key as string])) {
+      //transformMapData[key] is an object.
+      // For every key of transformMapData[key], transform the corresponing value of data[key] by converting with _transformOne
+      for(const objKey of Object.keys(transformMapData[key as string])) {
         if(!data[key][objKey]) continue;
-        data[key][objKey] = transformOne(data[key][objKey] as string, transformMap[method][key as string][objKey]);
+        data[key][objKey] = transform(data[key][objKey] as string, transformMapData[key as string][objKey]);
       }
     } else {
-      transformOne(data[key], transformMap[method][key as string]);
+      transformOne(data[key], transformMapData[key as string]);
     }
   }
     return data;
@@ -386,7 +388,7 @@ export default class RPCClient extends EventEmitter {
 
               // Wait for a response
               this.once('res:' + callInt, res => res.error == null
-                ? resolve(this._transform ? transform<ReturnType>(method, res.result) : res.result)
+                ? resolve(this._transform ? transform<ReturnType>(res.result, transformMap[method]) : res.result)
                 : reject(res.error)
               );
           }));
