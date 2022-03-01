@@ -1,6 +1,8 @@
-import ApiClient from "./generated/main.js";
+export { default as AbstractApiClient } from "./generated/main.js";
+import SocketApiClient from "./socket.js";
+export { default as RestApiClient } from "./rest.js";
+export default SocketApiClient;
 
-export default ApiClient;
 export { default as Plugin, RpcMethod as PluginRpcMethod, InitParams as PluginInitParams } from "./plugin";
 
 export { AddgossipRequest, AddgossipResponse } from "./generated/addgossip";

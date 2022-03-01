@@ -1,7 +1,4 @@
 import { EventEmitter } from "events";
-import { createConnection, type Socket } from "net";
-// @ts-ignore
-import JSONParser from 'jsonparse';
 
 import type { AddgossipRequest, AddgossipResponse } from "./addgossip";
 import type { AutocleaninvoiceRequest, AutocleaninvoiceResponse } from "./autocleaninvoice";
@@ -84,7 +81,7 @@ import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay";
 import type { WithdrawRequest, WithdrawResponse } from "./withdraw";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const transformMap: any = {
+export const transformMap: any = {
   "createinvoice": {
     "amount_msat": "msat",
     "amount_received_msat": "msat"
@@ -272,7 +269,7 @@ function transformOne(element: string, to: "msat" | string): string | number | b
   throw new Error("Transform not supported");
 }
 
-function transform<ReturnType = unknown>(
+export function transform<ReturnType = unknown>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -308,96 +305,8 @@ function transform<ReturnType = unknown>(
   }
     return data;
 }
-export default class RPCClient extends EventEmitter {
-  private _reconnectWait: number = 0.5;
-  private _client: Socket;
-  private _reqcount: number = 0;
-  private _parser: any;
-  private _reconnectTimeout: NodeJS.Timeout | null = null;
-  private _clientConnectionPromise: Promise<void>;
-  constructor(private _socketPath: string, private _transform = true) {
-      super();
-      this._reconnectWait = 0.5;
-      this._reconnectTimeout = null;
-      this._parser = new JSONParser();
-
-      const _self = this;
-
-      this._client = createConnection(_socketPath);
-      this._clientConnectionPromise = new Promise(resolve => {
-        this._client.on('connect', () => {
-              this._reconnectWait = 1;
-              resolve();
-          });
-
-          this._client.on('end', () => {
-              this.increaseWaitTime();
-              this.reconnect();
-          });
-
-          this._client.on('error', error => {
-              this.emit('error', error);
-              this.increaseWaitTime();
-              this.reconnect();
-          });
-      });
-
-      this._client.on('data', data => _self._handledata(data));
-
-      this._parser.onValue = function(val: any) {
-        if (this.stack.length) return; // top-level objects only
-        _self.emit('res:' + val.id, val);
-      }
-  }
-
-  increaseWaitTime() {
-      if (this._reconnectWait >= 16) {
-          this._reconnectWait = 16;
-      } else {
-          this._reconnectWait *= 2;
-      }
-  }
-
-  reconnect() {
-      if (this._reconnectTimeout) {
-          return;
-      }
-
-      this._reconnectTimeout = setTimeout(() => {
-          this._client.connect(this._socketPath);
-          this._reconnectTimeout = null;
-      }, this._reconnectWait * 1000);
-  }
-
-  call<ReturnType extends {} = {}>(method: string, params: unknown): Promise<ReturnType> {
-      const _self = this;
-
-      const callInt = ++this._reqcount;
-      const sendObj = {
-          jsonrpc: "2.0",
-          method,
-          params,
-          id: `${callInt}`
-      };
-
-      // Wait for the client to connect
-      return this._clientConnectionPromise
-          .then(() => new Promise((resolve, reject) => {
-              // Send the command
-              _self._client.write(JSON.stringify(sendObj));
-
-              // Wait for a response
-              this.once('res:' + callInt, res => res.error == null
-                ? resolve(this._transform ? transform<ReturnType>(res.result, transformMap[method]) : res.result)
-                : reject(res.error)
-              );
-          }));
-  }
-
-  private _handledata(data: unknown) {
-      this._parser.write(data);
-  }
-
+export default abstract class RPCClient extends EventEmitter {
+  abstract call<ReturnType extends {} = {}>(method: string, params: unknown): Promise<ReturnType>
   
   /**
    * The **addgossip** RPC command injects a hex-encoded gossip message into

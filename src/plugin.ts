@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 import path from "path";
-import RpcClient from "./generated/main.js";
+import RpcClient from "./socket.js";
 
 export interface InitParams {
     configuration: {

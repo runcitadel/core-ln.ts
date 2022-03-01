@@ -13,9 +13,9 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "baseUrl": ".",
-        "declarationDir": "dist",
+        "declarationDir": "dist"
     },
     "include": [
         "src"
-    ],
+    ]
 }
