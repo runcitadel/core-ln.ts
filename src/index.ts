@@ -1,5 +1,6 @@
 export { default as AbstractApiClient } from "./generated/main.js";
 import SocketApiClient from "./socket.js";
+export { default as SocketApiClient } from "./socket.js";
 export { default as RestApiClient } from "./rest.js";
 export default SocketApiClient;
 
