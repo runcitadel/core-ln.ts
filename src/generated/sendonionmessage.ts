@@ -1,7 +1,7 @@
 /**
  * lightning-sendonionmessage -- low-level command to send an onion message
  * 
- * **sendonionmessage** *hops* \[*reply_path*\] 
+ * **sendonionmessage** *first_id* *blinding* *hops* 
  * 
  */
 
@@ -11,21 +11,12 @@
  * and receive invoices.
  * 
  * *hops* is an array of json objects: *id* as a public key of the node,
- * and either *rawtlv* containing a hexidecimal TLV to include, or any of
- * the fields *short_channel_id*, *blinding*, *enctlv*, *invoice*,
- * *invoice_request* and *invoice_error* to construct the onionmessage
- * TLV with.
- * 
- * *reply_path* is a json object, containing a pubkey *blinding*, and an
- * array *path* of objects containing *id* (a pubkey) and *enctlv* (a hex
- * value, optional for final element).
+ * and *tlv* contains a hexidecimal TLV to include.
 */
 export interface SendonionmessageRequest {
-  hops: string[];
-  reply_path?: {
-    blinding: string;
-    path?: string[];
-  }
+  first_id: string;
+  blinding: string;
+  hops:{ id: string; tlv: string; }[];
 }
 
 export interface SendonionmessageResponse {

@@ -40,7 +40,7 @@ export interface Channel {
      */
     funding_txid: string;
     /**
-     * available satoshis on our node’s end of the channel
+     * available satoshis on our node's end of the channel
      */
     our_amount_msat: bigint;
     /**

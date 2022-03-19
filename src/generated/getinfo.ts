@@ -77,6 +77,10 @@ export interface GetinfoResponse {
      */
     num_pending_channels: number;
     /**
+     * Our BOLT #9 feature bits (as hexstring) for various contexts
+     */
+    our_features?: OurFeatures;
+    /**
      * Identifies what bugs you are running into
      */
     version: string;
@@ -141,5 +145,29 @@ export enum BindingType {
     LocalSocket = "local socket",
     Torv2 = "torv2",
     Torv3 = "torv3",
+}
+
+/**
+ * Our BOLT #9 feature bits (as hexstring) for various contexts
+ */
+export interface OurFeatures {
+    /**
+     * negotiated channel features we — as channel initiator — publish in the
+     * channel_announcement message
+     */
+    channel: string;
+    /**
+     * features (incl. globalfeatures) in our init message, these also restrict what we offer in
+     * open_channel or accept in accept_channel
+     */
+    init: string;
+    /**
+     * features in our BOLT11 invoices
+     */
+    invoice: string;
+    /**
+     * features in our node_announcement message
+     */
+    node: string;
 }
 

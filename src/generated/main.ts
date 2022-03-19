@@ -80,8 +80,7 @@ import type { WaitinvoiceRequest, WaitinvoiceResponse } from "./waitinvoice";
 import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay";
 import type { WithdrawRequest, WithdrawResponse } from "./withdraw";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const transformMap: any = {
+const transformMap: any = {
   "createinvoice": {
     "amount_msat": "msat",
     "amount_received_msat": "msat"
@@ -186,7 +185,8 @@ export const transformMap: any = {
         },
         "funding": {
           "local_msat": "msat",
-          "remote_msat": "msat"
+          "remote_msat": "msat",
+          "pushed_msat": "msat"
         },
         "to_us_msat": "msat",
         "min_to_us_msat": "msat",
@@ -307,7 +307,7 @@ export function transform<ReturnType = unknown>(
 }
 export default abstract class RPCClient extends EventEmitter {
   abstract call<ReturnType extends {} = {}>(method: string, params: unknown): Promise<ReturnType>
-  
+
   /**
    * The **addgossip** RPC command injects a hex-encoded gossip message into
    * the gossip daemon.  It may return an error if it is malformed, or may
@@ -2537,14 +2537,7 @@ export default abstract class RPCClient extends EventEmitter {
    * and receive invoices.
    * 
    * *hops* is an array of json objects: *id* as a public key of the node,
-   * and either *rawtlv* containing a hexidecimal TLV to include, or any of
-   * the fields *short_channel_id*, *blinding*, *enctlv*, *invoice*,
-   * *invoice_request* and *invoice_error* to construct the onionmessage
-   * TLV with.
-   * 
-   * *reply_path* is a json object, containing a pubkey *blinding*, and an
-   * array *path* of objects containing *id* (a pubkey) and *enctlv* (a hex
-   * value, optional for final element).
+   * and *tlv* contains a hexidecimal TLV to include.
   */
   sendonionmessage(payload: SendonionmessageRequest): Promise<SendonionmessageResponse> {
     return this.call<SendonionmessageResponse>("sendonionmessage", payload);
@@ -2960,7 +2953,7 @@ export type { FundchannelCompleteRequest, FundchannelCompleteResponse } from "./
 export type { FundchannelStartRequest, FundchannelStartResponse } from "./fundchannel_start";
 export type { FunderupdateRequest, FunderupdateResponse, Policy as FunderupdatePolicy } from "./funderupdate";
 export type { FundpsbtRequest, FundpsbtResponse, Reservation as FundpsbtReservation } from "./fundpsbt";
-export type { GetinfoRequest, GetinfoResponse, Address as GetinfoAddress, AddressType as GetinfoAddressType, Binding as GetinfoBinding, BindingType as GetinfoBindingType } from "./getinfo";
+export type { GetinfoRequest, GetinfoResponse, Address as GetinfoAddress, AddressType as GetinfoAddressType, Binding as GetinfoBinding, BindingType as GetinfoBindingType, OurFeatures as GetinfoOurFeatures } from "./getinfo";
 export type { GetlogRequest, GetlogResponse, Log as GetlogLog, Type as GetlogType } from "./getlog";
 export type { GetrouteRequest, GetrouteResponse, Route as GetrouteRoute, Style as GetrouteStyle } from "./getroute";
 export type { GetsharedsecretRequest, GetsharedsecretResponse } from "./getsharedsecret";

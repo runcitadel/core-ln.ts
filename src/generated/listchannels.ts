@@ -89,9 +89,12 @@ export interface Channel {
      */
     public: boolean;
     /**
+     * short channel id of channel
+     */
+    short_channel_id: string;
+    /**
      * the source node
      */
-    source:           string;
-    short_channel_id: any;
+    source: string;
 }
 
