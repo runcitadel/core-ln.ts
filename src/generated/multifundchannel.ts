@@ -1,7 +1,7 @@
 /**
  * lightning-multifundchannel -- Command for establishing many lightning channels
  * 
- * **multifundchannel** *destinations* \[*feerate*\] \[*minconf*\] \[*utxos*\] \[*minchannels*\] \[*commitment_feerate*\] 
+ * **multifundchannel** *destinations* [*feerate*] [*minconf*] [*utxos*] [*minchannels*] [*commitment_feerate*] 
  * 
  */
 

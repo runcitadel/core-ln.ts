@@ -1,7 +1,7 @@
 /**
  * lightning-listnodes -- Command to get the list of nodes in the known network.
  * 
- * **listnodes** \[*id*\] 
+ * **listnodes** [*id*] 
  * 
  */
 

@@ -1,7 +1,7 @@
 /**
  * lightning-deldatastore -- Command for removing (plugin) data
  * 
- * **deldatastore** *key* \[*generation*\] 
+ * **deldatastore** *key* [*generation*] 
  * 
  */
 

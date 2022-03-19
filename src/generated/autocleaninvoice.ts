@@ -1,7 +1,7 @@
 /**
  * lightning-autocleaninvoice -- Set up auto-delete of expired invoice
  * 
- * **autocleaninvoice** \[*cycle\_seconds*\] \[*expired\_by*\] 
+ * **autocleaninvoice** [*cycle_seconds*] [*expired_by*] 
  * 
  */
 

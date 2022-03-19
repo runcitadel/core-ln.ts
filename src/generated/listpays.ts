@@ -1,7 +1,7 @@
 /**
  * lightning-listpays -- Command for querying payment status
  * 
- * **listpays** \[*bolt11*\] \[*payment_hash*\] \[*status*\] 
+ * **listpays** [*bolt11*] [*payment_hash*] [*status*] 
  * 
  */
 

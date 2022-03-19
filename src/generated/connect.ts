@@ -1,7 +1,7 @@
 /**
  * lightning-connect -- Command for connecting to another lightning node
  * 
- * **connect** *id* \[*host*\] \[*port*\] 
+ * **connect** *id* [*host*] [*port*] 
  * 
  */
 
@@ -40,7 +40,6 @@ export type ConnectRequest = {
     host: string;
     port: number;
   }
-  
 
 export interface ConnectResponse {
     /**

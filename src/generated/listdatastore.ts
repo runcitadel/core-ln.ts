@@ -1,7 +1,7 @@
 /**
  * lightning-listdatastore -- Command for listing (plugin) data
  * 
- * **listdatastore** \[*key*\] 
+ * **listdatastore** [*key*] 
  * 
  */
 

@@ -1,7 +1,7 @@
 /**
  * lightning-sendinvoice -- Command for send an invoice for an offer
  * 
- * **sendinvoice** *offer* *label* \[*msatoshi*\] \[*timeout*\] \[*quantity*\] 
+ * **sendinvoice** *offer* *label* [*msatoshi*] [*timeout*] [*quantity*] 
  * 
  */
 

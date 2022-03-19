@@ -1,7 +1,7 @@
 /**
  * lightning-txprepare -- Command to prepare to withdraw funds from the internal wallet
  * 
- * **txprepare** *outputs* \[*feerate*\] \[*minconf*\] \[*utxos*\] 
+ * **txprepare** *outputs* [*feerate*] [*minconf*] [*utxos*] 
  * 
  */
 

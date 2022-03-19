@@ -1,7 +1,7 @@
 /**
  * lightning-invoice -- Command for accepting payments
  * 
- * **invoice** *msatoshi* *label* *description* \[*expiry*\] \[*fallbacks*\] \[*preimage*\] \[*exposeprivatechannels*\] \[*cltv*\] 
+ * **invoice** *msatoshi* *label* *description* [*expiry*] [*fallbacks*] [*preimage*] [*exposeprivatechannels*] [*cltv*] 
  * 
  */
 

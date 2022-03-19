@@ -1,7 +1,7 @@
 /**
  * lightning-listconfigs -- Command to list all configuration options.
  * 
- * **listconfigs** \[*config*\] 
+ * **listconfigs** [*config*] 
  * 
  */
 

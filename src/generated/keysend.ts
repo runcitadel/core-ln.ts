@@ -1,7 +1,7 @@
 /**
  * lightning-keysend -- Send funds to a node without an invoice
  * 
- * **keysend** *destination* *msatoshi* \[*label*\] \[*maxfeepercent*\] \[*retry\_for*\] \[*maxdelay*\] \[*exemptfee*\] 
+ * **keysend** *destination* *msatoshi* [*label*] [*maxfeepercent*] [*retry\_for*] [*maxdelay*] [*exemptfee*] 
  * 
  */
 

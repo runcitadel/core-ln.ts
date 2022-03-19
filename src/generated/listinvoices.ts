@@ -1,7 +1,7 @@
 /**
  * lightning-listinvoices -- Command for querying invoice status
  * 
- * **listinvoices** \[*label*\] \[*invstring*\] \[*payment_hash*\] \[*offer_id*\] 
+ * **listinvoices** [*label*] [*invstring*] [*payment_hash*] [*offer_id*] 
  * 
  */
 

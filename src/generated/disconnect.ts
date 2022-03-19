@@ -1,7 +1,7 @@
 /**
  * lightning-disconnect -- Command for disconnecting from another lightning node
  * 
- * **disconnect** *id* \[*force*\] 
+ * **disconnect** *id* [*force*] 
  * 
  */
 

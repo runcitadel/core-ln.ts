@@ -1,7 +1,7 @@
 /**
  * lightning-getroute -- Command for routing a payment (low-level)
  * 
- * **getroute** *id* *msatoshi* *riskfactor* \[*cltv*\] \[*fromid*\] \[*fuzzpercent*\] \[*exclude*\] \[*maxhops*\] 
+ * **getroute** *id* *msatoshi* *riskfactor* [*cltv*] [*fromid*] [*fuzzpercent*] [*exclude*] [*maxhops*] 
  * 
  */
 

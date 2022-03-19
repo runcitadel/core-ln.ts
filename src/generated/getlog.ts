@@ -1,7 +1,7 @@
 /**
  * lightning-getlog -- Command to show logs.
  * 
- * **getlog** \[*level*\] 
+ * **getlog** [*level*] 
  * 
  */
 

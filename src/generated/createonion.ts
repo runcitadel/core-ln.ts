@@ -1,7 +1,7 @@
 /**
  * lightning-createonion -- Low-level command to create a custom onion
  * 
- * **createonion** *hops* *assocdata* \[*session_key*\] \[*onion_size*\] 
+ * **createonion** *hops* *assocdata* [*session_key*] [*onion_size*] 
  * 
  */
 

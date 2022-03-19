@@ -1,7 +1,7 @@
 /**
  * lightning-help -- Command to return all information about RPC commands.
  * 
- * **help** \[*command\*] 
+ * **help** [*command\*] 
  * 
  */
 
@@ -23,7 +23,7 @@
  * ```
 */
 export interface HelpRequest {
-  command?: /* GUESSED */ string;
+  command\?: /* GUESSED */ string;
 }
 
 export interface HelpResponse {

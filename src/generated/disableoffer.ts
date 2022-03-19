@@ -29,7 +29,6 @@ export interface DisableofferRequest {
   offer_id: string;
 }
 
-
 export interface DisableofferResponse {
     /**
      * Whether the offer can produce invoices/payments

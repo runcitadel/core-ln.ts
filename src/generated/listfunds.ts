@@ -1,7 +1,7 @@
 /**
  * lightning-listfunds -- Command showing all funds currently managed by the c-lightning node
  * 
- * **listfunds** \[*spent*\] 
+ * **listfunds** [*spent*] 
  * 
  */
 

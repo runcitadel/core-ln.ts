@@ -1,7 +1,7 @@
 /**
  * lightning-check -- Command for verifying parameters
  * 
- * **check** *command\_to\_check* \[*parameters*\] 
+ * **check** *command_to_check* [*parameters*] 
  * 
  */
 

@@ -1,7 +1,7 @@
 /**
  * lightning-fetchinvoice -- Command for fetch an invoice for an offer
  * 
- * **fetchinvoice** *offer* \[*msatoshi*\] \[*quantity*\] \[*recurrence_counter*\] \[*recurrence_start*\] \[*recurrence_label*\] \[*timeout*\] \[*payer_note*\] 
+ * **fetchinvoice** *offer* [*msatoshi*] [*quantity*] [*recurrence_counter*] [*recurrence_start*] [*recurrence_label*] [*timeout*] [*payer_note*] 
  * 
  */
 

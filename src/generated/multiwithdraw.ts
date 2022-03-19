@@ -1,7 +1,7 @@
 /**
  * lightning-multiwithdraw -- Command for withdrawing to multiple addresses
  * 
- * **multiwithdraw** *outputs*  \[*feerate*\] \[*minconf*\] \[*utxos*\] 
+ * **multiwithdraw** *outputs*  [*feerate*] [*minconf*] [*utxos*] 
  * 
  */
 

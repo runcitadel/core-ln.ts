@@ -1,7 +1,7 @@
 /**
  * lightning-reserveinputs -- Construct a transaction and reserve the UTXOs it spends
  * 
- * **reserveinputs** *psbt* \[*exclusive*\] \[*reserve*\] 
+ * **reserveinputs** *psbt* [*exclusive*] [*reserve*] 
  * 
  */
 

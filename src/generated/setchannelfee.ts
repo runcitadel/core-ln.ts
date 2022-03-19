@@ -1,7 +1,7 @@
 /**
  * lightning-setchannelfee -- Command for setting specific routing fees on a lightning channel
  * 
- * **setchannelfee** *id* \[*base*\] \[*ppm*\] \[*enforcedelay*\] 
+ * **setchannelfee** *id* [*base*] [*ppm*] [*enforcedelay*] 
  * 
  */
 

@@ -1,7 +1,7 @@
 /**
  * lightning-offerout -- Command for offering payments
  * 
- * **offerout** *amount* *description* \[*issuer*\] \[*label*\] \[*absolute_expiry*\] \[*refund_for*\] 
+ * **offerout** *amount* *description* [*issuer*] [*label*] [*absolute_expiry*] [*refund_for*] 
  * 
  */
 

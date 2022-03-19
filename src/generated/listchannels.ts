@@ -1,7 +1,7 @@
 /**
  * lightning-listchannels -- Command to query active lightning channels in the entire network
  * 
- * **listchannels** \[*short\_channel\_id*\] \[*source*\] \[*destination*\] 
+ * **listchannels** [*short\_channel\_id*] [*source*] [*destination*] 
  * 
  */
 

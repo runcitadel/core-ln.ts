@@ -1,7 +1,7 @@
 /**
  * lightning-listforwards -- Command showing all htlcs and their information
  * 
- * **listforwards** \[*status*\] \[*in_channel*\] \[*out_channel*\] 
+ * **listforwards** [*status*] [*in_channel*] [*out_channel*] 
  * 
  */
 

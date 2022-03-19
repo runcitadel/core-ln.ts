@@ -1,7 +1,7 @@
 /**
  * lightning-listoffers -- Command for listing offers
  * 
- * **listoffers** \[*offer_id*\] \[*active_only*\] 
+ * **listoffers** [*offer_id*] [*active_only*] 
  * 
  */
 

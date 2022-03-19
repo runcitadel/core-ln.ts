@@ -1,7 +1,7 @@
 /**
  * lightning-datastore -- Command for storing (plugin) data
  * 
- * **datastore** *key* \[*string*\] \[*hex*\] \[*mode*\] \[*generation*\] 
+ * **datastore** *key* [*string*] [*hex*] [*mode*] [*generation*] 
  * 
  */
 

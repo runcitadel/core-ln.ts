@@ -1,7 +1,7 @@
 /**
  * lightning-waitblockheight -- Command for waiting for blocks on the blockchain
  * 
- * **waitblockheight** *blockheight* \[*timeout*\] 
+ * **waitblockheight** *blockheight* [*timeout*] 
  * 
  */
 

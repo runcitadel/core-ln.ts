@@ -1,7 +1,7 @@
 /**
  * lightning-unreserveinputs -- Release reserved UTXOs
  * 
- * **unreserveinputs** *psbt* \[*reserve*\] 
+ * **unreserveinputs** *psbt* [*reserve*] 
  * 
  */
 

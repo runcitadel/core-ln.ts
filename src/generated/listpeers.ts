@@ -1,7 +1,7 @@
 /**
  * lightning-listpeers -- Command returning data on connected lightning nodes
  * 
- * **listpeers** \[*id*\] \[*level*\] 
+ * **listpeers** [*id*] [*level*] 
  * 
  */
 

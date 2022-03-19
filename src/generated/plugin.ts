@@ -1,7 +1,7 @@
 /**
  * lightning-plugin -- Manage plugins with RPC
  * 
- * **plugin** command \[*parameter*\] \[*second\_parameter*\] 
+ * **plugin** command [*parameter*] [*second\_parameter*] 
  * 
  */
 

@@ -1,7 +1,7 @@
 /**
  * lightning-sendonion -- Send a payment with a custom onion packet
  * 
- * **sendonion** *onion* *first_hop* *payment_hash* \[*label*\] \[*shared_secrets*\] \[*partid*\] \[*bolt11*\] \[*msatoshi*\] \[*destination*\] 
+ * **sendonion** *onion* *first_hop* *payment_hash* [*label*] [*shared_secrets*] [*partid*] [*bolt11*] [*msatoshi*] [*destination*] 
  * 
  */
 
