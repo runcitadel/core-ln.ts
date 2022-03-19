@@ -80,7 +80,7 @@ import type { WaitinvoiceRequest, WaitinvoiceResponse } from "./waitinvoice";
 import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay";
 import type { WithdrawRequest, WithdrawResponse } from "./withdraw";
 
-const transformMap: any = {
+export const transformMap: any = {
   "createinvoice": {
     "amount_msat": "msat",
     "amount_received_msat": "msat"
