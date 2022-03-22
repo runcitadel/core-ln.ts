@@ -28,5 +28,8 @@ export interface CheckmessageResponse {
      * Whether the signature was valid
      */
     verified: boolean;
+    /**
+     * "the *pubkey* parameter, or the pubkey found by looking for known nodes
+     */
+    pubkey?: string;
 }
-
