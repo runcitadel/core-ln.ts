@@ -143,7 +143,7 @@ You can do some stuff at initialization (just before responding to the `init` me
 ```javascript
 const myPlugin = new Plugin();
 // "params" contains the params passed by `lightningd` along with the `init` message
-myPlugin.onInit= function (params) {
+myPlugin.onInit = function (params) {
 	myPlugin.log('I\'m going to be initialized !!');
 };
 ```

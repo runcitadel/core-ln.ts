@@ -102,7 +102,7 @@ export default class Plugin {
         }
         return {
             options: opts,
-            rpcmethods: this.methods.map(function (method) {
+            rpcmethods: this.methods.map((method) => {
                 return {
                     name: method.name,
                     usage: method.usage,
