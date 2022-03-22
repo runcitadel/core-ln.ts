@@ -2966,7 +2966,7 @@ export type { ListdatastoreRequest, ListdatastoreResponse, Datastore as Listdata
 export type { ListforwardsRequest, ListforwardsResponse, Forward as ListforwardsForward, Status as ListforwardsStatus } from "./listforwards";
 export type { ListfundsRequest, ListfundsResponse, Channel as ListfundsChannel, State as ListfundsState, Output as ListfundsOutput, Status as ListfundsStatus } from "./listfunds";
 export type { ListinvoicesRequest, ListinvoicesResponse, Invoice as ListinvoicesInvoice, Status as ListinvoicesStatus } from "./listinvoices";
-export type { ListnodesRequest, ListnodesResponse, Node as ListnodesNode } from "./listnodes";
+export type { ListnodesResponse, Node as ListnodesNode } from "./listnodes";
 export type { ListoffersRequest, ListoffersResponse, Offer as ListoffersOffer } from "./listoffers";
 export type { ListpaysRequest, ListpaysResponse, Pay as ListpaysPay, Status as ListpaysStatus } from "./listpays";
 export type { ListpeersRequest, ListpeersResponse, Peer as ListpeersPeer, Channel as ListpeersChannel, Closer as ListpeersCloser, Feature as ListpeersFeature, Feerate as ListpeersFeerate, Funding as ListpeersFunding, Htlc as ListpeersHtlc, Direction as ListpeersDirection, Inflight as ListpeersInflight, State as ListpeersState, StateChange as ListpeersStateChange, Cause as ListpeersCause, Log as ListpeersLog, Type as ListpeersType } from "./listpeers";

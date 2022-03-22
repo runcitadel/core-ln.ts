@@ -20,6 +20,9 @@
  * }
  * ```
  */
+export interface ListnodesRequest {
+  id?: string;
+}
 
 export interface ListnodesResponse {
   nodes: Node[];

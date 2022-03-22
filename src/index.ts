@@ -44,7 +44,7 @@ export { ListdatastoreRequest, ListdatastoreResponse, Datastore as Listdatastore
 export { ListforwardsRequest, ListforwardsResponse, Forward as ListforwardsForward, Status as ListforwardsStatus } from "./generated/listforwards";
 export { ListfundsRequest, ListfundsResponse, Channel as ListfundsChannel, State as ListfundsState, Output as ListfundsOutput, Status as ListfundsStatus } from "./generated/listfunds";
 export { ListinvoicesRequest, ListinvoicesResponse, Invoice as ListinvoicesInvoice, Status as ListinvoicesStatus } from "./generated/listinvoices";
-export { ListnodesRequest, ListnodesResponse, Node as ListnodesNode } from "./generated/listnodes";
+export { ListnodesResponse, Node as ListnodesNode } from "./generated/listnodes";
 export { ListoffersRequest, ListoffersResponse, Offer as ListoffersOffer } from "./generated/listoffers";
 export { ListpaysRequest, ListpaysResponse, Pay as ListpaysPay, Status as ListpaysStatus } from "./generated/listpays";
 export { ListpeersRequest, ListpeersResponse, Peer as ListpeersPeer, Channel as ListpeersChannel, Closer as ListpeersCloser, Feature as ListpeersFeature, Feerate as ListpeersFeerate, Funding as ListpeersFunding, Htlc as ListpeersHtlc, Direction as ListpeersDirection, Inflight as ListpeersInflight, State as ListpeersState, StateChange as ListpeersStateChange, Cause as ListpeersCause, Log as ListpeersLog, Type as ListpeersType } from "./generated/listpeers";
