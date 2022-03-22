@@ -38,7 +38,7 @@ import type { ListdatastoreRequest, ListdatastoreResponse } from "./listdatastor
 import type { ListforwardsRequest, ListforwardsResponse } from "./listforwards";
 import type { ListfundsRequest, ListfundsResponse } from "./listfunds";
 import type { ListinvoicesRequest, ListinvoicesResponse } from "./listinvoices";
-import type { ListnodesRequest, ListnodesResponse } from "./listnodes";
+import type { ListnodesResponse, Node } from "./listnodes";
 import type { ListoffersRequest, ListoffersResponse } from "./listoffers";
 import type { ListpaysRequest, ListpaysResponse } from "./listpays";
 import type { ListpeersRequest, ListpeersResponse } from "./listpeers";
@@ -1693,24 +1693,24 @@ export default abstract class RPCClient extends EventEmitter {
   }
     
   /**
-   * The **listnodes** command returns nodes the node has learned about via gossip messages, or a single one if the node *id* was specified.
+   * The **listnodes** command returns nodes the node has learned about via gossip messages.
    * 
-   * EXAMPLE JSON REQUEST
-   * ------------
-   * ```json
-   * {
-   *   "id": 82,
-   *   "method": "listnodes",
-   *   "params": {
-   *     "id": "02e29856dab8ddd9044c18486e4cab79ec717b490447af2d4831e290e48d57638a"
-   *   }
-   * }
-   * ```
+   * To get a single node, check out {@link getnode}.
   */
-  listnodes(payload: ListnodesRequest = {}): Promise<ListnodesResponse> {
-    return this.call<ListnodesResponse>("listnodes", payload);
+  listnodes(): Promise<ListnodesResponse> {
+    return this.call<ListnodesResponse>("listnodes", {});
   }
-    
+  
+  /**
+   * Gets information learned via gossip about a node by a given pubkey.
+   *
+   * @param id The node's pubkkey
+   * @returns Information about the node
+   */
+  async getnode(id: string): Promise<Node | undefined> {
+    return (await this.call<ListnodesResponse>("listnodes", { id })).nodes[0];
+  } 
+
   /**
    * The **listoffers** RPC command list all offers, or with `offer_id`,
    * only the offer with that offer_id (if it exists).  If `active_only` is
