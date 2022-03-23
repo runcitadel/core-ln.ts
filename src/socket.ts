@@ -87,7 +87,7 @@ export default class SocketApiClient extends ApiClient {
 
                 // Wait for a response
                 this.once('res:' + callInt, res => res.error == null
-                    ? resolve(this._transform ? transform<ReturnType>(res.result, transformMap[method]) : res.result)
+                    ? resolve((this._transform && transformMap[method]) ? transform<ReturnType>(res.result, transformMap[method]) : res.result)
                     : reject(res.error)
                 );
             }));
