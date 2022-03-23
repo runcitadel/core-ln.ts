@@ -99,7 +99,7 @@ import ApiClient, { transform, transformMap } from "../generated/main.js";
  *
  * (Except in Node 18, where this will very likely work too)
  */
-export default class BrowserRestApiClient extends ApiClient {
+export default class RestApiClient extends ApiClient {
     /**
      * @param _apiUrl The URL where the rest API is available
      * @param _macaroon The base64-encoded macaroon
