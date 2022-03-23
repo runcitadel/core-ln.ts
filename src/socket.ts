@@ -43,7 +43,7 @@ export default class SocketApiClient extends ApiClient {
             });
         });
 
-        this._client.on('data', (data) => _self._handledata(data));
+        this._client.on('data', (data) => this._handledata(data));
 
         this._parser.onValue = function(val: any) {
             if (this.stack.length) return; // top-level objects only
