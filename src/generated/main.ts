@@ -300,7 +300,7 @@ export function transform<ReturnType = unknown>(
         data[key][objKey] = transform(data[key][objKey] as string, transformMapData[key as string][objKey]);
       }
     } else {
-      transformOne(data[key], transformMapData[key as string]);
+      data[key] = transformOne(data[key], transformMapData[key as string]);
     }
   }
     return data;
