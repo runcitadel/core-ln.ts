@@ -1,7 +1,7 @@
 /**
  * lightning-invoice -- Command for accepting payments
  * 
- * **invoice** *msatoshi* *label* *description* [*expiry*] [*fallbacks*] [*preimage*] [*exposeprivatechannels*] [*cltv*] 
+ * **invoice** *msatoshi* *label* *description* [*expiry*] [*fallbacks*] [*preimage*] [*exposeprivatechannels*] [*cltv*] [*deschashonly*] 
  * 
  */
 
@@ -25,8 +25,9 @@
  * 
  * The *description* is a short description of purpose of payment, e.g. *1
  * cup of coffee*. This value is encoded into the BOLT11 invoice and is
- * viewable by any node you send this invoice to. It must be UTF-8, and
- * cannot use *u* JSON escape codes.
+ * viewable by any node you send this invoice to (unless *deschashonly* is
+ * true as described below). It must be UTF-8, and cannot use *u* JSON 
+ * escape codes.
  * 
  * The *expiry* is optionally the time the invoice is valid for; without a
  * suffix it is interpreted as seconds, otherwise suffixes *s*, *m*, *h*,
@@ -63,6 +64,11 @@
  * 
  * If specified, *cltv* sets the *min_final_cltv_expiry* for the invoice.
  * Otherwise, it's set to the parameter **cltv-final**.
+ * 
+ * If *deschash* is true (default false), then the bolt11 returned
+ * contains a hash of the *description*, rather than the *description*
+ * itself: this allows much longer descriptions, but they must be
+ * communicated via some other mechanism.
 */
 export interface InvoiceRequest {
   msatoshi: string | number;
@@ -73,6 +79,7 @@ export interface InvoiceRequest {
   preimage?: string;
   exposeprivatechannels?: boolean;
   cltv?: number | string;
+  deschashonly?: boolean;
 }
 
 export interface InvoiceResponse {

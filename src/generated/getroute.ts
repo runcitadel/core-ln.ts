@@ -316,7 +316,6 @@ export interface Route {
  * The features understood by the destination node
  */
 export enum Style {
-    Legacy = "legacy",
     TLV = "tlv",
 }
 

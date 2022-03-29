@@ -141,6 +141,10 @@ export interface Channel {
      */
     max_total_htlc_in_msat?: bigint;
     /**
+     * the maximum amount HTLC we will send
+     */
+    maximum_htlc_out_msat?: bigint;
+    /**
      * least amount owed to us ever
      */
     min_to_us_msat?: bigint;
@@ -148,6 +152,10 @@ export interface Channel {
      * the minimum amount HTLC we accept
      */
     minimum_htlc_in_msat?: bigint;
+    /**
+     * the minimum amount HTLC we will send
+     */
+    minimum_htlc_out_msat?: bigint;
     /**
      * For inflight opens, the next feerate step we'll use for the channel open
      */

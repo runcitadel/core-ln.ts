@@ -41,7 +41,7 @@ export interface Invoice {
     /**
      * description used in the invoice
      */
-    description: string;
+    description?: string;
     /**
      * UNIX timestamp of when it will become / became unpayable
      */

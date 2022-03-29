@@ -42,7 +42,6 @@
  * 		"msatoshi": 1002,
  * 		"amount_msat": "1002msat",
  * 		"delay": 21,
- * 		"style": "legacy"
  * 	}, {
  * 		"id": "035d2b1192dfba134e10e540875d366ebc8bc353d5aa766b80c090b39c3a5d885d",
  * 		"channel": "103x1x1",
@@ -50,7 +49,6 @@
  * 		"msatoshi": 1001,
  * 		"amount_msat": "1001msat",
  * 		"delay": 15,
- * 		"style": "legacy"
  * 	}, {
  * 		"id": "0382ce59ebf18be7d84677c2e35f23294b9992ceca95491fcf8a56c6cb2d9de199",
  * 		"channel": "103x3x1",
@@ -58,7 +56,6 @@
  * 		"msatoshi": 1000,
  * 		"amount_msat": "1000msat",
  * 		"delay": 9,
- * 		"style": "legacy"
  * 	}
  * ]
  * ```

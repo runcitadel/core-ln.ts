@@ -48,12 +48,16 @@ export interface FundchannelStartResponse {
      */
     close_to?: string;
     /**
-     * The address to send funding to for the channel
+     * The address to send funding to for the channel. DO NOT SEND COINS TO THIS ADDRESS YET.
      */
     funding_address: string;
     /**
      * The raw scriptPubkey for the address
      */
     scriptpubkey: string;
+    /**
+     * A warning not to prematurely broadcast the funding transaction (always present!)
+     */
+    warning_usage: string;
 }
 

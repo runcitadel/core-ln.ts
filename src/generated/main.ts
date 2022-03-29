@@ -38,7 +38,7 @@ import type { ListdatastoreRequest, ListdatastoreResponse } from "./listdatastor
 import type { ListforwardsRequest, ListforwardsResponse } from "./listforwards";
 import type { ListfundsRequest, ListfundsResponse } from "./listfunds";
 import type { ListinvoicesRequest, ListinvoicesResponse } from "./listinvoices";
-import type { ListnodesResponse, Node } from "./listnodes";
+import type { ListnodesRequest, Node, ListnodesResponse } from "./listnodes";
 import type { ListoffersRequest, ListoffersResponse } from "./listoffers";
 import type { ListpaysRequest, ListpaysResponse } from "./listpays";
 import type { ListpeersRequest, ListpeersResponse } from "./listpeers";
@@ -65,6 +65,7 @@ import type { SendonionRequest, SendonionResponse } from "./sendonion";
 import type { SendonionmessageRequest, SendonionmessageResponse } from "./sendonionmessage";
 import type { SendpayRequest, SendpayResponse } from "./sendpay";
 import type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt";
+import type { SetchannelRequest, SetchannelResponse } from "./setchannel";
 import type { SetchannelfeeRequest, SetchannelfeeResponse } from "./setchannelfee";
 import type { SignmessageRequest, SignmessageResponse } from "./signmessage";
 import type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt";
@@ -200,6 +201,8 @@ export const transformMap: any = {
         "spendable_msat": "msat",
         "receivable_msat": "msat",
         "minimum_htlc_in_msat": "msat",
+        "minimum_htlc_out_msat": "msat",
+        "maximum_htlc_out_msat": "msat",
         "in_offered_msat": "msat",
         "in_fulfilled_msat": "msat",
         "out_offered_msat": "msat",
@@ -239,6 +242,13 @@ export const transformMap: any = {
   "sendpay": {
     "amount_msat": "msat",
     "amount_sent_msat": "msat"
+  },
+  "setchannel": {
+    "channels": {
+      "fee_base_msat": "msat",
+      "minimum_htlc_out_msat": "msat",
+      "maximum_htlc_out_msat": "msat"
+    }
   },
   "utxopsbt": {
     "excess_msat": "msat"
@@ -495,6 +505,10 @@ export default abstract class RPCClient extends EventEmitter {
    * Connecting to a node is just the first step in opening a channel with
    * another node. Once the peer is connected a channel can be opened with
    * lightning-fundchannel(7).
+   * 
+   * If there are active channels with the peer, **connect** returns once
+   * all the subdaemons are in place to handle the channels, not just once
+   * it's connected.
   */
   connect(payload: ConnectRequest): Promise<ConnectResponse> {
     return this.call<ConnectResponse>("connect", payload);
@@ -558,7 +572,6 @@ export default abstract class RPCClient extends EventEmitter {
    * 		"msatoshi": 1002,
    * 		"amount_msat": "1002msat",
    * 		"delay": 21,
-   * 		"style": "legacy"
    * 	}, {
    * 		"id": "035d2b1192dfba134e10e540875d366ebc8bc353d5aa766b80c090b39c3a5d885d",
    * 		"channel": "103x1x1",
@@ -566,7 +579,6 @@ export default abstract class RPCClient extends EventEmitter {
    * 		"msatoshi": 1001,
    * 		"amount_msat": "1001msat",
    * 		"delay": 15,
-   * 		"style": "legacy"
    * 	}, {
    * 		"id": "0382ce59ebf18be7d84677c2e35f23294b9992ceca95491fcf8a56c6cb2d9de199",
    * 		"channel": "103x3x1",
@@ -574,7 +586,6 @@ export default abstract class RPCClient extends EventEmitter {
    * 		"msatoshi": 1000,
    * 		"amount_msat": "1000msat",
    * 		"delay": 9,
-   * 		"style": "legacy"
    * 	}
    * ]
    * ```
@@ -673,10 +684,14 @@ export default abstract class RPCClient extends EventEmitter {
     
   /**
    * The **delinvoice** RPC command removes an invoice with *status* as given
-   * in **listinvoices**.
+   * in **listinvoices**, or with *desconly* set, removes its description.
    * 
    * The caller should be particularly aware of the error case caused by the
    * *status* changing just before this command is invoked!
+   * 
+   * If *desconly* is set, the invoice is not deleted, but has its
+   * description removed (this can save space with very large descriptions,
+   * as would be used with lightning-invoice(7) *deschashonly*.
   */
   delinvoice(payload: DelinvoiceRequest): Promise<DelinvoiceResponse> {
     return this.call<DelinvoiceResponse>("delinvoice", payload);
@@ -1495,8 +1510,9 @@ export default abstract class RPCClient extends EventEmitter {
    * 
    * The *description* is a short description of purpose of payment, e.g. *1
    * cup of coffee*. This value is encoded into the BOLT11 invoice and is
-   * viewable by any node you send this invoice to. It must be UTF-8, and
-   * cannot use *u* JSON escape codes.
+   * viewable by any node you send this invoice to (unless *deschashonly* is
+   * true as described below). It must be UTF-8, and cannot use *u* JSON 
+   * escape codes.
    * 
    * The *expiry* is optionally the time the invoice is valid for; without a
    * suffix it is interpreted as seconds, otherwise suffixes *s*, *m*, *h*,
@@ -1533,6 +1549,11 @@ export default abstract class RPCClient extends EventEmitter {
    * 
    * If specified, *cltv* sets the *min_final_cltv_expiry* for the invoice.
    * Otherwise, it's set to the parameter **cltv-final**.
+   * 
+   * If *deschash* is true (default false), then the bolt11 returned
+   * contains a hash of the *description*, rather than the *description*
+   * itself: this allows much longer descriptions, but they must be
+   * communicated via some other mechanism.
   */
   invoice(payload: InvoiceRequest): Promise<InvoiceResponse> {
     return this.call<InvoiceResponse>("invoice", payload);
@@ -2613,15 +2634,74 @@ export default abstract class RPCClient extends EventEmitter {
   }
     
   /**
+   * The **setchannel** RPC command sets channel specific routing fees, and
+   * `htlc_minimum_msat` or `htlc_maximum_msat` as defined in BOLT #7. The channel has to be in
+   * normal or awaiting state.  This can be checked by **listpeers**
+   * reporting a *state* of CHANNELD_NORMAL or CHANNELD_AWAITING_LOCKIN
+   * for the channel.
+   * 
+   * These changes (for a public channel) will be broadcast to the rest of
+   * the network (though many nodes limit the rate of such changes they
+   * will accept: we allow 2 a day, with a few extra occasionally).
+   * 
+   * *id* is required and should contain a scid (short channel ID), channel
+   * id or peerid (pubkey) of the channel to be modified. If *id* is set to
+   * "all", the updates are applied to all channels in states
+   * CHANNELD_NORMAL CHANNELD_AWAITING_LOCKIN or DUALOPEND_AWAITING_LOCKIN.
+   * If *id* is a peerid, all channels with the +peer in those states are
+   * changed.
+   * 
+   * *feebase* is an optional value in millisatoshi that is added as base fee to
+   * any routed payment: if omitted, it is unchanged.  It can be a whole number, or a whole
+   * number ending in *msat* or *sat*, or a number with three decimal places
+   * ending in *sat*, or a number with 1 to 11 decimal places ending in
+   * *btc*.
+   * 
+   * *feeppm* is an optional value that is added proportionally per-millionths
+   * to any routed payment volume in satoshi. For example, if ppm is 1,000
+   * and 1,000,000 satoshi is being routed through the channel, an
+   * proportional fee of 1,000 satoshi is added, resulting in a 0.1% fee.
+   * 
+   * *htlcmin* is an optional value that limits how small an HTLC we will
+   * send: if omitted, it is unchanged (the default is no lower limit). It
+   * can be a whole number, or a whole number ending in *msat* or *sat*, or
+   * a number with three decimal places ending in *sat*, or a number with 1
+   * to 11 decimal places ending in *btc*.  The peer also enforces a
+   * minimum for the channel: setting it below will be ignored.
+   * 
+   * *htlcmax* is an optional value that limits how large an HTLC we will
+   * send: if omitted, it is unchanged (the default is no effective
+   * limit). It can be a whole number, or a whole number ending in *msat*
+   * or *sat*, or a number with three decimal places ending in *sat*, or a
+   * number with 1 to 11 decimal places ending in *btc*.
+   * 
+   * *enforcedelay* is the number of seconds to delay before enforcing the
+   * new fees/htlc max (default 600, which is ten minutes).  This gives the
+   * network a chance to catch up with the new rates and avoids rejecting
+   * HTLCs before they do.  This only has an effect if rates are increased
+   * (we always allow users to overpay fees) or *htlcmax* is decreased, and
+   * only applied to a single rate increase per channel (we don't remember
+   * an arbitrary number of prior feerates) and if the node is restarted
+   * the updated configuration is enforced immediately.
+   * 
+   * @since c-lightning 0.10.3 (UNRELEASED)
+  */
+  setchannel(payload: SetchannelRequest): Promise<SetchannelResponse> {
+    return this.call<SetchannelResponse>("setchannel", payload);
+  }
+    
+  /**
    * The **setchannelfee** RPC command sets channel specific routing fees as
    * defined in BOLT #7. The channel has to be in normal or awaiting state.
    * This can be checked by **listpeers** reporting a *state* of
-   * CHANNELD_NORMAL or CHANNELD_AWAITING_LOCKIN for the channel.
+   * CHANNELD_NORMAL, CHANNELD_AWAITING_LOCKIN or DUALOPEND_AWAITING_LOCKIN for the channel.
    * 
    * *id* is required and should contain a scid (short channel ID), channel
    * id or peerid (pubkey) of the channel to be modified. If *id* is set to
    * "all", the fees for all channels are updated that are in state
-   * CHANNELD_NORMAL or CHANNELD_AWAITING_LOCKIN.
+   * CHANNELD_NORMAL, CHANNELD_AWAITING_LOCKIN or
+   * DUALOPEND_AWAITING_LOCKIN.  If *id* is a peerid, all channels with the
+   * peer in those states are changed.
    * 
    * *base* is an optional value in millisatoshi that is added as base fee to
    * any routed payment. If the parameter is left out, the global config
@@ -2966,7 +3046,7 @@ export type { ListdatastoreRequest, ListdatastoreResponse, Datastore as Listdata
 export type { ListforwardsRequest, ListforwardsResponse, Forward as ListforwardsForward, Status as ListforwardsStatus } from "./listforwards";
 export type { ListfundsRequest, ListfundsResponse, Channel as ListfundsChannel, State as ListfundsState, Output as ListfundsOutput, Status as ListfundsStatus } from "./listfunds";
 export type { ListinvoicesRequest, ListinvoicesResponse, Invoice as ListinvoicesInvoice, Status as ListinvoicesStatus } from "./listinvoices";
-export type { ListnodesResponse, Node as ListnodesNode } from "./listnodes";
+export type { ListnodesRequest, ListnodesResponse, Node as ListnodesNode } from "./listnodes";
 export type { ListoffersRequest, ListoffersResponse, Offer as ListoffersOffer } from "./listoffers";
 export type { ListpaysRequest, ListpaysResponse, Pay as ListpaysPay, Status as ListpaysStatus } from "./listpays";
 export type { ListpeersRequest, ListpeersResponse, Peer as ListpeersPeer, Channel as ListpeersChannel, Closer as ListpeersCloser, Feature as ListpeersFeature, Feerate as ListpeersFeerate, Funding as ListpeersFunding, Htlc as ListpeersHtlc, Direction as ListpeersDirection, Inflight as ListpeersInflight, State as ListpeersState, StateChange as ListpeersStateChange, Cause as ListpeersCause, Log as ListpeersLog, Type as ListpeersType } from "./listpeers";
@@ -2993,6 +3073,7 @@ export type { SendonionRequest, SendonionResponse, Status as SendonionStatus } f
 export type { SendonionmessageRequest, SendonionmessageResponse } from "./sendonionmessage";
 export type { SendpayRequest, SendpayResponse, Status as SendpayStatus } from "./sendpay";
 export type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt";
+export type { SetchannelRequest, SetchannelResponse, Channel as SetchannelChannel } from "./setchannel";
 export type { SetchannelfeeRequest, SetchannelfeeResponse, Channel as SetchannelfeeChannel } from "./setchannelfee";
 export type { SignmessageRequest, SignmessageResponse } from "./signmessage";
 export type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt";
