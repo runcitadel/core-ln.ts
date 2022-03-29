@@ -21,7 +21,20 @@ import type {
     ChannelListForwardsFilterResponse,
     ChannelListForwardsFilterRequestQuery,
 } from "./ChannelListForwardsFilter";
+import type {
+    ChannelFunderUpdateResponse,
+    ChannelFunderUpdateRequestBody,
+} from "./ChannelFunderUpdate";
 import type { ChannelLocalRemoteBalResponse } from "./ChannelLocalRemoteBal";
+import type { DatastoreResponse, DatastoreRequestBody } from "./Datastore";
+import type {
+    DatastoreListDatastoreResponse,
+    DatastoreListDatastoreRequestQuery,
+} from "./DatastoreListDatastore";
+import type {
+    DatastoreDelDatastoreResponse,
+    DatastoreDelDatastoreRequestQuery,
+} from "./DatastoreDelDatastore";
 import type { GetBalanceResponse } from "./GetBalance";
 import type { GetFeesResponse } from "./GetFees";
 import type { GetinfoResponse } from "./Getinfo";
@@ -51,6 +64,10 @@ import type { NetworkListNodeResponse } from "./NetworkListNode";
 import type { NetworkListChannelResponse } from "./NetworkListChannel";
 import type { NetworkFeeRatesResponse } from "./NetworkFeeRates";
 import type { NetworkEstimateFeesResponse } from "./NetworkEstimateFees";
+import type {
+    NetworkListNodesResponse,
+    NetworkListNodesRequestQuery,
+} from "./NetworkListNodes";
 import type { NewaddrResponse, NewaddrRequestQuery } from "./Newaddr";
 import type { WithdrawResponse, WithdrawRequestBody } from "./Withdraw";
 import type {
@@ -58,9 +75,9 @@ import type {
     OffersOfferRequestBody,
 } from "./OffersOffer";
 import type {
-    ChannelListOffersResponse,
-    ChannelListOffersRequestQuery,
-} from "./ChannelListOffers";
+    OffersListOffersResponse,
+    OffersListOffersRequestQuery,
+} from "./OffersListOffers";
 import type {
     OffersFetchInvoiceResponse,
     OffersFetchInvoiceRequestBody,
@@ -225,11 +242,40 @@ export default class RestApiClient extends ApiClient {
         );
     }
 
+    channelFunderUpdate(bodyParams: ChannelFunderUpdateRequestBody) {
+        return this.req<ChannelFunderUpdateResponse>(
+            "POST",
+            "/channel/funderUpdate",
+            null,
+            bodyParams
+        );
+    }
+
     channelLocalRemoteBal() {
         return this.req<ChannelLocalRemoteBalResponse>(
             "GET",
             "/channel/localRemoteBal",
             null
+        );
+    }
+
+    restDatastore(bodyParams: DatastoreRequestBody) {
+        return this.req<DatastoreResponse>("POST", "/datastore", null, bodyParams);
+    }
+
+    datastoreListDatastore(queryParams: DatastoreListDatastoreRequestQuery) {
+        return this.req<DatastoreListDatastoreResponse>(
+            "GET",
+            "/datastore/listDatastore",
+            queryParams
+        );
+    }
+
+    datastoreDelDatastore(queryParams: DatastoreDelDatastoreRequestQuery) {
+        return this.req<DatastoreDelDatastoreResponse>(
+            "DELETE",
+            "/datastore/delDatastore",
+            queryParams
         );
     }
 
@@ -339,6 +385,14 @@ export default class RestApiClient extends ApiClient {
         );
     }
 
+    networkListNodes(queryParams: NetworkListNodesRequestQuery) {
+        return this.req<NetworkListNodesResponse>(
+            "GET",
+            "/network/listNodes",
+            queryParams
+        );
+    }
+
     restNewaddr(queryParams: NewaddrRequestQuery) {
         return this.req<NewaddrResponse>("GET", "/newaddr", queryParams);
     }
@@ -356,10 +410,10 @@ export default class RestApiClient extends ApiClient {
         );
     }
 
-    channelListOffers(queryParams: ChannelListOffersRequestQuery) {
-        return this.req<ChannelListOffersResponse>(
+    offersListOffers(queryParams: OffersListOffersRequestQuery) {
+        return this.req<OffersListOffersResponse>(
             "GET",
-            "/channel/listOffers",
+            "/offers/listOffers",
             queryParams
         );
     }

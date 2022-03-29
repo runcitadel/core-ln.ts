@@ -1,11 +1,11 @@
-export interface ChannelListOffersRequestQuery {
+export interface OffersListOffersRequestQuery {
   /** List offer with only the offer with offer_id (if it exists) */
   offer_id: string;
   /** If specified, only active offers are returned */
   active_only: string;
 }
 
-export interface ChannelListOffersResponse {
+export interface OffersListOffersResponse {
   /** The hash of the offer */
   offer_id?: string;
   /** true if the offer is active */

@@ -8,7 +8,7 @@ export interface WithdrawRequestBody {
   /** minimum number of confirmations that used outputs should have */
   minConf: number;
   /** Specifies the utxos to be used to fund the channel, as an array of "txid:vout" */
-  utxos: any;
+  utxos: string;
 }
 
 export interface WithdrawResponse {
