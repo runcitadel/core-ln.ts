@@ -15,5 +15,6 @@
         "prepublish": "rollup -c && rimraf dist/generated dist/index.d.ts && mv dist/c-lightning.d.ts dist/index.d.ts"
     },
     "main": "./dist/index.js",
-    "type": "module"
+    "type": "module",
+    "license": "MIT"
 }
