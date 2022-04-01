@@ -105,7 +105,7 @@ import type {
 } from "./PeerDisconnect";
 import type { RpcResponse, RpcRequestBody } from "./Rpc";
 
-import ApiClient, { transform, transformMap } from "../generated/main.js";
+import ApiClient, { transform, transformMap } from "@core-ln/base";
 
 /**
  * An API client for the c-lightning REST plugin

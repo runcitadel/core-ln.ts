@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "strict": true,
+        "moduleResolution": "node",
+        "incremental": true,
+        "target": "ES2021",
+        "declaration": true,
+        "strictFunctionTypes": true,
+        "lib": [
+            "ES2021"
+        ],
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "declarationDir": "dist"
+    },
+    "include": [
+        "src"
+    ]
+}

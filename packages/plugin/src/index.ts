@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 import path from "path";
-import RpcClient from "./socket.js";
+import RpcClient from "@core-ln/core";
 
 export interface InitParams {
     configuration: {
@@ -296,3 +296,5 @@ export default class Plugin {
         });
     }
 }
+
+export * from "@core-ln/core";

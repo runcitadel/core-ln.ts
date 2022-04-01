@@ -2,6 +2,10 @@
   "name": "c-lightning.ts",
   "version": "0.1.0",
   "packageManager": "yarn@3.2.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.2",
     "@rollup/plugin-typescript": "^8.3.1",
@@ -20,9 +24,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint --fix src && prettier -w \"src/**/*.ts\"",
-    "build": "rm -rf dist && rollup -c && rm -rf dist/generated dist/rest dist/index.d.ts dist/plugin.d.ts dist/rest.d.ts dist/socket.d.ts cjs/generated cjs/*.d.ts cjs/rest && mv dist/c-lightning.d.ts dist/index.d.ts && cp -f dist/index.d.ts cjs/index.d.cts && mv cjs/index.js cjs/index.cjs",
-    "docs": "typedoc --out docs src/index.ts",
-    "prepublish": "yarn build"
+    "build": "yarn workspaces foreach install && yarn workspaces foreach run build && yarn workspaces foreach install",
+    "docs": "typedoc --out docs src/index.ts"
   },
   "main": "dist/index.js"
 }

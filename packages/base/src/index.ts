@@ -1,10 +1,7 @@
-export { default as AbstractApiClient } from "./generated/main.js";
-import SocketApiClient from "./socket.js";
-export { default as SocketApiClient } from "./socket.js";
-export { default as RestApiClient } from "./rest/index.js";
-export default SocketApiClient;
+import AbstractApiClient from "./generated/main.js";
+export default AbstractApiClient;
 
-export { default as Plugin, RpcMethod as PluginRpcMethod, InitParams as PluginInitParams } from "./plugin";
+export { transformMap, transform } from "./generated/main.js";
 
 export { AddgossipRequest, AddgossipResponse } from "./generated/addgossip";
 export { AutocleaninvoiceRequest, AutocleaninvoiceResponse } from "./generated/autocleaninvoice";
