@@ -1,0 +1,2673 @@
+{
+  "info": {
+    "title": "C-Lightning-REST",
+    "version": "0.7.0",
+    "description": "REST API suite for C-Lightning"
+  },
+  "host": "localhost:3001",
+  "basePath": "/v1",
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "macaroon",
+      "scheme": "bearer",
+      "in": "header"
+    }
+  },
+  "swagger": "2.0",
+  "paths": {
+    "/channel/openChannel": {
+      "post": {
+        "tags": ["Channel Management"],
+        "name": "fundchannel",
+        "summary": "Opens channel with a network peer",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-fundchannel.7.html",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "id",
+            "description": "Pub key of the peer",
+            "type": "string",
+            "required": ["id"]
+          },
+          {
+            "in": "body",
+            "name": "satoshis",
+            "description": "Amount in satoshis",
+            "type": "string",
+            "required": ["satoshis"]
+          },
+          {
+            "in": "body",
+            "name": "feeRate",
+            "description": "urgent/normal/slow/<sats>perkw/<sats>perkb",
+            "type": "string",
+            "default": "normal"
+          },
+          {
+            "in": "body",
+            "name": "announce",
+            "description": "Flag to announce the channel (true, false)",
+            "type": "string",
+            "default": "true"
+          },
+          {
+            "in": "body",
+            "name": "minConf",
+            "description": "Minimum number of confirmations that used outputs should have",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "utxos",
+            "description": "Specifies the utxos to be used to fund the channel, as an array of \"txid:vout\"",
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          {
+            "in": "body",
+            "name": "push_msat",
+            "description": "Amount of millisatoshis to push to the channel peer at open",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "close_to",
+            "description": "Bitcoin address to which the channel funds should be sent to on close",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "request_amt",
+            "description": "Amount of liquidity you'd like to lease from the peer",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "compact_lease",
+            "description": "Compact represenation of the peer's expected channel lease terms",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "tx": { "type": "string", "description": "Transaction" },
+                "txid": { "type": "string", "description": "Transaction ID" },
+                "channel_id": {
+                  "type": "string",
+                  "description": "channel_id of the newly created channel"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/channel/listChannels": {
+      "get": {
+        "tags": ["Channel Management"],
+        "name": "listchannel",
+        "summary": "Returns a list of channels on the node",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-listchannels.7.html",
+        "responses": {
+          "200": {
+            "description": "An array of channels is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "description": "Pub key" },
+                "connected": {
+                  "type": "string",
+                  "description": "Peer connection status (true or false)"
+                },
+                "state": {
+                  "type": "string",
+                  "description": "Channel connection status"
+                },
+                "short_channel_id": {
+                  "type": "string",
+                  "description": "Channel ID"
+                },
+                "channel_id": { "type": "string", "description": "Channel ID" },
+                "funding_txid": {
+                  "type": "string",
+                  "description": "Channel funding transaction"
+                },
+                "private": {
+                  "type": "string",
+                  "description": "Private channel flag (true or false)"
+                },
+                "msatoshi_to_us": {
+                  "type": "string",
+                  "description": "msatoshi_to_us"
+                },
+                "msatoshi_total": {
+                  "type": "string",
+                  "description": "msatoshi_total"
+                },
+                "msatoshi_to_them": {
+                  "type": "string",
+                  "description": "msatoshi_to_them"
+                },
+                "their_channel_reserve_satoshis": {
+                  "type": "string",
+                  "description": "their_channel_reserve_satoshis"
+                },
+                "our_channel_reserve_satoshis": {
+                  "type": "string",
+                  "description": "our_channel_reserve_satoshis"
+                },
+                "spendable_msatoshi": {
+                  "type": "string",
+                  "description": "spendable_msatoshi"
+                },
+                "funding_allocation_msat": {
+                  "type": "object",
+                  "additionalProperties": { "type": "integer" },
+                  "description": "funding_allocation_msat"
+                },
+                "direction": {
+                  "type": "integer",
+                  "description": "Flag indicating if this peer initiated the channel (0,1)"
+                },
+                "alias": {
+                  "type": "string",
+                  "description": "Alias of the node"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/channel/setChannelFee": {
+      "post": {
+        "tags": ["Channel Management"],
+        "name": "setchannelfee",
+        "summary": "Update channel fee policy",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-setchannelfee.7.html",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "id",
+            "description": "Short channel ID or channel id. It can be \"all\" for updating all channels",
+            "type": "string",
+            "required": ["id"]
+          },
+          {
+            "in": "body",
+            "name": "base",
+            "description": "Optional value in msats added as base fee to any routed payment",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "ppm",
+            "description": "Optional value that is added proportionally per-millionths to any routed payment volume in satoshi",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "channel fee updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "base": { "type": "string", "description": "base" },
+                "ppm": { "type": "string", "description": "ppm" },
+                "peer_id": { "type": "string", "description": "peer_id" },
+                "channel_id": { "type": "string", "description": "channel_id" },
+                "short_channel_id": {
+                  "type": "string",
+                  "description": "short_channel_id"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/channel/closeChannel": {
+      "delete": {
+        "tags": ["Channel Management"],
+        "name": "close",
+        "summary": "Close an existing channel with a peer",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-close.7.html",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "id",
+            "description": "Short channel ID or channel id",
+            "type": "string",
+            "required": ["id"]
+          },
+          {
+            "in": "query",
+            "name": "unilateralTimeout",
+            "description": "Unit is Seconds. For non-zero values, close command will unilaterally close the channel when that number of seconds is reached",
+            "type": "integer",
+            "default": 172800
+          },
+          {
+            "in": "query",
+            "name": "dest",
+            "description": "The destination can be of any Bitcoin accepted type address, including bech32.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "feeNegotiationStep",
+            "description": "The fee negotiation step parameter controls how closing fee negotiation is performed.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "channel closed successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "tx": { "type": "string", "description": "Transaction" },
+                "txid": { "type": "string", "description": "Transaction ID" },
+                "type": { "type": "string", "description": "type" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/channel/listForwards": {
+      "get": {
+        "tags": ["Channel Management"],
+        "name": "listforwards",
+        "summary": "Fetch the list of the forwarded htlcs",
+        "description": "Core Documentation - https://lightning.readthedocs.io/lightning-listforwards.7.html",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "description": "status can be either \"offered\" or \"settled\" or \"failed\" or \"local_failed\"",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of forwarded htlcs are returned per the params specified",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "in_channel": { "type": "string", "description": "in_channel" },
+                "in_msat": { "type": "string", "description": "in_msat" },
+                "status": {
+                  "type": "string",
+                  "description": "one of \"offered\", \"settled\", \"local_failed\", \"failed\""
+                },
+                "received_time": {
+                  "type": "string",
+                  "description": "the UNIX timestamp when this was received"
+                },
+                "out_channel": {
+                  "type": "string",
+                  "description": "the channel that the HTLC was forwarded to"
+                },
+                "payment_hash": {
+                  "type": "string",
+                  "description": "payment hash sought by HTLC (always 64 characters)"
+                },
+                "fee_msat": {
+                  "type": "string",
+                  "description": "If out_channel is present, the amount this paid in fees"
+                },
+                "out_msat": {
+                  "type": "string",
+                  "description": "If out_channel is present, the amount we sent out the out_channel"
+                },
+                "resolved_time": {
+                  "type": "string",
+                  "description": "If status is \"settled\" or \"failed\", the UNIX timestamp when this was resolved"
+                },
+                "failcode": {
+                  "type": "string",
+                  "description": "If status is \"local_failed\" or \"failed\", the numeric onion code returned"
+                },
+                "failreason": {
+                  "type": "string",
+                  "description": "If status is \"local_failed\" or \"failed\", the name of the onion code returned"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/channel/listForwardsFilter": {
+      "get": {
+        "tags": ["Channel Management"],
+        "name": "listForwardFilter",
+        "summary": "Fetch the paginated list of the forwarded htlcs",
+        "description": "Core Documentation - https://lightning.readthedocs.io/lightning-listforwards.7.html",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "reverse",
+            "description": "if true offset is from the end, else from the start",
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "amount of forwards you want to skip from the list, from start if reverse is false, from end if reverse is true.",
+            "type": "integer"
+          },
+          {
+            "in": "query",
+            "name": "maxLen",
+            "description": "maximum range after the offset you want to forward.",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object is returned with index values and an array of forwards",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstIndexOffset": {
+                  "type": "integer",
+                  "description": "starting index of the subarray"
+                },
+                "lastIndexOffset": {
+                  "type": "integer",
+                  "description": "last index of the subarray"
+                },
+                "listForwards": {
+                  "type": "object",
+                  "description": "forwarded htlcs",
+                  "properties": {
+                    "in_channel": {
+                      "type": "string",
+                      "description": "the channel that received the HTLC"
+                    },
+                    "in_msat": {
+                      "type": "string",
+                      "description": "the value of the incoming HTLC"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "still ongoing, completed, failed locally, or failed after forwarding"
+                    },
+                    "received_time": {
+                      "type": "string",
+                      "description": "the UNIX timestamp when this was received"
+                    },
+                    "out_channel": {
+                      "type": "string",
+                      "description": "the channel that the HTLC was forwarded to"
+                    },
+                    "payment_hash": {
+                      "type": "string",
+                      "description": "payment hash sought by HTLC (always 64 characters)"
+                    },
+                    "fee_msat": {
+                      "type": "string",
+                      "description": "If out_channel is present, the amount this paid in fees"
+                    },
+                    "out_msat": {
+                      "type": "string",
+                      "description": "If out_channel is present, the amount we sent out the out_channel"
+                    },
+                    "resolved_time": {
+                      "type": "string",
+                      "description": "If status is \"settled\" or \"failed\", the UNIX timestamp when this was resolved"
+                    },
+                    "failcode": {
+                      "type": "string",
+                      "description": "If status is \"local_failed\" or \"failed\", the numeric onion code returned"
+                    },
+                    "failreason": {
+                      "type": "string",
+                      "description": "If status is \"local_failed\" or \"failed\", the name of the onion code returned"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/channel/funderUpdate": {
+      "post": {
+        "tags": ["Channel Management"],
+        "name": "funderupdate",
+        "summary": "Adjust the node policy for dual funded channels and liquidity ads",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-funderupdate.7.html",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "policy",
+            "description": "How much capital to commit to a v2 open channel request. e.g. match/available/fixed",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "policy_mod",
+            "description": "The policy_mod is the number or 'modification' to apply to the policy",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "leases_only",
+            "description": "will only contribute funds to option_will_fund requests which pay to lease funds. Default to false",
+            "type": "binary"
+          },
+          {
+            "in": "body",
+            "name": "min_their_funding_msat",
+            "description": "Min funding sats that we require in order to activate our contribution policy to the v2 open. Defaults to 10k sats",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "max_their_funding_msat",
+            "description": "Any channel open above this will not be funded",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "per_channel_min_msat",
+            "description": "Min amount that we will contribute to a channel open. Defaults to 10k sats",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "per_channel_max_msat",
+            "description": "Max amount that we will contribute to a channel open",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "reserve_tank_msat",
+            "description": "Amount of sats to leave available in the node wallet. Defaults to zero sats.",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "fuzz_percent",
+            "description": "Percentage to fuzz the resulting contribution amount by. Valid values are 0 to 100. Default 0",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "fund_probability",
+            "description": "Percentage of v2 channel open requests to apply our policy to. Valid values are 0 to 100. Default 100",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "lease_fee_base_msat",
+            "description": "Flat fee for a channel lease. Defaults to 2k sats",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "lease_fee_basis",
+            "description": "Basis fee that's calculated as 1/10k of the total requested funds the peer is asking for. Defaults to 65 bp",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "funding_weight",
+            "description": "used to calculate the fee the peer will compensate your node for its contributing inputs to the funding transaction. Default is 2 inputs + 1 P2WPKH output",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "channel_fee_max_base_msat",
+            "description": "Commitment to a max base fee that your node will charge for routing payments. Default is 5k sats",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "channel_fee_max_proportional_thousandths",
+            "description": "Commitment to a max fee rate that your node will charge for routing payments. Default is 100k ppm",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "compact_lease",
+            "description": "Compact description of the channel lease params",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Funding policy updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "summary": {
+                  "type": "string",
+                  "description": "Summary of the current funding policy"
+                },
+                "policy": { "type": "string", "description": "policy" },
+                "policy_mod": { "type": "string", "description": "policy_mod" },
+                "leases_only": {
+                  "type": "string",
+                  "description": "leases_only"
+                },
+                "min_their_funding_msat": {
+                  "type": "string",
+                  "description": "min_their_funding_msat"
+                },
+                "max_their_funding_msat": {
+                  "type": "string",
+                  "description": "max_their_funding_msat"
+                },
+                "per_channel_min_msat": {
+                  "type": "string",
+                  "description": "per_channel_min_msat"
+                },
+                "per_channel_max_msat": {
+                  "type": "string",
+                  "description": "per_channel_max_msat"
+                },
+                "reserve_tank_msat": {
+                  "type": "string",
+                  "description": "reserve_tank_msat"
+                },
+                "fuzz_percent": {
+                  "type": "string",
+                  "description": "fuzz_percent"
+                },
+                "fund_probability": {
+                  "type": "string",
+                  "description": "fund_probability"
+                },
+                "lease_fee_base_msat": {
+                  "type": "string",
+                  "description": "lease_fee_base_msat"
+                },
+                "lease_fee_basis": {
+                  "type": "string",
+                  "description": "lease_fee_basis"
+                },
+                "funding_weight": {
+                  "type": "string",
+                  "description": "funding_weight"
+                },
+                "channel_fee_max_base_msat": {
+                  "type": "string",
+                  "description": "channel_fee_max_base_msat"
+                },
+                "channel_fee_max_proportional_thousandths": {
+                  "type": "string",
+                  "description": "channel_fee_max_proportional_thousandths"
+                },
+                "compact_lease": {
+                  "type": "string",
+                  "description": "compact_lease"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/datastore": {
+      "post": {
+        "tags": ["Data Store"],
+        "name": "datastore",
+        "summary": "The datastore RPC command allows plugins to store data in the c-lightning database, for later retrieval",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-datastore.7.html",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "key",
+            "description": "Array of values to form a heirarchy. A key can either have children or a value, never both",
+            "type": "array",
+            "items": { "type": "string" },
+            "required": ["key"]
+          },
+          {
+            "in": "body",
+            "name": "dataString",
+            "description": "Value of the element",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "hex",
+            "description": "Value of the element",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "mode",
+            "description": "One of must-create/must-replace/create-or-replace/must-append/create-or-append",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "generation",
+            "description": "If specified, means that the update will fail if the previously-existing data is not exactly that generation",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "On success, an object is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "key added to the datastore"
+                },
+                "generation": { "type": "string", "description": "generation" },
+                "hex": { "type": "string", "description": "hex" },
+                "dataString": { "type": "string", "description": "dataString" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/datastore/listDatastore": {
+      "get": {
+        "tags": ["Data Store"],
+        "name": "listdatastore",
+        "summary": "Allows plugins to fetch data which was stored in the c-lightning database",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-listdatastore.7.html",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "key",
+            "description": "key to list from the datastore",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "On success, an object containing datastore is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "datastore": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "array",
+                        "items": { "type": "string" },
+                        "description": "key added to the datastore"
+                      },
+                      "generation": {
+                        "type": "string",
+                        "description": "generation"
+                      },
+                      "hex": { "type": "string", "description": "hex" },
+                      "dataString": {
+                        "type": "string",
+                        "description": "dataString"
+                      }
+                    }
+                  },
+                  "description": "datastore"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/datastore/delDatastore": {
+      "delete": {
+        "tags": ["Data Store"],
+        "name": "deldatastore",
+        "summary": "Allows plugins to delete data it has stored in the c-lightning database",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-deldatastore.7.html",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "key",
+            "description": "Specify the key to reference the data to delete",
+            "type": "string",
+            "required": ["key"]
+          },
+          {
+            "in": "query",
+            "name": "generation",
+            "description": "The specific version of datastore which needs to be deleted",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The data element deleted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "key added to the datastore"
+                },
+                "generation": { "type": "string", "description": "generation" },
+                "hex": { "type": "string", "description": "hex" },
+                "dataString": { "type": "string", "description": "dataString" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/getBalance": {
+      "get": {
+        "tags": ["General Information"],
+        "name": "getbalance",
+        "summary": "Returns confirmed and unconfirmed on-chain balance",
+        "responses": {
+          "200": {
+            "description": "Balance information fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "totalBalance": {
+                  "type": "integer",
+                  "description": "totalBalance"
+                },
+                "confBalance": {
+                  "type": "integer",
+                  "description": "confBalance"
+                },
+                "unconfBalance": {
+                  "type": "integer",
+                  "description": "unconfBalance"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/getFees": {
+      "get": {
+        "tags": ["General Information"],
+        "name": "getfees",
+        "summary": "Gets the routing fee collected by the node",
+        "responses": {
+          "200": {
+            "description": "routing fee returned successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "feeCollected": {
+                  "type": "integer",
+                  "description": "feeCollected"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/getinfo": {
+      "get": {
+        "tags": ["General Information"],
+        "name": "getinfo",
+        "summary": "Gets node information",
+        "responses": {
+          "200": {
+            "description": "Node data fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "description": "id" },
+                "alias": { "type": "string", "description": "alias" },
+                "color": { "type": "string", "description": "color" },
+                "num_peers": { "type": "string", "description": "num_peers" },
+                "num_pending_channels": {
+                  "type": "string",
+                  "description": "num_pending_channels"
+                },
+                "num_active_channels": {
+                  "type": "string",
+                  "description": "num_active_channels"
+                },
+                "num_inactive_channels": {
+                  "type": "string",
+                  "description": "num_inactive_channels"
+                },
+                "address": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "description": "type" },
+                    "address": { "type": "string", "description": "address" },
+                    "port": { "type": "string", "description": "port" }
+                  },
+                  "description": "address"
+                },
+                "binding": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "description": "type" },
+                    "address": { "type": "string", "description": "address" },
+                    "port": { "type": "string", "description": "port" }
+                  },
+                  "description": "binding"
+                },
+                "version": { "type": "string", "description": "version" },
+                "blockheight": {
+                  "type": "string",
+                  "description": "blockheight"
+                },
+                "network": { "type": "string", "description": "network" },
+                "msatoshi_fees_collected": {
+                  "type": "string",
+                  "description": "msatoshi_fees_collected"
+                },
+                "fees_collected_msat": {
+                  "type": "string",
+                  "description": "fees_collected_msat"
+                },
+                "api_version": {
+                  "type": "string",
+                  "description": "api_version"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/utility/signMessage": {
+      "post": {
+        "tags": ["General Information"],
+        "name": "signmessage",
+        "summary": "Creates a digital signature of the message using node's secret key (message limit 65536 chars)",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "message",
+            "description": "Message must be less that 65536 characters",
+            "type": "string",
+            "required": ["message"]
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Read more on https://lightning.readthedocs.io/lightning-signmessage.7.html",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "signature": { "type": "string", "description": "signature" },
+                "recid": { "type": "string", "description": "recid" },
+                "zbase": { "type": "string", "description": "zbase" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/utility/checkMessage": {
+      "get": {
+        "tags": ["General Information"],
+        "name": "checkmessage",
+        "summary": "Checks a signature is from a node",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "route",
+            "name": "message",
+            "description": "Message must be less that 65536 characters",
+            "type": "string",
+            "required": ["message"]
+          },
+          {
+            "in": "route",
+            "name": "zbase",
+            "description": "signature",
+            "type": "string",
+            "required": ["zbase"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Read more on https://lightning.readthedocs.io/lightning-checkmessage.7.html",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pubkey": { "type": "string", "description": "pubkey" },
+                "verified": { "type": "boolean", "description": "verified" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/utility/decode": {
+      "get": {
+        "tags": ["General Information"],
+        "name": "decode",
+        "summary": "Command for decoding an invoice string",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "route",
+            "name": "invoiceString",
+            "description": "bolt11 or bolt12 string",
+            "type": "string",
+            "required": ["invoiceString"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Read more on https://lightning.readthedocs.io/lightning-decode.7.html",
+            "schema": { "type": "object" }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/invoice/genInvoice": {
+      "post": {
+        "tags": ["Invoice"],
+        "name": "invoice",
+        "summary": "Generate a BOLT11 invoice",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "amount",
+            "description": "Amount in milli satoshis",
+            "type": "integer",
+            "required": ["amount"]
+          },
+          {
+            "in": "body",
+            "name": "label",
+            "description": "Unique label for the invoice",
+            "type": "string",
+            "required": ["label"]
+          },
+          {
+            "in": "body",
+            "name": "description",
+            "description": "Description for the invoice",
+            "type": "string",
+            "required": ["description"]
+          },
+          {
+            "in": "body",
+            "name": "expiry",
+            "description": "Expiry time period for the invoice (seconds)",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "private",
+            "description": "Include routing hints for private channels (true or 1)",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "payment_hash": {
+                  "type": "string",
+                  "description": "payment_hash"
+                },
+                "expires_at": {
+                  "type": "integer",
+                  "description": "expires_at"
+                },
+                "bolt11": { "type": "string", "description": "bolt11" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/invoice/listInvoices": {
+      "get": {
+        "tags": ["Invoice"],
+        "name": "listinvoices",
+        "summary": "Returns the list of invoices",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "label",
+            "description": "Invoice label",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of invoices objects is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "invoices": {
+                  "type": "object",
+                  "properties": {
+                    "label": { "type": "string", "description": "label" },
+                    "bolt11": { "type": "string", "description": "bolt11" },
+                    "payment_hash": {
+                      "type": "string",
+                      "description": "payment_hash"
+                    },
+                    "msatoshi": {
+                      "type": "integer",
+                      "description": "msatoshi"
+                    },
+                    "amount_msat": {
+                      "type": "string",
+                      "description": "amount_msat"
+                    },
+                    "status": { "type": "string", "description": "status" },
+                    "pay_index": {
+                      "type": "integer",
+                      "description": "pay_index"
+                    },
+                    "msatoshi_received": {
+                      "type": "integer",
+                      "description": "msatoshi_received"
+                    },
+                    "amount_received_msat": {
+                      "type": "string",
+                      "description": "amount_received_msat"
+                    },
+                    "paid_at": { "type": "integer", "description": "paid_at" },
+                    "description": {
+                      "type": "string",
+                      "description": "description"
+                    },
+                    "expires_at": {
+                      "type": "integer",
+                      "description": "expires_at"
+                    }
+                  },
+                  "description": "invoices"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/invoice/delExpiredInvoice": {
+      "delete": {
+        "tags": ["Invoice"],
+        "name": "delexpiredinvoice",
+        "summary": "Delete expired invoices",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "maxexpiry",
+            "description": "Removes all invoices that have expired on or before maxexpiry",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "202": { "description": "Expired invoices deleted successfully" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/invoice/delInvoice": {
+      "delete": {
+        "tags": ["Invoice"],
+        "name": "delinvoice",
+        "summary": "Delete a particular invoice with a label and status",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "label",
+            "description": "The unique label of the invoice",
+            "type": "string",
+            "required": ["label"]
+          },
+          {
+            "in": "route",
+            "name": "status",
+            "description": "The status of the invoice",
+            "type": "string",
+            "required": ["status"]
+          }
+        ],
+        "responses": {
+          "202": { "description": "Invoice deleted successfully" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/invoice/waitInvoice": {
+      "get": {
+        "tags": ["Invoice"],
+        "name": "waitinvoice",
+        "summary": "Waits until a specific invoice is paid, then returns that single entry as per listinvoice",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "label",
+            "description": "The unique label of the invoice",
+            "type": "string",
+            "required": ["label"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "On success, an object is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "description": "unique label supplied at invoice creation"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "description used in the invoice"
+                },
+                "payment_hash": {
+                  "type": "string",
+                  "description": "the hash of the payment_preimage which will prove payment (always 64 characters)"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Whether it's paid or expired (one of \"paid\", \"expired\")"
+                },
+                "expires_at": {
+                  "type": "string",
+                  "description": "UNIX timestamp of when it will become / became unpayable"
+                },
+                "amount_msat": {
+                  "type": "string",
+                  "description": "the amount required to pay this invoice"
+                },
+                "bolt11": {
+                  "type": "string",
+                  "description": "the BOLT11 string (always present unless bolt12 is)"
+                },
+                "bolt12": {
+                  "type": "string",
+                  "description": "the BOLT12 string (always present unless bolt11 is)"
+                },
+                "pay_index": {
+                  "type": "string",
+                  "description": "If status is \"paid\", unique incrementing index for this payment"
+                },
+                "amount_received_msat": {
+                  "type": "string",
+                  "description": "If status is \"paid\", the amount actually received"
+                },
+                "paid_at": {
+                  "type": "string",
+                  "description": "If status is \"paid\", UNIX timestamp of when it was paid"
+                },
+                "payment_preimage": {
+                  "type": "string",
+                  "description": "If status is \"paid\", proof of payment (always 64 characters)"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/listFunds": {
+      "get": {
+        "tags": ["General Information"],
+        "name": "listfunds",
+        "summary": "Lists on-chain and channel funds",
+        "responses": {
+          "200": {
+            "description": "Returned fund information successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "outputs": {
+                  "type": "object",
+                  "properties": {
+                    "txid": { "type": "string", "description": "txid" },
+                    "output": { "type": "integer", "description": "output" },
+                    "value": { "type": "integer", "description": "value" },
+                    "amount_msat": {
+                      "type": "string",
+                      "description": "amount_msat"
+                    },
+                    "address": { "type": "string", "description": "address" },
+                    "status": { "type": "string", "description": "status" },
+                    "blockheight": {
+                      "type": "integer",
+                      "description": "blockheight"
+                    }
+                  },
+                  "description": "outputs"
+                },
+                "channels": {
+                  "type": "object",
+                  "properties": {
+                    "peer_id": { "type": "string", "description": "peer_id" },
+                    "connected": {
+                      "type": "string",
+                      "description": "connected"
+                    },
+                    "state": { "type": "string", "description": "state" },
+                    "short_channel_id": {
+                      "type": "string",
+                      "description": "short_channel_id"
+                    },
+                    "channel_sat": {
+                      "type": "integer",
+                      "description": "channel_sat"
+                    },
+                    "our_amount_msat": {
+                      "type": "string",
+                      "description": "our_amount_msat"
+                    },
+                    "channel_total_sat": {
+                      "type": "integer",
+                      "description": "channel_total_sat"
+                    },
+                    "amount_msat": {
+                      "type": "string",
+                      "description": "amount_msat"
+                    },
+                    "funding_txid": {
+                      "type": "string",
+                      "description": "funding_txid"
+                    },
+                    "funding_output": {
+                      "type": "integer",
+                      "description": "funding_output"
+                    }
+                  },
+                  "description": "channels"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/channel/localRemoteBal": {
+      "get": {
+        "tags": ["Channel Management"],
+        "name": "localremotebal",
+        "summary": "Fetches the aggregate local and remote channel balance on the node",
+        "responses": {
+          "200": {
+            "description": "Local-Remote balance returned successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "localBalance": {
+                  "type": "integer",
+                  "description": "localBalance"
+                },
+                "remoteBalance": {
+                  "type": "integer",
+                  "description": "remoteBalance"
+                },
+                "pendingBalance": {
+                  "type": "integer",
+                  "description": "pendingBalance"
+                },
+                "inactiveBalance": {
+                  "type": "integer",
+                  "description": "inactiveBalance"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/network/getRoute": {
+      "get": {
+        "tags": ["Network Information"],
+        "name": "getroute",
+        "summary": "Attempts to find the best route for the payment of msatoshi to a lightning node id",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "pubkey",
+            "description": "Pub key of the node",
+            "type": "string",
+            "required": ["pubkey"]
+          },
+          {
+            "in": "route",
+            "name": "msats",
+            "description": "Amount to be routed in milli satoshis",
+            "type": "integer",
+            "required": ["msats"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of route objects is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "description": "id" },
+                "channel": { "type": "string", "description": "channel" },
+                "direction": { "type": "integer", "description": "direction" },
+                "msatoshi": { "type": "integer", "description": "msatoshi" },
+                "amount_msat": {
+                  "type": "string",
+                  "description": "amount_msat"
+                },
+                "delay": { "type": "integer", "description": "delay" },
+                "alias": { "type": "string", "description": "alias" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/network/listNode": {
+      "get": {
+        "tags": ["Network Information"],
+        "name": "listnode",
+        "summary": "Gets the node information of the given pubkey",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "pubkey",
+            "description": "Pub key of the node",
+            "type": "string",
+            "required": ["pubkey"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Node data fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nodeid": { "type": "string", "description": "nodeid" },
+                "alias": { "type": "string", "description": "alias" },
+                "color": { "type": "string", "description": "color" },
+                "last_timestamp": {
+                  "type": "integer",
+                  "description": "last_timestamp"
+                },
+                "globalfeatures": {
+                  "type": "string",
+                  "description": "globalfeatures"
+                },
+                "features": { "type": "string", "description": "features" },
+                "address": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "type": "string", "description": "type" },
+                    "address": { "type": "string", "description": "address" },
+                    "port": { "type": "string", "description": "port" }
+                  },
+                  "description": "address"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/network/listChannel": {
+      "get": {
+        "tags": ["Network Information"],
+        "name": "listchannel",
+        "summary": "Gets the channel information of the given channel ID",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "shortchannelid",
+            "description": "Short Channel ID",
+            "type": "string",
+            "required": ["shortchannelid"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of channel objects is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "source": { "type": "string", "description": "source" },
+                "destination": {
+                  "type": "string",
+                  "description": "destination"
+                },
+                "short_channel_id": {
+                  "type": "string",
+                  "description": "short_channel_id"
+                },
+                "public": { "type": "string", "description": "public" },
+                "satoshis": { "type": "integer", "description": "satoshis" },
+                "amount_msat": {
+                  "type": "string",
+                  "description": "amount_msat"
+                },
+                "message_flags": {
+                  "type": "integer",
+                  "description": "message_flags"
+                },
+                "channel_flags": {
+                  "type": "integer",
+                  "description": "channel_flags"
+                },
+                "active": { "type": "string", "description": "active" },
+                "last_update": {
+                  "type": "integer",
+                  "description": "last_update"
+                },
+                "base_fee_millisatoshi": {
+                  "type": "integer",
+                  "description": "base_fee_millisatoshi"
+                },
+                "fee_per_millionth": {
+                  "type": "integer",
+                  "description": "fee_per_millionth"
+                },
+                "delay": { "type": "integer", "description": "delay" },
+                "htlc_minimum_msat": {
+                  "type": "string",
+                  "description": "htlc_minimum_msat"
+                },
+                "htlc_maximum_msat": {
+                  "type": "string",
+                  "description": "htlc_maximum_msat"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/network/feeRates": {
+      "get": {
+        "tags": ["Network Information"],
+        "name": "feerates",
+        "summary": "Return feerate estimates, either satoshi-per-kw or satoshi-per-kb",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "feeratestyle",
+            "description": "fee rate style \"perkw\" or \"perkb\"",
+            "type": "string",
+            "required": ["feeratestyle"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feerate info returned successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "perkb": {
+                  "type": "object",
+                  "properties": {
+                    "urgent": { "type": "integer", "description": "urgent" },
+                    "normal": { "type": "integer", "description": "normal" },
+                    "slow": { "type": "integer", "description": "slow" },
+                    "min_acceptable": {
+                      "type": "integer",
+                      "description": "min_acceptable"
+                    },
+                    "max_acceptable": {
+                      "type": "integer",
+                      "description": "max_acceptable"
+                    }
+                  },
+                  "description": "perkb"
+                },
+                "onchain_fee_estimates": {
+                  "type": "object",
+                  "properties": {
+                    "opening_channel_satoshis": {
+                      "type": "integer",
+                      "description": "opening_channel_satoshis"
+                    },
+                    "mutual_close_satoshis": {
+                      "type": "integer",
+                      "description": "mutual_close_satoshis"
+                    },
+                    "unilateral_close_satoshis": {
+                      "type": "integer",
+                      "description": "unilateral_close_satoshis"
+                    }
+                  },
+                  "description": "onchain_fee_estimates"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/network/estimateFees": {
+      "get": {
+        "tags": ["Network Information"],
+        "name": "estimatefees",
+        "summary": "Get the urgent, normal and slow Bitcoin feerates as sat/kVB",
+        "responses": {
+          "200": {
+            "description": "Fee estimates info returned successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "opening": { "type": "integer", "description": "opening" },
+                "mutual_close": {
+                  "type": "integer",
+                  "description": "mutual_close"
+                },
+                "unilateral_close": {
+                  "type": "integer",
+                  "description": "unilateral_close"
+                },
+                "delayed_to_us": {
+                  "type": "integer",
+                  "description": "delayed_to_us"
+                },
+                "htlc_resolution": {
+                  "type": "integer",
+                  "description": "htlc_resolution"
+                },
+                "penalty": { "type": "integer", "description": "penalty" },
+                "min_acceptable": {
+                  "type": "integer",
+                  "description": "min_acceptable"
+                },
+                "max_acceptable": {
+                  "type": "integer",
+                  "description": "max_acceptable"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/network/listNodes": {
+      "get": {
+        "tags": ["Network Information"],
+        "name": "listnodes",
+        "summary": "Gets the node information from the network graph",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Pub key of the node",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Node data fetched successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "nodeid": { "type": "string", "description": "nodeid" },
+                  "alias": { "type": "string", "description": "alias" },
+                  "color": { "type": "string", "description": "color" },
+                  "last_timestamp": {
+                    "type": "integer",
+                    "description": "last_timestamp"
+                  },
+                  "features": { "type": "string", "description": "features" },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "type": { "type": "string", "description": "type" },
+                      "address": { "type": "string", "description": "address" },
+                      "port": { "type": "string", "description": "port" }
+                    },
+                    "description": "address"
+                  },
+                  "option_will_fund": {
+                    "type": "object",
+                    "properties": {
+                      "lease_fee_base_msat": {
+                        "type": "string",
+                        "description": "lease_fee_base_msat"
+                      },
+                      "lease_fee_basis": {
+                        "type": "string",
+                        "description": "lease_fee_basis"
+                      },
+                      "funding_weight": {
+                        "type": "string",
+                        "description": "funding_weight"
+                      },
+                      "channel_fee_max_base_msat": {
+                        "type": "string",
+                        "description": "channel_fee_max_base_msat"
+                      },
+                      "channel_fee_max_proportional_thousandths": {
+                        "type": "string",
+                        "description": "channel_fee_max_proportional_thousandths"
+                      },
+                      "compact_lease": {
+                        "type": "string",
+                        "description": "compact_lease"
+                      }
+                    },
+                    "description": "option_will_funds"
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/newaddr": {
+      "get": {
+        "tags": ["On-Chain fund management"],
+        "name": "newaddr",
+        "summary": "Generates new on-chain address for receiving funds",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "addrType",
+            "description": "Address type (bech32 or p2sh-segwit)",
+            "type": "string",
+            "default": "bech32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address generated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "address": { "type": "string", "description": "address" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/offers/offer": {
+      "post": {
+        "tags": ["Offers"],
+        "name": "offer",
+        "summary": "Creates an offer",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-offer.7.html",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "amount",
+            "description": "Specify the amount as 'any' or '<amount>sats'. E.g. '75sats'",
+            "type": "string",
+            "required": ["amount"]
+          },
+          {
+            "in": "body",
+            "name": "description",
+            "description": "Description of the offer, to be included on the invoice",
+            "type": "string",
+            "required": ["description"]
+          },
+          {
+            "in": "body",
+            "name": "vendor",
+            "description": "Reflects who is issuing this offer",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "label",
+            "description": "Internal-use name for the offer, which can be any UTF-8 string",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "quantity_min",
+            "description": "The presence of quantity_min or quantity_max indicates that the invoice can specify more than one of the items within this (inclusive) range",
+            "type": "number"
+          },
+          {
+            "in": "body",
+            "name": "quantity_max",
+            "description": "The presence of quantity_min or quantity_max indicates that the invoice can specify more than one of the items within this (inclusive) range",
+            "type": "number"
+          },
+          {
+            "in": "body",
+            "name": "absolute_expiry",
+            "description": "The time the offer is valid until, in seconds since the first day of 1970 UTC",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "recurrence",
+            "description": "Means invoice  is  expected at regular intervals. The argument is a positive number followed by one of \"seconds\", \"minutes\", \"hours\", \"days\", \"weeks\", \"months\" or \"years\" e.g. \"2weeks\".",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "recurrence_base",
+            "description": "Time in seconds since the first day of 1970 UTC. This indicates when the first period begins. The \"@\" prefix means that the invoice must start by paying the first period e.g. \"@1609459200\"",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "recurrence_paywindow",
+            "description": "Optional argument of form start of a period in which an invoice and payment is valid",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "recurrence_limit",
+            "description": "Optional argument to indicate the maximum period which exists for recurrence e.g. \"12\" means there are 13 periods of recurrence",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "single_use",
+            "description": "Indicates that the offer is only valid once",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "An offers object is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "offer_id": {
+                  "type": "string",
+                  "description": "The hash of the offer"
+                },
+                "active": {
+                  "type": "string",
+                  "description": "true if the offer is active"
+                },
+                "single_use": {
+                  "type": "boolean",
+                  "description": "true if single use was specified for the offer"
+                },
+                "bolt12": {
+                  "type": "string",
+                  "description": "The bolt12 offer, starting with \"lno1\""
+                },
+                "bolt12_unsigned": {
+                  "type": "string",
+                  "description": "The bolt12 encoding of the offer, without a signature"
+                },
+                "used": {
+                  "type": "boolean",
+                  "description": "true if an associated invoice has been paid"
+                },
+                "created": {
+                  "type": "boolean",
+                  "description": "false if the offer already existed"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "the (optional) user-specified label"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/offers/listOffers": {
+      "get": {
+        "tags": ["Offers"],
+        "name": "listoffers",
+        "summary": "Returns a list of offers on the node",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-listoffers.7.html",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "offer_id",
+            "description": "List offer with only the offer with offer_id (if it exists)",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "active_only",
+            "description": "If specified, only active offers are returned",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of offers is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "offer_id": {
+                  "type": "string",
+                  "description": "The hash of the offer"
+                },
+                "active": {
+                  "type": "boolean",
+                  "description": "true if the offer is active"
+                },
+                "single_use": {
+                  "type": "boolean",
+                  "description": "true if single use was specified for the offer"
+                },
+                "bolt12": {
+                  "type": "string",
+                  "description": "The bolt12 offer, starting with \"lno1\""
+                },
+                "bolt12_unsigned": {
+                  "type": "string",
+                  "description": "The bolt12 encoding of the offer, without signature"
+                },
+                "used": {
+                  "type": "boolean",
+                  "description": "true if an associated invoice has been paid"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "The optional user specified label"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/offers/fetchInvoice": {
+      "post": {
+        "tags": ["Offers"],
+        "name": "fetchInvoice",
+        "summary": "Fetch an invoice for an offer",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-fetchinvoice.7.html",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "offer",
+            "description": "Bolt12 offer string beginning with \"lno1\"",
+            "type": "string",
+            "required": ["offer"]
+          },
+          {
+            "in": "body",
+            "name": "msatoshi",
+            "description": "Required only if the offer does not specify an amount at all",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "quantity",
+            "description": "Required if the offer specifies quantity_min or quantity_max, otherwise it is not allowed",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "recurrence_counter",
+            "description": "Required if the offer specifies recurrence, otherwise it is not allowed",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "recurrence_start",
+            "description": "Required if the offer specifies recurrence_base with start_any_period set, otherwise it is not allowed",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "recurrence_label",
+            "description": "Required if recurrence_counter is set, and otherwise is not allowed",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "timeout",
+            "description": "Optional timeout; if we don't get a reply before this we fail",
+            "type": "string",
+            "default": "60 seconds"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "On success, an object is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "invoice": {
+                  "type": "string",
+                  "description": "The bolt12-encoded invoice string, starting with \"lni1\""
+                },
+                "changes": {
+                  "type": "object",
+                  "description": "Summary of changes from offer",
+                  "properties": {
+                    "description_appended": {
+                      "type": "string",
+                      "description": "extra characters appended to the description field"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "A completely replaced description field"
+                    },
+                    "vendor_removed": {
+                      "type": "string",
+                      "description": "The vendor from the offer, which is missing in the invoice"
+                    },
+                    "vendor": {
+                      "type": "string",
+                      "description": "A completely replaced vendor field"
+                    },
+                    "msat": {
+                      "type": "string",
+                      "description": "The amount, if different from the offer amount multiplied by any quantity"
+                    }
+                  }
+                },
+                "next_period": {
+                  "type": "object",
+                  "description": "Only for recurring invoices if the next period is under the recurrence_limit",
+                  "properties": {
+                    "counter": {
+                      "type": "number",
+                      "description": "the index of the next period to fetchinvoice"
+                    },
+                    "starttime": {
+                      "type": "number",
+                      "description": "UNIX timestamp that the next period starts"
+                    },
+                    "endtime": {
+                      "type": "number",
+                      "description": "UNIX timestamp that the next period ends"
+                    },
+                    "paywindow_start": {
+                      "type": "number",
+                      "description": "UNIX timestamp of the earliest time that the next invoice can be fetched"
+                    },
+                    "paywindow_end": {
+                      "type": "number",
+                      "description": "UNIX timestamp of the latest time that the next invoice can be fetched"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/offers/disableOffer": {
+      "delete": {
+        "tags": ["Offers"],
+        "name": "disableoffer",
+        "summary": "Disable an existing offer",
+        "description": "Core documentation - https://lightning.readthedocs.io/lightning-disableoffer.7.html",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "offerid",
+            "description": "Offer ID",
+            "type": "string",
+            "required": ["offerid"]
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Offer disabled successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "offer_id": {
+                  "type": "string",
+                  "description": "The merkle hash of the offer (always 64 characters)"
+                },
+                "active": {
+                  "type": "boolean",
+                  "description": "Whether the offer can produce invoices/payments (always false)"
+                },
+                "single_use": {
+                  "type": "boolean",
+                  "description": "Whether the offer is disabled after first successful use"
+                },
+                "bolt12": {
+                  "type": "string",
+                  "description": "The bolt12 string representing this offer"
+                },
+                "bolt12_unsigned": {
+                  "type": "string",
+                  "description": "The bolt12 string representing this offer, without signature"
+                },
+                "used": {
+                  "type": "boolean",
+                  "description": "Whether the offer has had an invoice paid / payment made"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "The label provided when offer was created (optional)"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/pay": {
+      "post": {
+        "tags": ["Payments"],
+        "name": "pay",
+        "summary": "Pay a BOLT11 invoice",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "invoice",
+            "description": "BOLT11 invoice",
+            "type": "string",
+            "required": ["invoice"]
+          },
+          {
+            "in": "body",
+            "name": "amount",
+            "description": "Amount in milli satoshis",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "label",
+            "description": "Label for the payment",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "riskfactor",
+            "description": "Annual cost of your funds being stuck (as a percentage)",
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "in": "body",
+            "name": "maxfeepercent",
+            "description": "Fraction of the amount to be paid as fee (as a percentage)",
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "in": "body",
+            "name": "retry_for",
+            "description": "Keep retryinig to find routes for this long (seconds)",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "maxdelay",
+            "description": "The payment can be delayed for more than this many blocks",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "exemptfee",
+            "description": "Amount for which the maxfeepercent check is skipped",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "integer", "description": "id" },
+                "payment_hash": {
+                  "type": "string",
+                  "description": "payment_hash"
+                },
+                "destination": {
+                  "type": "string",
+                  "description": "destination"
+                },
+                "msatoshi": { "type": "integer", "description": "msatoshi" },
+                "amount_msat": {
+                  "type": "string",
+                  "description": "amount_msat"
+                },
+                "msatoshi_sent": {
+                  "type": "integer",
+                  "description": "msatoshi_sent"
+                },
+                "amount_sent_msat": {
+                  "type": "string",
+                  "description": "amount_sent_msat"
+                },
+                "created_at": {
+                  "type": "integer",
+                  "description": "created_at"
+                },
+                "status": { "type": "string", "description": "status" },
+                "payment_preimage": {
+                  "type": "string",
+                  "description": "payment_preimage"
+                },
+                "bolt11": { "type": "string", "description": "bolt11" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "description": "type" },
+                "name": { "type": "string", "description": "name" },
+                "message": { "type": "string", "description": "message" },
+                "code": { "type": "integer", "description": "code" },
+                "fullType": { "type": "string", "description": "fullType" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pay/listPays": {
+      "get": {
+        "tags": ["Payments"],
+        "name": "listpays",
+        "summary": "Returns a list of payments",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "invoice",
+            "description": "BOLT11 invoice",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of pays objects is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pays": {
+                  "type": "object",
+                  "properties": {
+                    "bolt11": { "type": "string", "description": "bolt11" },
+                    "status": { "type": "string", "description": "status" },
+                    "payment_preimage": {
+                      "type": "string",
+                      "description": "preimage"
+                    },
+                    "amount_sent_msat": {
+                      "type": "string",
+                      "description": "amount_sent_msat"
+                    }
+                  },
+                  "description": "pays"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/pay/listPayments": {
+      "get": {
+        "tags": ["Payments"],
+        "name": "listpayments",
+        "summary": "Returns a detailed list of payments",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "invoice",
+            "description": "BOLT11 invoice",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of payments objects is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "payments": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer", "description": "id" },
+                    "payment_hash": {
+                      "type": "string",
+                      "description": "payment_hash"
+                    },
+                    "destination": {
+                      "type": "string",
+                      "description": "destination"
+                    },
+                    "msatoshi": {
+                      "type": "integer",
+                      "description": "msatoshi"
+                    },
+                    "amount_msat": {
+                      "type": "string",
+                      "description": "amount_msat"
+                    },
+                    "msatoshi_sent": {
+                      "type": "integer",
+                      "description": "msatoshi_sent"
+                    },
+                    "amount_sent_msat": {
+                      "type": "string",
+                      "description": "amount_sent_msat"
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "description": "created_at"
+                    },
+                    "status": { "type": "string", "description": "status" },
+                    "payment_preimage": {
+                      "type": "string",
+                      "description": "payment_preimage"
+                    },
+                    "bolt11": { "type": "string", "description": "bolt11" },
+                    "memo": { "type": "string", "description": "memo" }
+                  },
+                  "description": "payments"
+                }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/pay/decodePay": {
+      "get": {
+        "tags": ["Payments"],
+        "name": "decodepay",
+        "summary": "Decode the bolt11 invoice",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "invoice",
+            "description": "BOLT11 invoice",
+            "type": "string",
+            "required": ["invoice"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A decoded invoice object is returned",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currency": {
+                  "type": "string",
+                  "description": "The BIP173 name for the currency"
+                },
+                "created_at": {
+                  "type": "integer",
+                  "description": "Creation timestamp UNIX style"
+                },
+                "expiry": {
+                  "type": "integer",
+                  "description": "The number of seconds this is valid after creation timestamp"
+                },
+                "payee": {
+                  "type": "string",
+                  "description": "The pubkey of the recipient"
+                },
+                "msatoshi": {
+                  "type": "integer",
+                  "description": "The number of msats requested"
+                },
+                "amount_msat": {
+                  "type": "string",
+                  "description": "The number of msats in string with 'msat' appended"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Invoice description"
+                },
+                "min_final_cltv_expiry": {
+                  "type": "integer",
+                  "description": "min_final_cltv_expiry"
+                },
+                "payment_secret": {
+                  "type": "string",
+                  "description": "payment_secret"
+                },
+                "features": { "type": "string", "description": "features" },
+                "routes": { "type": "object", "description": "routes" },
+                "payment_hash": {
+                  "type": "string",
+                  "description": "payment_hash"
+                },
+                "signature": { "type": "string", "description": "signature" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/pay/keysend": {
+      "post": {
+        "tags": ["Payments"],
+        "name": "keysend",
+        "summary": "Send funds to a node without an invoice",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "pubkey",
+            "description": "33 byte, hex-encoded, pubkey of the node",
+            "type": "string",
+            "required": ["pubkey"]
+          },
+          {
+            "in": "body",
+            "name": "amount",
+            "description": "Amount in milli satoshis",
+            "type": "integer",
+            "required": ["amount"]
+          },
+          {
+            "in": "body",
+            "name": "label",
+            "description": "Label for the payment",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "maxfeepercent",
+            "description": "Fraction of the amount to be paid as fee (as a percentage)",
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "in": "body",
+            "name": "retry_for",
+            "description": "Keep retryinig to find routes for this long (seconds)",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "maxdelay",
+            "description": "The payment can be delayed for more than this many blocks",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "exemptfee",
+            "description": "Amount for which the maxfeepercent check is skipped",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "destination": {
+                  "type": "string",
+                  "description": "destination"
+                },
+                "payment_hash": {
+                  "type": "string",
+                  "description": "payment_hash"
+                },
+                "created_at": {
+                  "type": "integer",
+                  "description": "created_at"
+                },
+                "parts": { "type": "integer", "description": "parts" },
+                "msatoshi": { "type": "integer", "description": "msatoshi" },
+                "amount_msat": {
+                  "type": "string",
+                  "description": "amount_msat"
+                },
+                "msatoshi_sent": {
+                  "type": "integer",
+                  "description": "msatoshi_sent"
+                },
+                "amount_sent_msat": {
+                  "type": "string",
+                  "description": "amount_sent_msat"
+                },
+                "payment_preimage": {
+                  "type": "string",
+                  "description": "payment_preimage"
+                },
+                "status": { "type": "string", "description": "status" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string", "description": "type" },
+                "name": { "type": "string", "description": "name" },
+                "message": { "type": "string", "description": "message" },
+                "code": { "type": "integer", "description": "code" },
+                "fullType": { "type": "string", "description": "fullType" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/peer/connect": {
+      "post": {
+        "tags": ["Peer management"],
+        "name": "connect",
+        "summary": "Connect with a network peer",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "id",
+            "description": "Pubkey of the peer",
+            "type": "string",
+            "required": ["id"]
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Peer connected successfully",
+            "schema": {
+              "type": "object",
+              "properties": { "id": { "type": "string", "description": "id" } }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/peer/listPeers": {
+      "get": {
+        "tags": ["Peer management"],
+        "name": "listpeers",
+        "summary": "Returns the list of connected peers",
+        "responses": {
+          "200": {
+            "description": "Fetch node data successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "description": "id" },
+                "connected": { "type": "string", "description": "connected" },
+                "netaddr": { "type": "object", "description": "netaddr" },
+                "alias": { "type": "string", "description": "alias" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/peer/disconnect": {
+      "delete": {
+        "tags": ["Peer management"],
+        "name": "disconnect",
+        "summary": "Disconnect from a network peer",
+        "parameters": [
+          {
+            "in": "route",
+            "name": "pubKey",
+            "description": "Pubket of the connected peer",
+            "type": "string",
+            "required": ["pubKey"]
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "description": "Flag to force disconnect (true or 1)",
+            "type": "string",
+            "default": false
+          }
+        ],
+        "responses": {
+          "202": { "description": "Peer disconnected successfully" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/rpc": {
+      "post": {
+        "tags": ["RPC"],
+        "name": "rpc",
+        "summary": "Issue RPC commands that are enabled in user configuration",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "method",
+            "description": "The method to execute",
+            "type": "string",
+            "required": ["method"]
+          },
+          {
+            "in": "body",
+            "name": "params",
+            "description": "Comma separated array or a json with key-value pairs for optional params",
+            "type": "object"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Information specific to the RPC command" },
+          "500": { "description": "Server error" }
+        }
+      }
+    },
+    "/withdraw": {
+      "post": {
+        "tags": ["On-Chain fund management"],
+        "name": "withdraw",
+        "summary": "Send funds from c-lightning internal wallet to the address specified",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "address",
+            "description": "Any Bitcoin accepted type, including bech32",
+            "type": "string",
+            "required": ["address"]
+          },
+          {
+            "in": "body",
+            "name": "satoshis",
+            "description": "Amount to be withdrawn. The string \"all\" can be used to specify withdrawal of all available funds",
+            "type": "string",
+            "required": ["satoshis"]
+          },
+          {
+            "in": "body",
+            "name": "feeRate",
+            "description": "urgent, normal or slow",
+            "type": "string",
+            "default": "normal"
+          },
+          {
+            "in": "body",
+            "name": "minConf",
+            "type": "integer",
+            "description": "minimum number of confirmations that used outputs should have"
+          },
+          {
+            "in": "body",
+            "name": "utxos",
+            "description": "Specifies the utxos to be used to fund the channel, as an array of \"txid:vout\"",
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "withdraw call executed successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "tx": { "type": "string", "description": "tx" },
+                "txid": { "type": "string", "description": "txid" }
+              }
+            }
+          },
+          "500": { "description": "Server error" }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "responses": {},
+  "parameters": {},
+  "tags": []
+}

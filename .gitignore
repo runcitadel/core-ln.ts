@@ -26,4 +26,4 @@ dist
 #*.cjs
 docs
 cjs
-
+lib

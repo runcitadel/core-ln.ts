@@ -1,0 +1,3 @@
+[submodule "lightning"]
+	path = lightning
+	url = https://github.com/ElementsProject/lightning

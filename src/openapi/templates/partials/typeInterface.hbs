@@ -1,0 +1,18 @@
+{{~#if properties~}}
+{
+{{#each properties}}
+{{#if description}}
+/**
+ * {{{escapeComment description}}}
+ */
+{{/if}}
+{{#if ../parent}}
+{{>isReadOnly}}{{{name}}}{{>isRequired}}: {{>type parent=../parent}};
+{{else}}
+{{>isReadOnly}}{{{name}}}{{>isRequired}}: {{>type}};
+{{/if}}
+{{/each}}
+}{{>isNullable}}
+{{~else~}}
+any
+{{~/if~}}

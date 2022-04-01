@@ -8,7 +8,9 @@ extends:
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 2020
-  project: "./packages/*/tsconfig.json"
+  project:
+  - tsconfig.json
+  - "./packages/*/tsconfig.json"
 
 plugins:
   - "@typescript-eslint"

@@ -8,13 +8,24 @@
   ],
   "devDependencies": {
     "@types/node": "^17.0.23",
+    "@types/pascalcase": "^1.0.1",
+    "@types/prettier": "^2.4.4",
+    "@types/readable-stream": "^2.3.13",
+    "@types/urijs": "^1.19.19",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
+    "camelcase": "^6.3.0",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
+    "handlebars": "^4.7.7",
+    "json-schema-ref-parser": "^9.0.9",
+    "pascalcase": "^2.0.0",
     "prettier": "^2.6.1",
+    "quicktype-core": "^6.0.71",
+    "readable-stream": "^3.6.0",
     "typedoc": "^0.22.13",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "urijs": "^1.19.10"
   },
   "type": "module",
   "scripts": {
