@@ -1,8 +1,8 @@
 /**
  * lightning-disconnect -- Command for disconnecting from another lightning node
- * 
- * **disconnect** *id* [*force*] 
- * 
+ *
+ * **disconnect** *id* [*force*]
+ *
  */
 
 /**
@@ -10,10 +10,10 @@
  * identified by *id*, in the Lightning Network, as long as it doesn't have
  * an active channel. If *force* is set then it will disconnect even with
  * an active channel.
- * 
+ *
  * The *id* can be discovered in the output of the listpeers command, which
  * returns a set of peers:
- * 
+ *
  *     {
  *          "peers": [
  *               {
@@ -23,15 +23,13 @@
  *               }
  *          ]
  *     }
- * 
+ *
  * Passing the *id* attribute of a peer to *disconnect* will terminate the
  * connection.
-*/
+ */
 export interface DisconnectRequest {
   id: string;
   force?: boolean;
 }
 
-export interface DisconnectResponse {
-}
-
+export interface DisconnectResponse {}

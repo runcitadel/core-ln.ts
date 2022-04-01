@@ -16,8 +16,8 @@ export interface DecodeRequest {
 }
 
 export type DecodeResponse =
-| { type: string; valid: false }
-| {
+  | { type: string; valid: false }
+  | {
       type: "bolt12 offer";
       valid: true;
       /**

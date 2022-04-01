@@ -5,5 +5,5 @@ lib
 dist
 rollup.config*.js
 *.js
-src/generated
 cjs
+packages/*/src/generated
