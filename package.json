@@ -23,6 +23,7 @@
     "prettier": "^2.6.1",
     "quicktype-core": "^6.0.71",
     "readable-stream": "^3.6.0",
+    "serve": "^13.0.2",
     "typedoc": "^0.22.13",
     "typescript": "^4.6.3",
     "urijs": "^1.19.10"
@@ -31,7 +32,6 @@
   "scripts": {
     "lint": "eslint --fix packages && prettier -w \"packages/*/src/**/*.ts\"",
     "build": "yarn workspaces foreach install && yarn workspaces foreach run build && yarn workspaces foreach install",
-    "docs": "typedoc --out docs packages/core/src/index.ts"
-  },
-  "main": "dist/index.js"
+    "docs": "typedoc --out docs --entryPointStrategy packages ."
+  }
 }
