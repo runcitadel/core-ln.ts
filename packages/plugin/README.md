@@ -1,20 +1,12 @@
-# @core-ln/plugin
+<p align="center">
+  <img width="700" src="https://github.com/runcitadel/core-ln.ts/raw/main/logo.png">
+  <h1 align="center">@core-ln/plugin</h1>
+</p>
 
 This package allows you to build plugins with core-ln.
 
 
 This API is very similar to that of [clightningjs](https://github.com/lightningd/clightningjs).
-
-## Migrating from clightningjs
-
-Simply replace `const Plugin = require('clightningjs');` with `const { Plugin } = require('c-lightning.ts/cjs/index.cjs');`,
-and replace `new Plugin()` with `new Plugin({ compatMode: true });`.
-
-Please note that some type definitions will be wrong in compat mode to preserve compatibility with clightningjs.
-
-All msat values which are normally typed as bigint will be strings with the suffix "msat" instead if compat mode is enabled.
-
-Please note that regardless of the compatMode, `newaddr()` directly returns an address as a string instead of an object in `c-lightning.ts`.
 
 ## Usage
 
