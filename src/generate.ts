@@ -22,7 +22,7 @@ function getExports(tsFile: string, complierOpts: ts.CompilerOptions = { allowJs
   const sourceFile = program.getSourceFile(fName);
   if (!sourceFile) return [];
   const exportSymbol = checker.getSymbolAtLocation(sourceFile?.getChildAt(0));
-  // @ts-ignore see: https://stackoverflow.com/questions/62865648/how-should-i-get-common-js-exports-with-the-typescript-compiler-api
+  // @ts-expect-error see: https://stackoverflow.com/questions/62865648/how-should-i-get-common-js-exports-with-the-typescript-compiler-api
   const exps = checker.getExportsAndPropertiesOfModule(exportSymbol || sourceFile.symbol);
   return exps;  
 }
@@ -61,8 +61,8 @@ const {
   FetchingJSONSchemaStore,
 } = quicktypeCore;
 
-let transformMap: any = {};
-let transformKeys: Record<string, string[]> = {};
+const transformMap: any = {};
+const transformKeys: Record<string, string[]> = {};
 /**
  * Parse a synopsis
  *
@@ -96,9 +96,9 @@ function parseSynopsis(synopsis: string): {
       parameters.splice(i, 1);
     }
   });
-  let optionalParameters: string[] = [];
+  const optionalParameters: string[] = [];
   if (parts[2].split("[")[1]) {
-    let split = parts[2].split("[");
+    const split = parts[2].split("[");
     split.shift();
     split.forEach((p) => {
       if (!p.split("*")[1]) {
@@ -152,10 +152,10 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
   }
   if (obj && obj.type === "msat") {
     if(parents.length !== 0) {
-      let maybeAdd = parents.reduceRight((all, item) => ({[item]: all}), {});
+      const maybeAdd = parents.reduceRight((all, item) => ({[item]: all}), {});
       mergeDeep(transformMap, maybeAdd);
       let lastElement = transformMap;
-        for(let key of parents) {
+        for(const key of parents) {
           if(parents.indexOf(key) === parents.length - 1) {
             lastElement[key] = obj.type;
           }
@@ -182,7 +182,7 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
     Object.keys(obj).forEach((key) => {
       if(obj[key] && obj[key].deprecated)
         delete obj[key];
-      let newParents = [...parents];
+      const newParents = [...parents];
       if(key !== "properties" && key !== "allOf" && key !== "oneOf" && Number.isNaN(Number(key)) && key !== "then" && key !== "if" && key !== "items")
       newParents.push(key);
       fixHex(obj[key], method, key, newParents);
@@ -247,7 +247,7 @@ for (const file of files) {
       }
       realSynopsis = lines[i] + " " + realSynopsis;
     }
-    let parsedSynopsis = parseSynopsis(realSynopsis);
+    const parsedSynopsis = parseSynopsis(realSynopsis);
     fixHex(jsonSchema, parsedSynopsis.name, "", [parsedSynopsis.name]);
 
   // Read the previous file
@@ -257,7 +257,7 @@ for (const file of files) {
   } catch {
     oldFile = "";
   }
-  let synopsisHasChanged = !(oldFile.startsWith(`/**
+  const synopsisHasChanged = !(oldFile.startsWith(`/**
  * ${heading}
  * 
  * ${realSynopsis}
@@ -278,7 +278,7 @@ for (const file of files) {
   );
   let fullOutput = outputLines.join("\n");
   if(transformKeys[parsedSynopsis.name]) {
-    for (let key of transformKeys[parsedSynopsis.name]) {
+    for (const key of transformKeys[parsedSynopsis.name]) {
       fullOutput = fullOutput.replaceAll(
         `${key}: number;`,
         `${key}: bigint;`
@@ -319,8 +319,8 @@ ${fullOutput}
     stringExports = stringExports.slice(0, -2);
 
     let fnArguments = "";
-    let requestType = pascalcase(parsedSynopsis.name) + "Request";
-    let responseType = pascalcase(parsedSynopsis.name) + "Response";
+    const requestType = pascalcase(parsedSynopsis.name) + "Request";
+    const responseType = pascalcase(parsedSynopsis.name) + "Response";
     fnArguments = "payload: " + requestType;
     // If the parsed synopsis has no required parameters, then we can use an empty payload
     if (parsedSynopsis.parameters.length == 0) fnArguments += " = {}";
