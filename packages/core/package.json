@@ -1,7 +1,7 @@
 {
     "name": "@core-ln/core",
     "author": "Aaron Dewes <aaron.dewes@protonmail.com>",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^21.0.2",
         "@rollup/plugin-typescript": "^8.3.1",
@@ -12,7 +12,7 @@
         "typescript": "^4.6.3"
     },
     "dependencies": {
-        "@core-ln/base": "^0.0.2"
+        "@core-ln/base": "^0.1.0"
     },
     "scripts": {
         "build": "rollup -c && rimraf dist/generated dist/index.d.ts && mv dist/c-lightning.d.ts dist/index.d.ts",

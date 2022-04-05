@@ -1,7 +1,7 @@
 {
     "name": "@core-ln/base",
     "author": "Aaron Dewes <aaron.dewes@protonmail.com>",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^21.0.2",
         "@rollup/plugin-typescript": "^8.3.1",
