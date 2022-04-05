@@ -2888,6 +2888,8 @@ export default abstract class RPCClient extends EventEmitter {
    * increase per channel (we don't remember an arbitrary number of prior
    * feerates) and if the node is restarted the updated fees are enforced
    * immediately.
+   * 
+   * @deprecated Since Core Lightning 0.11.0, use {@link setchannel}
    */
   setchannelfee(payload: SetchannelfeeRequest): Promise<SetchannelfeeResponse> {
     return this.call<SetchannelfeeResponse>("setchannelfee", payload);
