@@ -12,7 +12,7 @@ unilaterally close the channel when that number of seconds is reached.
 If <em>unilateraltimeout</em> is zero, then the <strong>close</strong> command will wait
 indefinitely until the peer is online and can negotiate a mutual close.
 The default is 2 days (172800 seconds).</p>
-<p>The <em>destination</em> can be of any Bitcoin accepted type, including bech32.
+<p>The <em>destination</em> can be of any Bitcoin bech32 type.
 If it isn&#39;t specified, the default is a c-lightning wallet address.  If
 the peer hasn&#39;t offered the <code>option_shutdown_anysegwit</code> feature, then
 taproot addresses (or other v1+ segwit) are not allowed.  Tell your

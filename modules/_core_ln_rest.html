@@ -13,7 +13,7 @@ This can fail if your C-lightning node is a fresh install that has not
 connected to any peers yet (your node has no gossip yet),
 or if the target <em>id</em> is a fresh install that has no channels yet
 (nobody will gossip about a node until it has one published channel).</p>
-<p>If <em>host</em> begins with a <em>/</em> it is interpreted as a local path, and the
+<p>If <em>host</em> begins with a * / * it is interpreted as a local path, and the
 connection will be made to that local socket (see <strong>bind-addr</strong> in
 lightningd-config(5)).</p>
 <p>Connecting to a node is just the first step in opening a channel with
