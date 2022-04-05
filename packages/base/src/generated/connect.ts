@@ -25,7 +25,7 @@
  * or if the target *id* is a fresh install that has no channels yet
  * (nobody will gossip about a node until it has one published channel).
  *
- * If *host* begins with a *\/* it is interpreted as a local path, and the
+ * If *host* begins with a * / * it is interpreted as a local path, and the
  * connection will be made to that local socket (see **bind-addr** in
  * lightningd-config(5)).
  *

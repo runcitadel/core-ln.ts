@@ -3,16 +3,24 @@ import * as fsPromises from "fs/promises";
 import camelcase from "camelcase";
 import pascalcase from "pascalcase";
 import quicktypeCore from "quicktype-core";
-import ts from 'typescript';
-import { resolve } from 'path';
+import ts from "typescript";
+import { resolve } from "path";
 import prettier from "prettier";
 
 // Join two strings and make the first character of each uppercase
 function joinUpperCaseFirst(a: string, b: string) {
-  return a.charAt(0).toUpperCase() + a.slice(1) + b.charAt(0).toUpperCase() + b.slice(1);
+  return (
+    a.charAt(0).toUpperCase() +
+    a.slice(1) +
+    b.charAt(0).toUpperCase() +
+    b.slice(1)
+  );
 }
 
-function getExports(tsFile: string, complierOpts: ts.CompilerOptions = { allowJs: true }): ts.Symbol[] {
+function getExports(
+  tsFile: string,
+  complierOpts: ts.CompilerOptions = { allowJs: true }
+): ts.Symbol[] {
   const fName = resolve(tsFile);
   if (!fs.existsSync(fName)) {
     throw new Error(`The file ${fName} does not exist`);
@@ -23,12 +31,15 @@ function getExports(tsFile: string, complierOpts: ts.CompilerOptions = { allowJs
   if (!sourceFile) return [];
   const exportSymbol = checker.getSymbolAtLocation(sourceFile?.getChildAt(0));
   // @ts-expect-error see: https://stackoverflow.com/questions/62865648/how-should-i-get-common-js-exports-with-the-typescript-compiler-api
-  const exps = checker.getExportsAndPropertiesOfModule(exportSymbol || sourceFile.symbol);
-  return exps;  
+  const exps = checker.getExportsAndPropertiesOfModule(
+    // @ts-expect-error see: https://stackoverflow.com/questions/62865648/how-should-i-get-common-js-exports-with-the-typescript-compiler-api
+    exportSymbol || sourceFile.symbol
+  );
+  return exps;
 }
 
 export function isObject(item: any): boolean {
-  return (item && typeof item === 'object' && !Array.isArray(item));
+  return item && typeof item === "object" && !Array.isArray(item);
 }
 
 /**
@@ -54,12 +65,8 @@ export function mergeDeep(target: any, ...sources: any[]): any {
   return mergeDeep(target, ...sources);
 }
 
-const {
-  quicktype,
-  InputData,
-  JSONSchemaInput,
-  FetchingJSONSchemaStore,
-} = quicktypeCore;
+const { quicktype, InputData, JSONSchemaInput, FetchingJSONSchemaStore } =
+  quicktypeCore;
 
 const transformMap: any = {};
 const transformKeys: Record<string, string[]> = {};
@@ -140,36 +147,38 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
       obj.type === "signature" ||
       obj.type === "short_channel_id" ||
       obj.type === "point32" ||
-      obj.type === "bip340sig")
+      obj.type === "bip340sig" ||
+      obj.type === "secret" ||
+      obj.type === "hash")
   ) {
     obj.type = `string`;
   }
-  if (
-    obj &&
-    (obj.type === "u8" || obj.type === "u16" || obj.type === "u32")
-  ) {
+  if (obj && (obj.type === "u8" || obj.type === "u16" || obj.type === "u32")) {
     obj.type = `number`;
   }
   if (obj && obj.type === "msat") {
-    if(parents.length !== 0) {
-      const maybeAdd = parents.reduceRight((all, item) => ({[item]: all}), {});
+    if (parents.length !== 0) {
+      const maybeAdd = parents.reduceRight(
+        (all, item) => ({ [item]: all }),
+        {}
+      );
       mergeDeep(transformMap, maybeAdd);
       let lastElement = transformMap;
-        for(const key of parents) {
-          if(parents.indexOf(key) === parents.length - 1) {
-            lastElement[key] = obj.type;
-          }
-          lastElement = lastElement[key];
+      for (const key of parents) {
+        if (parents.indexOf(key) === parents.length - 1) {
+          lastElement[key] = obj.type;
+        }
+        lastElement = lastElement[key];
       }
       // This is just a hack for nested properties and will lead to issues if there are
       // multiple properties with the same name
       // TODO: Improve this logic
-      if(!transformKeys[method]) transformKeys[method] = [];
+      if (!transformKeys[method]) transformKeys[method] = [];
       transformKeys[method].push(key);
     } else {
-      if(!transformMap[method]) transformMap[method] = {};
-      if(!transformKeys[method]) transformKeys[method] = [];
-      if(!transformMap[method][key]) transformMap[method][key] = obj.type;
+      if (!transformMap[method]) transformMap[method] = {};
+      if (!transformKeys[method]) transformKeys[method] = [];
+      if (!transformMap[method][key]) transformMap[method][key] = obj.type;
       transformKeys[method].push(key);
     }
     obj.type = `number`;
@@ -180,94 +189,113 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
   }
   if (obj && typeof obj === "object") {
     Object.keys(obj).forEach((key) => {
-      if(obj[key] && obj[key].deprecated)
-        delete obj[key];
+      if (obj[key] && obj[key].deprecated) delete obj[key];
       const newParents = [...parents];
-      if(key !== "properties" && key !== "allOf" && key !== "oneOf" && Number.isNaN(Number(key)) && key !== "then" && key !== "if" && key !== "items")
-      newParents.push(key);
+      if (
+        key !== "properties" &&
+        key !== "allOf" &&
+        key !== "oneOf" &&
+        Number.isNaN(Number(key)) &&
+        key !== "then" &&
+        key !== "if" &&
+        key !== "items"
+      )
+        newParents.push(key);
       fixHex(obj[key], method, key, newParents);
     });
   }
 }
 
-const files = fs.readdirSync("./lightning/doc");
+const files = fs
+  .readdirSync("./lightning/doc")
+  .filter((file) => file.endsWith(".7.md"));
+
 let imports = "";
 let exports = "";
 let generatedMethods = "";
 
 for (const file of files) {
-  if (file.endsWith(".7.md")) {
-    console.log(`Parsing ${file}...`);
-    const fileName = file.replace(".7.md", "").replace("lightning-", "");
-    const fileContents = fs.readFileSync("./lightning/doc/" + file, "utf8");
-    const jsonSchema = JSON.parse(
-      fs.readFileSync(
-        "./lightning/doc/schemas/" + fileName + ".schema.json",
-        "utf8"
-      )
-    );
-    const lines = fileContents.split("\n");
-    const heading = lines[0];
-    // Get the line that contains "DESCRIPTION"
-    const descriptionLine = lines.findIndex((line) =>
-      line.includes("DESCRIPTION")
-    );
-    const responseLine = lines.findIndex((line) =>
-      line.includes("RETURN VALUE")
-    );
-    // All lines between description and return value
-    // Except the lines themselves and the line directly after the description
-    const descriptionLines =
-      "/**" +
-      lines
-        .slice(descriptionLine + 2, responseLine - 1)
-        .join("\n * ")
-        .replaceAll("\\", "")
-        .replaceAll("*/", "*\\/") +
-      "\n*/";
-    const methodDescriptionLines =
-      "/**" +
-      lines
-        .slice(descriptionLine + 2, responseLine - 1)
-        .join("\n   * ")
-        .replaceAll("\\", "")
-        .replaceAll("*/", "*\\/") +
-      "\n  */";
-    // Go backwards in lines from descriptionLine - 2 until we find an empty line,
-    // Then join the lines with a space
-    let realSynopsis = "";
-    for (let i = descriptionLine - 2; i >= 0; i--) {
-      if (lines[i].trim() === "") {
-        break;
-      }
-      // If the line starts with an uppercase letter, go back two lines and skip this one
-      if (lines[i].trim().match(/^[A-Z]/)) {
-        i--;
-        continue;
-      }
-      realSynopsis = lines[i] + " " + realSynopsis;
+  console.log(
+    `Parsing ${file} (${files.indexOf(file) + 1}/${files.length})...`
+  );
+  const fileName = file.replace(".7.md", "").replace("lightning-", "");
+  const fileContents = fs
+    .readFileSync("./lightning/doc/" + file, "utf8")
+    .replaceAll("\\", "")
+    .replaceAll("*/*", "* / *");
+  const jsonSchema = JSON.parse(
+    fs.readFileSync(
+      "./lightning/doc/schemas/" + fileName + ".schema.json",
+      "utf8"
+    )
+  );
+  const lines = fileContents.split("\n");
+  const heading = lines[0];
+  // Get the line that contains "DESCRIPTION"
+  const descriptionLine = lines.findIndex((line) =>
+    line.includes("DESCRIPTION")
+  );
+  const responseLine = lines.findIndex((line) => line.includes("RETURN VALUE"));
+  // All lines between description and return value
+  // Except the lines themselves and the line directly after the description
+  const descriptionLines =
+    "/**" +
+    lines
+      .slice(descriptionLine + 2, responseLine - 1)
+      .join("\n * ")
+      .replaceAll("\\", "")
+      .replaceAll("*/", "*\\/") +
+    "\n*/";
+  const methodDescriptionLines =
+    "/**" +
+    lines
+      .slice(descriptionLine + 2, responseLine - 1)
+      .join("\n   * ")
+      .replaceAll("\\", "")
+      .replaceAll("*/", "*\\/") +
+    "\n  */";
+  // Go backwards in lines from descriptionLine - 2 until we find an empty line,
+  // Then join the lines with a space
+  let realSynopsis = "";
+  for (let i = descriptionLine - 2; i >= 0; i--) {
+    if (lines[i].trim() === "") {
+      break;
     }
-    const parsedSynopsis = parseSynopsis(realSynopsis);
-    fixHex(jsonSchema, parsedSynopsis.name, "", [parsedSynopsis.name]);
+    // If the line starts with an uppercase letter, go back two lines and skip this one
+    if (lines[i].trim().match(/^[A-Z]/)) {
+      i--;
+      continue;
+    }
+    realSynopsis = lines[i] + " " + realSynopsis;
+  }
+  const parsedSynopsis = parseSynopsis(realSynopsis);
+  fixHex(jsonSchema, parsedSynopsis.name, "", [parsedSynopsis.name]);
 
   // Read the previous file
   let oldFile;
   try {
-    oldFile = fs.readFileSync(`./packages/base/src/generated/${fileName}.ts`).toString("utf8").trim();
+    oldFile = fs
+      .readFileSync(`./packages/base/src/generated/${fileName}.ts`)
+      .toString("utf8")
+      .trim();
   } catch {
     oldFile = "";
   }
-  const synopsisHasChanged = !(oldFile.startsWith(`/**
+  const synopsisHasChanged = !oldFile.startsWith(
+    prettier
+      .format(
+        `/**
  * ${heading}
  * 
  * ${realSynopsis}
  * 
- */`) || oldFile.startsWith(`/**
- * ${heading}
- * 
- * ${realSynopsis.replaceAll("[", "\\[").replaceAll("]", "\\]")}
- * 
- */`));
+ */`,
+        {
+          parser: "espree",
+        }
+      )
+      .trim()
+  );
 
   const oldSynopsis = "export " + oldFile.split("export")[1]?.trim();
 
@@ -276,19 +304,15 @@ for (const file of files) {
     pascalcase(parsedSynopsis.name) + "Response",
     JSON.stringify(jsonSchema)
   );
-  let fullOutput = outputLines.join("\n");
-  if(transformKeys[parsedSynopsis.name]) {
+  let fullOutput = outputLines.join("\n").replaceAll("*/*", "* / *");
+  if (transformKeys[parsedSynopsis.name]) {
     for (const key of transformKeys[parsedSynopsis.name]) {
-      fullOutput = fullOutput.replaceAll(
-        `${key}: number;`,
-        `${key}: bigint;`
-      ).replaceAll(
-        `${key}?: number;`,
-        `${key}?: bigint;`
-      );
+      fullOutput = fullOutput
+        .replaceAll(`${key}: number;`, `${key}: bigint;`)
+        .replaceAll(`${key}?: number;`, `${key}?: bigint;`);
     }
   }
-    const tsFileContents = `/**
+  const tsFileContents = `/**
  * ${heading}
  * 
  * ${realSynopsis}
@@ -296,51 +320,58 @@ for (const file of files) {
  */
 
 ${descriptionLines}
-${synopsisHasChanged ? parsedSynopsisToTsInterface(parsedSynopsis) : oldSynopsis}
+${
+  synopsisHasChanged ? parsedSynopsisToTsInterface(parsedSynopsis) : oldSynopsis
+}
 
 ${fullOutput}
 `;
-    await fsPromises.writeFile(
-      `./packages/base/src/generated/${fileName}.ts`,
-      prettier.format(tsFileContents, {
-        parser: "typescript",
-      }),
-    );
+  await fsPromises.writeFile(
+    `./packages/base/src/generated/${fileName}.ts`,
+    prettier.format(tsFileContents, {
+      parser: "typescript",
+    })
+  );
 
-    const _exports = getExports(`./packages/base/src/generated/${fileName}.ts`);
-    let stringExports = "";
-    for (const symbol of _exports) {
-      if (symbol.name === `${pascalcase(parsedSynopsis.name)}Request` || symbol.name === `${pascalcase(parsedSynopsis.name)}Response`) {
-        stringExports += `${symbol.name}, `;
-      } else {
-        stringExports += `${symbol.name} as ${joinUpperCaseFirst(fileName, symbol.name)}, `;
-      }
+  const _exports = getExports(`./packages/base/src/generated/${fileName}.ts`);
+  let stringExports = "";
+  for (const symbol of _exports) {
+    if (
+      symbol.name === `${pascalcase(parsedSynopsis.name)}Request` ||
+      symbol.name === `${pascalcase(parsedSynopsis.name)}Response`
+    ) {
+      stringExports += `${symbol.name}, `;
+    } else {
+      stringExports += `${symbol.name} as ${joinUpperCaseFirst(
+        fileName,
+        symbol.name
+      )}, `;
     }
-    stringExports = stringExports.slice(0, -2);
+  }
+  stringExports = stringExports.slice(0, -2);
 
-    let fnArguments = "";
-    const requestType = pascalcase(parsedSynopsis.name) + "Request";
-    const responseType = pascalcase(parsedSynopsis.name) + "Response";
-    fnArguments = "payload: " + requestType;
-    // If the parsed synopsis has no required parameters, then we can use an empty payload
-    if (parsedSynopsis.parameters.length == 0) fnArguments += " = {}";
-    generatedMethods += `
+  let fnArguments = "";
+  const requestType = pascalcase(parsedSynopsis.name) + "Request";
+  const responseType = pascalcase(parsedSynopsis.name) + "Response";
+  fnArguments = "payload: " + requestType;
+  // If the parsed synopsis has no required parameters, then we can use an empty payload
+  if (parsedSynopsis.parameters.length == 0) fnArguments += " = {}";
+  generatedMethods += `
   ${methodDescriptionLines}
   ${camelcase(parsedSynopsis.name)}(${fnArguments}): Promise<${responseType}> {
     return this.call<${responseType}>("${parsedSynopsis.name}", payload);
   }
     `;
-    imports += `
+  imports += `
 import type { ${requestType}, ${responseType} } from "./${fileName}";`;
-exports += `
+  exports += `
 export type { ${stringExports} } from "./${fileName}";`;
-  }
 }
-
 
 await fsPromises.writeFile(
   "./packages/base/src/generated/main.ts",
-  `import { EventEmitter } from "events";
+  prettier.format(
+    `import { EventEmitter } from "events";
 ${imports}
 
 export const transformMap: any = ${JSON.stringify(transformMap, undefined, 2)}
@@ -399,10 +430,18 @@ export default abstract class RPCClient extends EventEmitter {
 }
 
 ${exports}
-`
+`,
+    {
+      parser: "typescript",
+    }
+  )
 );
 
-async function quicktypeJSONSchema(targetLanguage: string, typeName: string, jsonSchemaString: string) {
+async function quicktypeJSONSchema(
+  targetLanguage: string,
+  typeName: string,
+  jsonSchemaString: string
+) {
   const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore());
 
   // We could add multiple schemas for multiple types,
@@ -416,8 +455,7 @@ async function quicktypeJSONSchema(targetLanguage: string, typeName: string, jso
     inputData,
     lang: targetLanguage,
     rendererOptions: {
-      'just-types': "true",
-    }
+      "just-types": "true",
+    },
   });
 }
-

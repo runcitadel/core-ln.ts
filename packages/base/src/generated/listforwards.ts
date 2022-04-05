@@ -51,6 +51,10 @@ export interface Forward {
    */
   status: Status;
   /**
+   * Either a legacy onion format or a modern tlv format
+   */
+  style?: Style;
+  /**
    * the amount this paid in fees
    */
   fee_msat?: bigint;
@@ -68,4 +72,12 @@ export enum Status {
   LocalFailed = "local_failed",
   Offered = "offered",
   Settled = "settled",
+}
+
+/**
+ * Either a legacy onion format or a modern tlv format
+ */
+export enum Style {
+  Legacy = "legacy",
+  TLV = "tlv",
 }

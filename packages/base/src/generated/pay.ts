@@ -1,7 +1,7 @@
 /**
  * lightning-pay -- Command for sending a payment to a BOLT11 invoice
  *
- * **pay** *bolt11* [*msatoshi*] [*label*] [*riskfactor*] [*maxfeepercent*] [*retry\_for*] [*maxdelay*] [*exemptfee*] [*exclude*]
+ * **pay** *bolt11* [*msatoshi*] [*label*] [*riskfactor*] [*maxfeepercent*] [*retry_for*] [*maxdelay*] [*exemptfee*] [*exclude*]
  *
  */
 

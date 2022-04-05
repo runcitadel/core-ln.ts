@@ -594,7 +594,7 @@ export default abstract class RPCClient extends EventEmitter {
    * or if the target *id* is a fresh install that has no channels yet
    * (nobody will gossip about a node until it has one published channel).
    *
-   * If *host* begins with a *\/* it is interpreted as a local path, and the
+   * If *host* begins with a * / * it is interpreted as a local path, and the
    * connection will be made to that local socket (see **bind-addr** in
    * lightningd-config(5)).
    *
@@ -2822,8 +2822,8 @@ export default abstract class RPCClient extends EventEmitter {
    * only applied to a single rate increase per channel (we don't remember
    * an arbitrary number of prior feerates) and if the node is restarted
    * the updated configuration is enforced immediately.
-   *
-   * @since c-lightning 0.10.3 (UNRELEASED)
+   * 
+   * @since c-lightning 0.11.0
    */
   setchannel(payload: SetchannelRequest): Promise<SetchannelResponse> {
     return this.call<SetchannelResponse>("setchannel", payload);
@@ -3289,6 +3289,7 @@ export type {
   ListforwardsResponse,
   Forward as ListforwardsForward,
   Status as ListforwardsStatus,
+  Style as ListforwardsStyle,
 } from "./listforwards";
 export type {
   ListfundsRequest,

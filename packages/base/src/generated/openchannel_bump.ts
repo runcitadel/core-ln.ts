@@ -1,5 +1,5 @@
 /**
- * lightning-openchannel\_bump -- Command to initiate a channel RBF
+ * lightning-openchannel_bump -- Command to initiate a channel RBF
  *
  * **openchannel_bump** *channel_id* *amount* *initalpsbt* [*funding_feerate*]
  *

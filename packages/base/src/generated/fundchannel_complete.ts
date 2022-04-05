@@ -1,7 +1,7 @@
 /**
- * lightning-fundchannel\_complete -- Command for completing channel establishment
+ * lightning-fundchannel_complete -- Command for completing channel establishment
  *
- * **fundchannel\_complete** *id* *psbt*
+ * **fundchannel_complete** *id* *psbt*
  *
  */
 

@@ -1,7 +1,7 @@
 /**
  * lightning-disableoffer -- Command for removing an offer
  *
- * **disableoffer** *offer\_id*
+ * **disableoffer** *offer_id*
  *
  */
 

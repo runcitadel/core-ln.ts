@@ -1,7 +1,7 @@
 /**
- * lightning-fundchannel\_cancel -- Command for completing channel establishment
+ * lightning-fundchannel_cancel -- Command for completing channel establishment
  *
- * **fundchannel\_cancel** *id*
+ * **fundchannel_cancel** *id*
  *
  */
 

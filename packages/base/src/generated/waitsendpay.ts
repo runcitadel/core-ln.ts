@@ -1,7 +1,7 @@
 /**
  * lightning-waitsendpay -- Command for sending a payment via a route
  *
- * **waitsendpay** *payment\_hash* [*timeout*] [*partid*]
+ * **waitsendpay** *payment_hash* [*timeout*] [*partid*]
  *
  */
 
@@ -27,9 +27,9 @@
  * returns an error.
  */
 export interface WaitsendpayRequest {
-  payment_hash: /* GUESSED */ string;
-  timeout?: /* GUESSED */ string;
-  partid?: /* GUESSED */ string;
+  payment_hash: string;
+  timeout?: number | string;
+  partid?: number | string;
 }
 
 export interface WaitsendpayResponse {

@@ -1,7 +1,7 @@
 /**
  * lightning-delpay -- Command for removing a completed or failed payment
  *
- * **delpay** *payment\_hash* *status*
+ * **delpay** *payment_hash* *status*
  *
  */
 

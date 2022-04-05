@@ -1,7 +1,7 @@
 /**
  * lightning-waitanyinvoice -- Command for waiting for payments
  *
- * **waitanyinvoice** [*lastpay\_index*] [*timeout*]
+ * **waitanyinvoice** [*lastpay_index*] [*timeout*]
  *
  */
 

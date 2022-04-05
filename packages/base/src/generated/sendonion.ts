@@ -125,6 +125,10 @@ export interface SendonionResponse {
    */
   label?: string;
   /**
+   * the partid (if supplied) to sendonion/sendpay
+   */
+  partid?: number;
+  /**
    * the hash of the *payment_preimage* which will prove payment
    */
   payment_hash: string;

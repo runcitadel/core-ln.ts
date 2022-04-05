@@ -1,5 +1,5 @@
 /**
- * lightning-openchannel\_update -- Command to update a collab channel open
+ * lightning-openchannel_update -- Command to update a collab channel open
  *
  * **openchannel_update** *channel_id* *psbt*
  *

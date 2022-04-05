@@ -1,7 +1,7 @@
 /**
- * lightning-fundchannel\_start -- Command for initiating channel establishment for a lightning channel
+ * lightning-fundchannel_start -- Command for initiating channel establishment for a lightning channel
  *
- * **fundchannel\_start** *id* *amount* [*feerate* *announce* *close_to* *push_msat*]
+ * **fundchannel_start** *id* *amount* [*feerate* *announce* *close_to* *push_msat*]
  *
  */
 

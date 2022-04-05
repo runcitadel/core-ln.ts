@@ -1,5 +1,5 @@
 /**
- * lightning-openchannel\_abort -- Command to abort a channel to a peer
+ * lightning-openchannel_abort -- Command to abort a channel to a peer
  *
  * **openchannel_abort** *channel_id*
  *

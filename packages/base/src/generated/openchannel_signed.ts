@@ -1,5 +1,5 @@
 /**
- * lightning-openchannel\_signed -- Command to conclude a channel open
+ * lightning-openchannel_signed -- Command to conclude a channel open
  *
  * **openchannel_signed** *channel_id* *signed_psbt*
  *
