@@ -64,6 +64,10 @@ export interface DecodepayResponse {
    */
   payment_hash: string;
   /**
+   * the payment_metadata to put in the payment
+   */
+  payment_metadata?: string;
+  /**
    * the secret to hand to the payee node
    */
   payment_secret?: string;

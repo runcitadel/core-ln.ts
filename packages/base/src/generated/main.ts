@@ -211,6 +211,8 @@ export const transformMap: any = {
     },
   },
   listconfigs: {
+    "htlc-minimum-msat": "msat",
+    "htlc-maximum-msat": "msat",
     "max-dust-htlc-exposure-msat": "msat",
   },
   listforwards: {
@@ -496,7 +498,7 @@ export default abstract class RPCClient extends EventEmitter {
    * indefinitely until the peer is online and can negotiate a mutual close.
    * The default is 2 days (172800 seconds).
    *
-   * The *destination* can be of any Bitcoin accepted type, including bech32.
+   * The *destination* can be of any Bitcoin bech32 type.
    * If it isn't specified, the default is a c-lightning wallet address.  If
    * the peer hasn't offered the `option_shutdown_anysegwit` feature, then
    * taproot addresses (or other v1+ segwit) are not allowed.  Tell your
@@ -1221,10 +1223,9 @@ export default abstract class RPCClient extends EventEmitter {
    * *minconf* specifies the minimum number of confirmations that used
    * outputs should have. Default is 1.
    *
-   * *reserve* is either boolean or a number: if *true* or a non-zero
-   * number then *reserveinputs* is called (successfully, with
-   * *exclusive* true) on the returned PSBT for this number of blocks (or
-   * 72 blocks if *reserve* is simply *true*).
+   * If *reserve* if not zero, then *reserveinputs* is called (successfully, with
+   * *exclusive* true) on the returned PSBT for this number of blocks (default
+   * 72 blocks if unspecified).
    *
    * *locktime* is an optional locktime: if not set, it is set to a recent
    * block height.
@@ -1625,10 +1626,8 @@ export default abstract class RPCClient extends EventEmitter {
    * true as described below). It must be UTF-8, and cannot use *u* JSON
    * escape codes.
    *
-   * The *expiry* is optionally the time the invoice is valid for; without a
-   * suffix it is interpreted as seconds, otherwise suffixes *s*, *m*, *h*,
-   * *d*, *w* indicate seconds, minutes, hours, days and weeks respectively.
-   * If no value is provided the default of 604800 (1w) is used.
+   * The *expiry* is optionally the time the invoice is valid for, in seconds.
+   * If no value is provided the default of 604800 (1 week) is used.
    *
    * The *fallbacks* array is one or more fallback addresses to include in
    * the invoice (in order from most-preferred to least): note that these
@@ -2433,6 +2432,22 @@ export default abstract class RPCClient extends EventEmitter {
    * `maxfeepercent` check to be skipped on fees that are smaller than
    * `exemptfee` (default: 5000 millisatoshi).
    *
+   * `localofferid` is used by offers to link a payment attempt to a local
+   * `send_invoice` offer created by lightningd-offerout(7).  This ensures
+   * that we only make a single payment for an offer, and that the offer is
+   * marked `used` once paid.
+   *
+   * *maxfee* overrides both *maxfeepercent* and *exemptfee* defaults (and
+   * if you specify *maxfee* you cannot specify either of those), and
+   * creates an absolute limit on what fee we will pay.  This allows you to
+   * implement your own heuristics rather than the primitive ones used
+   * here.
+   *
+   * *description* is only required for bolt11 invoices which do not
+   * contain a description themselves, but contain a description hash.
+   * *description* is then checked against the hash inside the invoice
+   * before it will be paid.
+   *
    * The response will occur when the payment fails or succeeds. Once a
    * payment has succeeded, calls to **pay** with the same *bolt11* will
    * succeed immediately.
@@ -2738,6 +2753,16 @@ export default abstract class RPCClient extends EventEmitter {
    * *payment_hash* must be equal, and **sendpay** will fail if there are
    * already *msatoshi* worth of payments pending.
    *
+   * The *localofferid* value indicates that this payment is being made for a local
+   * send_invoice offer: this ensures that we only send a payment for a single-use
+   * offer once.
+   *
+   * *groupid* allows you to attach a number which appears in **listsendpays** so
+   * payments can be identified as part of a logical group.  The *pay* plugin uses
+   * this to identify one attempt at a MPP payment, for example.
+   *
+   * *payment_metadata* is placed in the final onion hop TLV.
+   *
    * Once a payment has succeeded, calls to **sendpay** with the same
    * *payment_hash* but a different *msatoshi* or destination will fail;
    * this prevents accidental multiple payments. Calls to **sendpay** with
@@ -2823,7 +2848,7 @@ export default abstract class RPCClient extends EventEmitter {
    * an arbitrary number of prior feerates) and if the node is restarted
    * the updated configuration is enforced immediately.
    * 
-   * @since c-lightning 0.11.0
+   * @since Core Lightning 0.11.0
    */
   setchannel(payload: SetchannelRequest): Promise<SetchannelResponse> {
     return this.call<SetchannelResponse>("setchannel", payload);
@@ -3020,10 +3045,9 @@ export default abstract class RPCClient extends EventEmitter {
    * with at least *satoshi* left over (unless *satoshi* is **all**, which
    * is equivalent to setting it to zero).
    *
-   * *reserve* is either boolean or a number: if *true* or a non-zero
-   * number then *reserveinputs* is called (successfully, with
-   * *exclusive* true) on the returned PSBT for this number of blocks (or
-   * 72 blocks if *reserve* is simply *true*).
+   * If *reserve* if not zero, then *reserveinputs* is called (successfully, with
+   * *exclusive* true) on the returned PSBT for this number of blocks (default
+   * 72 blocks if unspecified).
    *
    * Unless *reservedok* is set to true (default is false) it will also fail
    * if any of the *utxos* are already reserved.

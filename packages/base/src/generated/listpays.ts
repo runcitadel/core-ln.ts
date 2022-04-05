@@ -34,6 +34,10 @@ export interface Pay {
    */
   created_at: number;
   /**
+   * the description matching the bolt11 description hash (if pay supplied one)
+   */
+  description?: string;
+  /**
    * the final destination of the payment if known
    */
   destination?: string;

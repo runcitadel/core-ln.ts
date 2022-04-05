@@ -1,7 +1,7 @@
 /**
  * lightning-pay -- Command for sending a payment to a BOLT11 invoice
  *
- * **pay** *bolt11* [*msatoshi*] [*label*] [*riskfactor*] [*maxfeepercent*] [*retry_for*] [*maxdelay*] [*exemptfee*] [*exclude*]
+ * **pay** *bolt11* [*msatoshi*] [*label*] [*riskfactor*] [*maxfeepercent*] [*retry_for*] [*maxdelay*] [*exemptfee*] [*localofferid*] [*exclude*] [*maxfee*] [*description*]
  *
  */
 
@@ -26,6 +26,22 @@
  * leveraged by forwarding nodes. Setting `exemptfee` allows the
  * `maxfeepercent` check to be skipped on fees that are smaller than
  * `exemptfee` (default: 5000 millisatoshi).
+ *
+ * `localofferid` is used by offers to link a payment attempt to a local
+ * `send_invoice` offer created by lightningd-offerout(7).  This ensures
+ * that we only make a single payment for an offer, and that the offer is
+ * marked `used` once paid.
+ *
+ * *maxfee* overrides both *maxfeepercent* and *exemptfee* defaults (and
+ * if you specify *maxfee* you cannot specify either of those), and
+ * creates an absolute limit on what fee we will pay.  This allows you to
+ * implement your own heuristics rather than the primitive ones used
+ * here.
+ *
+ * *description* is only required for bolt11 invoices which do not
+ * contain a description themselves, but contain a description hash.
+ * *description* is then checked against the hash inside the invoice
+ * before it will be paid.
  *
  * The response will occur when the payment fails or succeeds. Once a
  * payment has succeeded, calls to **pay** with the same *bolt11* will
@@ -77,7 +93,10 @@ export interface PayRequest {
   retry_for?: /* GUESSED */ string;
   maxdelay?: /* GUESSED */ string;
   exemptfee?: /* GUESSED */ string;
+  localofferid?: /* GUESSED */ string;
   exclude?: /* GUESSED */ string;
+  maxfee?: /* GUESSED */ string;
+  description?: /* GUESSED */ string;
 }
 
 export interface PayResponse {
@@ -124,4 +143,6 @@ export interface PayResponse {
  */
 export enum Status {
   Complete = "complete",
+  Failed = "failed",
+  Pending = "pending",
 }

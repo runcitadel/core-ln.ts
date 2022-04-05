@@ -1,7 +1,7 @@
 /**
  * lightning-sendpay -- Low-level command for sending a payment via a route
  *
- * **sendpay** *route* *payment_hash* [*label*] [*msatoshi*] [*bolt11*] [*payment_secret*] [*partid*]
+ * **sendpay** *route* *payment_hash* [*label*] [*msatoshi*] [*bolt11*] [*payment_secret*] [*partid*] [*localofferid*] [*groupid*] [*payment_metadata*] [*description*]
  *
  */
 
@@ -40,6 +40,16 @@
  * *payment_hash* must be equal, and **sendpay** will fail if there are
  * already *msatoshi* worth of payments pending.
  *
+ * The *localofferid* value indicates that this payment is being made for a local
+ * send_invoice offer: this ensures that we only send a payment for a single-use
+ * offer once.
+ *
+ * *groupid* allows you to attach a number which appears in **listsendpays** so
+ * payments can be identified as part of a logical group.  The *pay* plugin uses
+ * this to identify one attempt at a MPP payment, for example.
+ *
+ * *payment_metadata* is placed in the final onion hop TLV.
+ *
  * Once a payment has succeeded, calls to **sendpay** with the same
  * *payment_hash* but a different *msatoshi* or destination will fail;
  * this prevents accidental multiple payments. Calls to **sendpay** with
@@ -55,6 +65,10 @@ export interface SendpayRequest {
   bolt11?: /* GUESSED */ string;
   payment_secret?: /* GUESSED */ string;
   partid?: /* GUESSED */ string;
+  localofferid?: /* GUESSED */ string;
+  groupid?: /* GUESSED */ string;
+  payment_metadata?: /* GUESSED */ string;
+  description?: /* GUESSED */ string;
 }
 
 export interface SendpayResponse {

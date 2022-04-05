@@ -85,6 +85,10 @@ export interface ListconfigsResponse {
    * `true` if `disable-dns` was set in config or cmdline
    */
   "disable-dns"?: boolean;
+  /**
+   * `true` if `disable-ip-discovery` was set in config or cmdline
+   */
+  "disable-ip-discovery"?: boolean;
   "disable-plugin"?: string[];
   /**
    * `true` if `encrypted-hsm` was set in config or cmdline
@@ -130,6 +134,14 @@ export interface ListconfigsResponse {
    * `funding-confirms` field from config or cmdline, or default
    */
   "funding-confirms"?: number;
+  /**
+   * `htlc-maximum-msat` field from config or cmdline, or default
+   */
+  "htlc-maximum-msat"?: number;
+  /**
+   * `htlc-minimum-msat` field from config or cmdline, or default
+   */
+  "htlc-minimum-msat"?: number;
   /**
    * `ignore-fee-limits` field from config or cmdline, or default
    */
