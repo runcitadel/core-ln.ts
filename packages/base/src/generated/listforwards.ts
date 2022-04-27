@@ -7,7 +7,7 @@
 
 /**
  * The **listforwards** RPC command displays all htlcs that have been
- * attempted to be forwarded by the c-lightning node.
+ * attempted to be forwarded by the Core LLightningightning node.
  *
  * If *status* is specified, then only the forwards with the given status are returned.
  * *status* can be either *offered* or *settled* or *failed* or *local_failed*

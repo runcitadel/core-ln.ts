@@ -499,7 +499,7 @@ export default abstract class RPCClient extends EventEmitter {
    * The default is 2 days (172800 seconds).
    *
    * The *destination* can be of any Bitcoin bech32 type.
-   * If it isn't specified, the default is a c-lightning wallet address.  If
+   * If it isn't specified, the default is a Core Lightning wallet address.  If
    * the peer hasn't offered the `option_shutdown_anysegwit` feature, then
    * taproot addresses (or other v1+ segwit) are not allowed.  Tell your
    * friends to upgrade!
@@ -636,7 +636,7 @@ export default abstract class RPCClient extends EventEmitter {
   /**
    * The **createonion** RPC command allows the caller to create a custom onion
    * with custom payloads at each hop in the route. A custom onion can be used to
-   * implement protocol extensions that are not supported by c-lightning directly.
+   * implement protocol extensions that are not supported by Core Lightning directly.
    *
    * The *hops* parameter is a JSON list of dicts, each specifying a node and the
    * payload destined for that node. The following is an example of a 3 hop onion:
@@ -717,7 +717,7 @@ export default abstract class RPCClient extends EventEmitter {
 
   /**
    * The **datastore** RPC command allows plugins to store data in the
-   * c-lightning database, for later retrieval.
+   * Core Lightning database, for later retrieval.
    *
    * *key* is an array of values (though a single value is treated as a
    * one-element array), to form a hierarchy.  Using the first element of
@@ -760,7 +760,7 @@ export default abstract class RPCClient extends EventEmitter {
 
   /**
    * The **deldatastore** RPC command allows plugins to delete data it has
-   * stored in the c-lightning database.
+   * stored in the Core Lightning database.
    *
    * The command fails if the *key* isn't present, or if *generation*
    * is specified and the generation of the data does not exactly match.
@@ -1741,7 +1741,7 @@ export default abstract class RPCClient extends EventEmitter {
    * If *destination* is a node id, then only channels leading to that node id
    * are returned.
    *
-   * Only one of *short_channgel_id*, *source* or *destination* can be supplied.
+   * Only one of *short_channel_id*, *source* or *destination* can be supplied.
    * If nothing is supplied, data on all lightning channels known to this
    * node, are returned. These can be local channels or public channels
    * broadcast on the gossip network.
@@ -1777,7 +1777,7 @@ export default abstract class RPCClient extends EventEmitter {
 
   /**
    * The **listdatastore** RPC command allows plugins to fetch data which was
-   * stored in the c-lightning database.
+   * stored in the Core Lightning database.
    *
    * All immediate children of the *key* (or root children) are returned:
    * a *key* with children won't have a *hex* or *generation* entry.
@@ -1790,7 +1790,7 @@ export default abstract class RPCClient extends EventEmitter {
 
   /**
    * The **listforwards** RPC command displays all htlcs that have been
-   * attempted to be forwarded by the c-lightning node.
+   * attempted to be forwarded by the Core Lightning node.
    *
    * If *status* is specified, then only the forwards with the given status are returned.
    * *status* can be either *offered* or *settled* or *failed* or *local_failed*
@@ -1836,7 +1836,7 @@ export default abstract class RPCClient extends EventEmitter {
    *
    * To get a single node, check out {@link getnode}.
    */
-  listnodes(): Promise<ListnodesResponse> {
+   listnodes(): Promise<ListnodesResponse> {
     return this.call<ListnodesResponse>("listnodes", {});
   }
 
@@ -1952,7 +1952,7 @@ export default abstract class RPCClient extends EventEmitter {
    *
    * If not already connected, **multifundchannel** will automatically attempt
    * to connect; you may provide a *@host:port* hint appended to the node ID
-   * so that c-lightning can learn how to connect to the node;
+   * so that Core Lightning can learn how to connect to the node;
    * see lightning-connect(7).
    *
    * Once the transaction is confirmed, normal channel operations may begin.
@@ -2031,7 +2031,7 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **multiwithdraw** RPC command sends funds from c-lightning's internal
+   * The **multiwithdraw** RPC command sends funds from Core Lightning's internal
    * wallet to the addresses specified in *outputs*,
    * which is an array containing objects of the form `{address: amount}`.
    * The `amount` may be the string *"all"*, indicating that all onchain funds
@@ -2065,7 +2065,7 @@ export default abstract class RPCClient extends EventEmitter {
 
   /**
    * The **newaddr** RPC command generates a new address which can
-   * subsequently be used to fund channels managed by the c-lightning node.
+   * subsequently be used to fund channels managed by the Core Lightning node.
    *
    * The funding transaction needs to be confirmed before funds can be used.
    *
@@ -2578,7 +2578,7 @@ export default abstract class RPCClient extends EventEmitter {
    * synchronous handling on the receiving side, and can cause the connection to be
    * dropped. The message types may also not use one of the internally handled
    * types, since that may cause issues with the internal state tracking of
-   * c-lightning.
+   * Core Lightning.
    *
    * The node specified by `node_id` must be a peer, i.e., it must have a direct
    * connection with the node receiving the RPC call, and the connection must be
@@ -2633,7 +2633,7 @@ export default abstract class RPCClient extends EventEmitter {
    * on where to forward a payment and what parameters to use, or contain details
    * of the payment for the final hop. However, it is possible to add arbitrary
    * information for hops in the custom onion, allowing for custom extensions that
-   * are not directly supported by c-lightning.
+   * are not directly supported by Core Lightning.
    *
    * The onion is specific to the route that is being used and the *payment_hash*
    * used to construct, and therefore cannot be reused for other payments or to
@@ -2645,10 +2645,10 @@ export default abstract class RPCClient extends EventEmitter {
    * destined for each hop and some metadata. Please refer to [BOLT 04][bolt04] for
    * further details.
    *
-   * The *first_hop* parameter instructs c-lightning which peer to send the onion
+   * The *first_hop* parameter instructs Core Lightning which peer to send the onion
    * to. It is a JSON dictionary that corresponds to the first element of the route
    * array returned by *getroute*. The following is a minimal example telling
-   * c-lightning to use any available channel to `022d223620a359a47ff7f7ac447c85c46c923da53389221a0054c11c1e3ca31d59`
+   * Core Lightning to use any available channel to `022d223620a359a47ff7f7ac447c85c46c923da53389221a0054c11c1e3ca31d59`
    * to add an HTLC for 1002 millisatoshis and a delay of 21 blocks on top of the current blockheight:
    *
    * ```json
@@ -2667,13 +2667,13 @@ export default abstract class RPCClient extends EventEmitter {
    * retrieve the payment at a later time.
    *
    * The *shared_secrets* parameter is a JSON list of 32 byte hex-encoded secrets
-   * that were used when creating the onion. c-lightning can send a payment with a
+   * that were used when creating the onion. Core Lightning can send a payment with a
    * custom onion without the knowledge of these secrets, however it will not be
    * able to parse an eventual error message since that is encrypted with the
-   * shared secrets used in the onion. If *shared_secrets* is provided c-lightning
+   * shared secrets used in the onion. If *shared_secrets* is provided Core Lightning
    * will decrypt the error, act accordingly, e.g., add a `channel_update` included
    * in the error to its network view, and set the details in *listsendpays*
-   * correctly. If it is not provided c-lightning will store the encrypted onion,
+   * correctly. If it is not provided Core Lightning will store the encrypted onion,
    * and expose it in *listsendpays* allowing the caller to decrypt it
    * externally. The following is an example of a 3 hop onion:
    *
@@ -2685,7 +2685,7 @@ export default abstract class RPCClient extends EventEmitter {
    * ]
    * ```
    *
-   * If *shared_secrets* is not provided the c-lightning node does not know how
+   * If *shared_secrets* is not provided the Core Lightning node does not know how
    * long the route is, which channels or nodes are involved, and what an eventual
    * error could have been. It can therefore be used for oblivious payments.
    *
@@ -2939,7 +2939,7 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **stop** is a RPC command to shut off the c-lightning node.
+   * The **stop** is a RPC command to shut off the Core Lightning node.
    *
    * EXAMPLE JSON REQUEST
    * ------------
@@ -2965,7 +2965,7 @@ export default abstract class RPCClient extends EventEmitter {
 
   /**
    * The **txprepare** RPC command creates an unsigned transaction which
-   * spends funds from c-lightning's internal wallet to the outputs specified
+   * spends funds from Core Lightning's internal wallet to the outputs specified
    * in *outputs*.
    *
    * The *outputs* is the array of output that include *destination*
@@ -3144,7 +3144,7 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **withdraw** RPC command sends funds from c-lightning's internal
+   * The **withdraw** RPC command sends funds from Core Lightning's internal
    * wallet to the address specified in *destination*.
    *
    * The address can be of any Bitcoin accepted type, including bech32.

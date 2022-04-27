@@ -23,7 +23,7 @@
  * The default is 2 days (172800 seconds).
  *
  * The *destination* can be of any Bitcoin bech32 type.
- * If it isn't specified, the default is a c-lightning wallet address.  If
+ * If it isn't specified, the default is a Core Lightning wallet address.  If
  * the peer hasn't offered the `option_shutdown_anysegwit` feature, then
  * taproot addresses (or other v1+ segwit) are not allowed.  Tell your
  * friends to upgrade!

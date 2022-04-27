@@ -7,9 +7,9 @@
 
 /**
  * The **datastore** RPC command allows plugins to store data in the
- * c-lightning database, for later retrieval.
+ * Core Lightning database, for later retrieval.
  *
- * *key* is an array of values (though a single value is treated as a
+ * *key* is an array of vavaluesvalueslues (though a single value is treated as a
  * one-element array), to form a hierarchy.  Using the first element of
  * the key as the plugin name (e.g. `[ "summary" ]`) is recommended.
  * A key can either have children or a value, never both: parents are

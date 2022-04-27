@@ -1,5 +1,5 @@
 /**
- * lightning-listfunds -- Command showing all funds currently managed by the c-lightning node
+ * lightning-listfunds -- Command showing all funds currently managed by the Core Lightning node
  *
  * **listfunds** [*spent*]
  *
@@ -96,15 +96,7 @@ export interface Output {
    * the ID of the spendable transaction
    */
   txid: string;
-  reserved?: boolean;
-  /**
-   * Block height where reservation will expire
-   */
-  reserved_to_block?: number;
-  /**
-   * Block height where it was confirmed
-   */
-  blockheight?: number;
+  reserved: any;
 }
 
 export enum Status {

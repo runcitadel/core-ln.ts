@@ -12,7 +12,7 @@
  *
  * If not already connected, **multifundchannel** will automatically attempt
  * to connect; you may provide a *@host:port* hint appended to the node ID
- * so that c-lightning can learn how to connect to the node;
+ * so that Core Lightning can learn how to connect to the node;
  * see lightning-connect(7).
  *
  * Once the transaction is confirmed, normal channel operations may begin.

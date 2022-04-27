@@ -17,7 +17,7 @@
  * synchronous handling on the receiving side, and can cause the connection to be
  * dropped. The message types may also not use one of the internally handled
  * types, since that may cause issues with the internal state tracking of
- * c-lightning.
+ * Core Lightning.
  *
  * The node specified by `node_id` must be a peer, i.e., it must have a direct
  * connection with the node receiving the RPC call, and the connection must be

@@ -1,5 +1,5 @@
 /**
- * lightning-getinfo -- Command to receive all information about the c-lightning node.
+ * lightning-getinfo -- Command to receive all information about the Core Lightning node.
  *
  * **getinfo**
  *
@@ -151,8 +151,8 @@ export enum BindingType {
  */
 export interface OurFeatures {
   /**
-   * negotiated channel features we — as channel initiator — publish in the
-   * channel_announcement message
+   * negotiated channel features we (as channel initiator) publish in the channel_announcement
+   * message
    */
   channel: string;
   /**

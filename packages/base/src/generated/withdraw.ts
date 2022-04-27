@@ -6,7 +6,7 @@
  */
 
 /**
- * The **withdraw** RPC command sends funds from c-lightning's internal
+ * The **withdraw** RPC command sends funds from Core LLightning'sLightning'sLightning'sightning's internal
  * wallet to the address specified in *destination*.
  *
  * The address can be of any Bitcoin accepted type, including bech32.
