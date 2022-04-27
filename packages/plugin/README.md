@@ -149,3 +149,10 @@ function releaseHtlc(params) {
 myWonderfulPlugin.addMethod('releasehtlc', releaseHtlc, '', 'release an HTLC', '.');
 myWonderfulPlugin.start();
 ```
+---
+
+## Check out our other packages
+
+- [@core-ln/base](https://npmjs.com/package/@core-ln/base) - Abstract API type definitions
+- [@core-ln/core](https://npmjs.com/package/@core-ln/core) - Connect over an unix socket
+- [@core-ln/rest](https://npmjs.com/package/@core-ln/rest) - Client for [c-lightning-REST](https://github.com/Ride-The-Lightning/c-lightning-REST)
