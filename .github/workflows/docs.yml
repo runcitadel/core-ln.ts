@@ -34,7 +34,7 @@ jobs:
                   yarn docs
                   # Prevent GitHub from trying to use Jekyll
                   touch docs/.nojekyll
-                  echo "c-lightning-client.runcitadel.space" > docs/CNAME
+                  echo "core-ln.js.org" > docs/CNAME
 
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
