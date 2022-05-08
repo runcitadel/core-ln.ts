@@ -96,7 +96,7 @@ for (const service of processed.services) {
     typeImports += `import type { ${operation.name}Response, ${localImports}} from "./${operation.name}";\n`;
     interfaceFile += `\n${responseInterface}`;
     await fs.writeFile(
-      `./c-lightning.ts/src/rest/${operation.name}.ts`,
+      `./packages/rest/src/generated/${operation.name}.ts`,
       prettier.format(interfaceFile, {
         parser: "typescript",
       })
@@ -110,7 +110,7 @@ for (const service of processed.services) {
 }
 
 await fs.writeFile(
-  "./c-lightning.ts/src/rest/index.ts",
+  "./packages/rest/src/generated/index.ts",
   prettier.format(
     `/// <reference lib="DOM" />
 
@@ -122,9 +122,7 @@ import ApiClient, { transform, transformMap } from "../generated/main.js";
  * 
  * Only works when the rest-rpc option is set to *
  * 
- * This is designed to be used in a browser and will not work server-side
- * 
- * (Except in Node 18, where this will very likely work too)
+ * This is designed to be used in a browser and will not work server-side in Node versions < 18
  */
 export default class RestApiClient extends ApiClient {
     /**

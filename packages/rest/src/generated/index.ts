@@ -112,9 +112,7 @@ import ApiClient, { transform, transformMap } from "@core-ln/base";
  *
  * Only works when the rest-rpc option is set to *
  *
- * This is designed to be used in a browser and will not work server-side
- *
- * (Except in Node 18, where this will very likely work too)
+ * This is designed to be used in a browser and will not work server-side in Node versions < 18
  */
 export default class RestApiClient extends ApiClient {
   /**
