@@ -1,10 +1,10 @@
 {
   "info": {
     "title": "C-Lightning-REST",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "description": "REST API suite for C-Lightning"
   },
-  "host": "localhost:3001",
+  "host": "localhost:3000",
   "basePath": "/v1",
   "securityDefinitions": {
     "bearerAuth": {
@@ -63,7 +63,9 @@
             "name": "utxos",
             "description": "Specifies the utxos to be used to fund the channel, as an array of \"txid:vout\"",
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
           {
             "in": "body",
@@ -96,8 +98,14 @@
             "schema": {
               "type": "object",
               "properties": {
-                "tx": { "type": "string", "description": "Transaction" },
-                "txid": { "type": "string", "description": "Transaction ID" },
+                "tx": {
+                  "type": "string",
+                  "description": "Transaction"
+                },
+                "txid": {
+                  "type": "string",
+                  "description": "Transaction ID"
+                },
                 "channel_id": {
                   "type": "string",
                   "description": "channel_id of the newly created channel"
@@ -105,7 +113,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -121,7 +131,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": { "type": "string", "description": "Pub key" },
+                "id": {
+                  "type": "string",
+                  "description": "Pub key"
+                },
                 "connected": {
                   "type": "string",
                   "description": "Peer connection status (true or false)"
@@ -134,7 +147,10 @@
                   "type": "string",
                   "description": "Channel ID"
                 },
-                "channel_id": { "type": "string", "description": "Channel ID" },
+                "channel_id": {
+                  "type": "string",
+                  "description": "Channel ID"
+                },
                 "funding_txid": {
                   "type": "string",
                   "description": "Channel funding transaction"
@@ -169,7 +185,9 @@
                 },
                 "funding_allocation_msat": {
                   "type": "object",
-                  "additionalProperties": { "type": "integer" },
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
                   "description": "funding_allocation_msat"
                 },
                 "direction": {
@@ -183,7 +201,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -220,10 +240,22 @@
             "schema": {
               "type": "object",
               "properties": {
-                "base": { "type": "string", "description": "base" },
-                "ppm": { "type": "string", "description": "ppm" },
-                "peer_id": { "type": "string", "description": "peer_id" },
-                "channel_id": { "type": "string", "description": "channel_id" },
+                "base": {
+                  "type": "string",
+                  "description": "base"
+                },
+                "ppm": {
+                  "type": "string",
+                  "description": "ppm"
+                },
+                "peer_id": {
+                  "type": "string",
+                  "description": "peer_id"
+                },
+                "channel_id": {
+                  "type": "string",
+                  "description": "channel_id"
+                },
                 "short_channel_id": {
                   "type": "string",
                   "description": "short_channel_id"
@@ -231,7 +263,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -275,13 +309,24 @@
             "schema": {
               "type": "object",
               "properties": {
-                "tx": { "type": "string", "description": "Transaction" },
-                "txid": { "type": "string", "description": "Transaction ID" },
-                "type": { "type": "string", "description": "type" }
+                "tx": {
+                  "type": "string",
+                  "description": "Transaction"
+                },
+                "txid": {
+                  "type": "string",
+                  "description": "Transaction ID"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "type"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -305,8 +350,14 @@
             "schema": {
               "type": "object",
               "properties": {
-                "in_channel": { "type": "string", "description": "in_channel" },
-                "in_msat": { "type": "string", "description": "in_msat" },
+                "in_channel": {
+                  "type": "string",
+                  "description": "in_channel"
+                },
+                "in_msat": {
+                  "type": "string",
+                  "description": "in_msat"
+                },
                 "status": {
                   "type": "string",
                   "description": "one of \"offered\", \"settled\", \"local_failed\", \"failed\""
@@ -346,7 +397,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -443,7 +496,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -561,8 +616,14 @@
                   "type": "string",
                   "description": "Summary of the current funding policy"
                 },
-                "policy": { "type": "string", "description": "policy" },
-                "policy_mod": { "type": "string", "description": "policy_mod" },
+                "policy": {
+                  "type": "string",
+                  "description": "policy"
+                },
+                "policy_mod": {
+                  "type": "string",
+                  "description": "policy_mod"
+                },
                 "leases_only": {
                   "type": "string",
                   "description": "leases_only"
@@ -622,7 +683,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -639,7 +702,9 @@
             "name": "key",
             "description": "Array of values to form a heirarchy. A key can either have children or a value, never both",
             "type": "array",
-            "items": { "type": "string" },
+            "items": {
+              "type": "string"
+            },
             "required": ["key"]
           },
           {
@@ -675,16 +740,29 @@
               "properties": {
                 "key": {
                   "type": "array",
-                  "items": { "type": "string" },
+                  "items": {
+                    "type": "string"
+                  },
                   "description": "key added to the datastore"
                 },
-                "generation": { "type": "string", "description": "generation" },
-                "hex": { "type": "string", "description": "hex" },
-                "dataString": { "type": "string", "description": "dataString" }
+                "generation": {
+                  "type": "string",
+                  "description": "generation"
+                },
+                "hex": {
+                  "type": "string",
+                  "description": "hex"
+                },
+                "dataString": {
+                  "type": "string",
+                  "description": "dataString"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -716,14 +794,19 @@
                     "properties": {
                       "key": {
                         "type": "array",
-                        "items": { "type": "string" },
+                        "items": {
+                          "type": "string"
+                        },
                         "description": "key added to the datastore"
                       },
                       "generation": {
                         "type": "string",
                         "description": "generation"
                       },
-                      "hex": { "type": "string", "description": "hex" },
+                      "hex": {
+                        "type": "string",
+                        "description": "hex"
+                      },
                       "dataString": {
                         "type": "string",
                         "description": "dataString"
@@ -735,7 +818,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -768,16 +853,29 @@
               "properties": {
                 "key": {
                   "type": "array",
-                  "items": { "type": "string" },
+                  "items": {
+                    "type": "string"
+                  },
                   "description": "key added to the datastore"
                 },
-                "generation": { "type": "string", "description": "generation" },
-                "hex": { "type": "string", "description": "hex" },
-                "dataString": { "type": "string", "description": "dataString" }
+                "generation": {
+                  "type": "string",
+                  "description": "generation"
+                },
+                "hex": {
+                  "type": "string",
+                  "description": "hex"
+                },
+                "dataString": {
+                  "type": "string",
+                  "description": "dataString"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -807,7 +905,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -829,7 +929,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -844,10 +946,22 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": { "type": "string", "description": "id" },
-                "alias": { "type": "string", "description": "alias" },
-                "color": { "type": "string", "description": "color" },
-                "num_peers": { "type": "string", "description": "num_peers" },
+                "id": {
+                  "type": "string",
+                  "description": "id"
+                },
+                "alias": {
+                  "type": "string",
+                  "description": "alias"
+                },
+                "color": {
+                  "type": "string",
+                  "description": "color"
+                },
+                "num_peers": {
+                  "type": "string",
+                  "description": "num_peers"
+                },
                 "num_pending_channels": {
                   "type": "string",
                   "description": "num_pending_channels"
@@ -863,27 +977,51 @@
                 "address": {
                   "type": "object",
                   "properties": {
-                    "type": { "type": "string", "description": "type" },
-                    "address": { "type": "string", "description": "address" },
-                    "port": { "type": "string", "description": "port" }
+                    "type": {
+                      "type": "string",
+                      "description": "type"
+                    },
+                    "address": {
+                      "type": "string",
+                      "description": "address"
+                    },
+                    "port": {
+                      "type": "string",
+                      "description": "port"
+                    }
                   },
                   "description": "address"
                 },
                 "binding": {
                   "type": "object",
                   "properties": {
-                    "type": { "type": "string", "description": "type" },
-                    "address": { "type": "string", "description": "address" },
-                    "port": { "type": "string", "description": "port" }
+                    "type": {
+                      "type": "string",
+                      "description": "type"
+                    },
+                    "address": {
+                      "type": "string",
+                      "description": "address"
+                    },
+                    "port": {
+                      "type": "string",
+                      "description": "port"
+                    }
                   },
                   "description": "binding"
                 },
-                "version": { "type": "string", "description": "version" },
+                "version": {
+                  "type": "string",
+                  "description": "version"
+                },
                 "blockheight": {
                   "type": "string",
                   "description": "blockheight"
                 },
-                "network": { "type": "string", "description": "network" },
+                "network": {
+                  "type": "string",
+                  "description": "network"
+                },
                 "msatoshi_fees_collected": {
                   "type": "string",
                   "description": "msatoshi_fees_collected"
@@ -899,7 +1037,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -924,13 +1064,24 @@
             "schema": {
               "type": "object",
               "properties": {
-                "signature": { "type": "string", "description": "signature" },
-                "recid": { "type": "string", "description": "recid" },
-                "zbase": { "type": "string", "description": "zbase" }
+                "signature": {
+                  "type": "string",
+                  "description": "signature"
+                },
+                "recid": {
+                  "type": "string",
+                  "description": "recid"
+                },
+                "zbase": {
+                  "type": "string",
+                  "description": "zbase"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -962,12 +1113,20 @@
             "schema": {
               "type": "object",
               "properties": {
-                "pubkey": { "type": "string", "description": "pubkey" },
-                "verified": { "type": "boolean", "description": "verified" }
+                "pubkey": {
+                  "type": "string",
+                  "description": "pubkey"
+                },
+                "verified": {
+                  "type": "boolean",
+                  "description": "verified"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -989,9 +1148,31 @@
         "responses": {
           "200": {
             "description": "Read more on https://lightning.readthedocs.io/lightning-decode.7.html",
-            "schema": { "type": "object" }
+            "schema": {
+              "type": "object"
+            }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/utility/listConfigs": {
+      "get": {
+        "tags": ["General Information"],
+        "name": "listconfigs",
+        "summary": "Command for listing all configuration options",
+        "responses": {
+          "200": {
+            "description": "Read more on https://lightning.readthedocs.io/lightning-listconfigs.7.html",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1050,11 +1231,16 @@
                   "type": "integer",
                   "description": "expires_at"
                 },
-                "bolt11": { "type": "string", "description": "bolt11" }
+                "bolt11": {
+                  "type": "string",
+                  "description": "bolt11"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1080,8 +1266,14 @@
                 "invoices": {
                   "type": "object",
                   "properties": {
-                    "label": { "type": "string", "description": "label" },
-                    "bolt11": { "type": "string", "description": "bolt11" },
+                    "label": {
+                      "type": "string",
+                      "description": "label"
+                    },
+                    "bolt11": {
+                      "type": "string",
+                      "description": "bolt11"
+                    },
                     "payment_hash": {
                       "type": "string",
                       "description": "payment_hash"
@@ -1094,7 +1286,10 @@
                       "type": "string",
                       "description": "amount_msat"
                     },
-                    "status": { "type": "string", "description": "status" },
+                    "status": {
+                      "type": "string",
+                      "description": "status"
+                    },
                     "pay_index": {
                       "type": "integer",
                       "description": "pay_index"
@@ -1107,7 +1302,10 @@
                       "type": "string",
                       "description": "amount_received_msat"
                     },
-                    "paid_at": { "type": "integer", "description": "paid_at" },
+                    "paid_at": {
+                      "type": "integer",
+                      "description": "paid_at"
+                    },
                     "description": {
                       "type": "string",
                       "description": "description"
@@ -1122,7 +1320,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1140,8 +1340,12 @@
           }
         ],
         "responses": {
-          "202": { "description": "Expired invoices deleted successfully" },
-          "500": { "description": "Server error" }
+          "202": {
+            "description": "Expired invoices deleted successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1167,8 +1371,12 @@
           }
         ],
         "responses": {
-          "202": { "description": "Invoice deleted successfully" },
-          "500": { "description": "Server error" }
+          "202": {
+            "description": "Invoice deleted successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1243,7 +1451,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1261,15 +1471,30 @@
                 "outputs": {
                   "type": "object",
                   "properties": {
-                    "txid": { "type": "string", "description": "txid" },
-                    "output": { "type": "integer", "description": "output" },
-                    "value": { "type": "integer", "description": "value" },
+                    "txid": {
+                      "type": "string",
+                      "description": "txid"
+                    },
+                    "output": {
+                      "type": "integer",
+                      "description": "output"
+                    },
+                    "value": {
+                      "type": "integer",
+                      "description": "value"
+                    },
                     "amount_msat": {
                       "type": "string",
                       "description": "amount_msat"
                     },
-                    "address": { "type": "string", "description": "address" },
-                    "status": { "type": "string", "description": "status" },
+                    "address": {
+                      "type": "string",
+                      "description": "address"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "status"
+                    },
                     "blockheight": {
                       "type": "integer",
                       "description": "blockheight"
@@ -1280,12 +1505,18 @@
                 "channels": {
                   "type": "object",
                   "properties": {
-                    "peer_id": { "type": "string", "description": "peer_id" },
+                    "peer_id": {
+                      "type": "string",
+                      "description": "peer_id"
+                    },
                     "connected": {
                       "type": "string",
                       "description": "connected"
                     },
-                    "state": { "type": "string", "description": "state" },
+                    "state": {
+                      "type": "string",
+                      "description": "state"
+                    },
                     "short_channel_id": {
                       "type": "string",
                       "description": "short_channel_id"
@@ -1320,7 +1551,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1354,7 +1587,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1385,20 +1620,40 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": { "type": "string", "description": "id" },
-                "channel": { "type": "string", "description": "channel" },
-                "direction": { "type": "integer", "description": "direction" },
-                "msatoshi": { "type": "integer", "description": "msatoshi" },
+                "id": {
+                  "type": "string",
+                  "description": "id"
+                },
+                "channel": {
+                  "type": "string",
+                  "description": "channel"
+                },
+                "direction": {
+                  "type": "integer",
+                  "description": "direction"
+                },
+                "msatoshi": {
+                  "type": "integer",
+                  "description": "msatoshi"
+                },
                 "amount_msat": {
                   "type": "string",
                   "description": "amount_msat"
                 },
-                "delay": { "type": "integer", "description": "delay" },
-                "alias": { "type": "string", "description": "alias" }
+                "delay": {
+                  "type": "integer",
+                  "description": "delay"
+                },
+                "alias": {
+                  "type": "string",
+                  "description": "alias"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1422,9 +1677,18 @@
             "schema": {
               "type": "object",
               "properties": {
-                "nodeid": { "type": "string", "description": "nodeid" },
-                "alias": { "type": "string", "description": "alias" },
-                "color": { "type": "string", "description": "color" },
+                "nodeid": {
+                  "type": "string",
+                  "description": "nodeid"
+                },
+                "alias": {
+                  "type": "string",
+                  "description": "alias"
+                },
+                "color": {
+                  "type": "string",
+                  "description": "color"
+                },
                 "last_timestamp": {
                   "type": "integer",
                   "description": "last_timestamp"
@@ -1433,20 +1697,34 @@
                   "type": "string",
                   "description": "globalfeatures"
                 },
-                "features": { "type": "string", "description": "features" },
+                "features": {
+                  "type": "string",
+                  "description": "features"
+                },
                 "address": {
                   "type": "object",
                   "properties": {
-                    "type": { "type": "string", "description": "type" },
-                    "address": { "type": "string", "description": "address" },
-                    "port": { "type": "string", "description": "port" }
+                    "type": {
+                      "type": "string",
+                      "description": "type"
+                    },
+                    "address": {
+                      "type": "string",
+                      "description": "address"
+                    },
+                    "port": {
+                      "type": "string",
+                      "description": "port"
+                    }
                   },
                   "description": "address"
                 }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1470,7 +1748,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "source": { "type": "string", "description": "source" },
+                "source": {
+                  "type": "string",
+                  "description": "source"
+                },
                 "destination": {
                   "type": "string",
                   "description": "destination"
@@ -1479,8 +1760,14 @@
                   "type": "string",
                   "description": "short_channel_id"
                 },
-                "public": { "type": "string", "description": "public" },
-                "satoshis": { "type": "integer", "description": "satoshis" },
+                "public": {
+                  "type": "string",
+                  "description": "public"
+                },
+                "satoshis": {
+                  "type": "integer",
+                  "description": "satoshis"
+                },
                 "amount_msat": {
                   "type": "string",
                   "description": "amount_msat"
@@ -1493,7 +1780,10 @@
                   "type": "integer",
                   "description": "channel_flags"
                 },
-                "active": { "type": "string", "description": "active" },
+                "active": {
+                  "type": "string",
+                  "description": "active"
+                },
                 "last_update": {
                   "type": "integer",
                   "description": "last_update"
@@ -1506,7 +1796,10 @@
                   "type": "integer",
                   "description": "fee_per_millionth"
                 },
-                "delay": { "type": "integer", "description": "delay" },
+                "delay": {
+                  "type": "integer",
+                  "description": "delay"
+                },
                 "htlc_minimum_msat": {
                   "type": "string",
                   "description": "htlc_minimum_msat"
@@ -1518,7 +1811,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1545,9 +1840,18 @@
                 "perkb": {
                   "type": "object",
                   "properties": {
-                    "urgent": { "type": "integer", "description": "urgent" },
-                    "normal": { "type": "integer", "description": "normal" },
-                    "slow": { "type": "integer", "description": "slow" },
+                    "urgent": {
+                      "type": "integer",
+                      "description": "urgent"
+                    },
+                    "normal": {
+                      "type": "integer",
+                      "description": "normal"
+                    },
+                    "slow": {
+                      "type": "integer",
+                      "description": "slow"
+                    },
                     "min_acceptable": {
                       "type": "integer",
                       "description": "min_acceptable"
@@ -1580,7 +1884,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1595,7 +1901,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "opening": { "type": "integer", "description": "opening" },
+                "opening": {
+                  "type": "integer",
+                  "description": "opening"
+                },
                 "mutual_close": {
                   "type": "integer",
                   "description": "mutual_close"
@@ -1612,7 +1921,10 @@
                   "type": "integer",
                   "description": "htlc_resolution"
                 },
-                "penalty": { "type": "integer", "description": "penalty" },
+                "penalty": {
+                  "type": "integer",
+                  "description": "penalty"
+                },
                 "min_acceptable": {
                   "type": "integer",
                   "description": "min_acceptable"
@@ -1624,7 +1936,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1649,20 +1963,41 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "nodeid": { "type": "string", "description": "nodeid" },
-                  "alias": { "type": "string", "description": "alias" },
-                  "color": { "type": "string", "description": "color" },
+                  "nodeid": {
+                    "type": "string",
+                    "description": "nodeid"
+                  },
+                  "alias": {
+                    "type": "string",
+                    "description": "alias"
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "color"
+                  },
                   "last_timestamp": {
                     "type": "integer",
                     "description": "last_timestamp"
                   },
-                  "features": { "type": "string", "description": "features" },
+                  "features": {
+                    "type": "string",
+                    "description": "features"
+                  },
                   "address": {
                     "type": "object",
                     "properties": {
-                      "type": { "type": "string", "description": "type" },
-                      "address": { "type": "string", "description": "address" },
-                      "port": { "type": "string", "description": "port" }
+                      "type": {
+                        "type": "string",
+                        "description": "type"
+                      },
+                      "address": {
+                        "type": "string",
+                        "description": "address"
+                      },
+                      "port": {
+                        "type": "string",
+                        "description": "port"
+                      }
                     },
                     "description": "address"
                   },
@@ -1700,7 +2035,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1725,11 +2062,16 @@
             "schema": {
               "type": "object",
               "properties": {
-                "address": { "type": "string", "description": "address" }
+                "address": {
+                  "type": "string",
+                  "description": "address"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1857,7 +2199,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -1918,7 +2262,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2040,7 +2386,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2096,7 +2444,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2165,7 +2515,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": { "type": "integer", "description": "id" },
+                "id": {
+                  "type": "integer",
+                  "description": "id"
+                },
                 "payment_hash": {
                   "type": "string",
                   "description": "payment_hash"
@@ -2174,7 +2527,10 @@
                   "type": "string",
                   "description": "destination"
                 },
-                "msatoshi": { "type": "integer", "description": "msatoshi" },
+                "msatoshi": {
+                  "type": "integer",
+                  "description": "msatoshi"
+                },
                 "amount_msat": {
                   "type": "string",
                   "description": "amount_msat"
@@ -2191,12 +2547,18 @@
                   "type": "integer",
                   "description": "created_at"
                 },
-                "status": { "type": "string", "description": "status" },
+                "status": {
+                  "type": "string",
+                  "description": "status"
+                },
                 "payment_preimage": {
                   "type": "string",
                   "description": "payment_preimage"
                 },
-                "bolt11": { "type": "string", "description": "bolt11" }
+                "bolt11": {
+                  "type": "string",
+                  "description": "bolt11"
+                }
               }
             }
           },
@@ -2205,11 +2567,26 @@
             "schema": {
               "type": "object",
               "properties": {
-                "type": { "type": "string", "description": "type" },
-                "name": { "type": "string", "description": "name" },
-                "message": { "type": "string", "description": "message" },
-                "code": { "type": "integer", "description": "code" },
-                "fullType": { "type": "string", "description": "fullType" }
+                "type": {
+                  "type": "string",
+                  "description": "type"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "name"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "message"
+                },
+                "code": {
+                  "type": "integer",
+                  "description": "code"
+                },
+                "fullType": {
+                  "type": "string",
+                  "description": "fullType"
+                }
               }
             }
           }
@@ -2238,8 +2615,14 @@
                 "pays": {
                   "type": "object",
                   "properties": {
-                    "bolt11": { "type": "string", "description": "bolt11" },
-                    "status": { "type": "string", "description": "status" },
+                    "bolt11": {
+                      "type": "string",
+                      "description": "bolt11"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "status"
+                    },
                     "payment_preimage": {
                       "type": "string",
                       "description": "preimage"
@@ -2254,7 +2637,9 @@
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2280,7 +2665,10 @@
                 "payments": {
                   "type": "object",
                   "properties": {
-                    "id": { "type": "integer", "description": "id" },
+                    "id": {
+                      "type": "integer",
+                      "description": "id"
+                    },
                     "payment_hash": {
                       "type": "string",
                       "description": "payment_hash"
@@ -2309,20 +2697,31 @@
                       "type": "integer",
                       "description": "created_at"
                     },
-                    "status": { "type": "string", "description": "status" },
+                    "status": {
+                      "type": "string",
+                      "description": "status"
+                    },
                     "payment_preimage": {
                       "type": "string",
                       "description": "payment_preimage"
                     },
-                    "bolt11": { "type": "string", "description": "bolt11" },
-                    "memo": { "type": "string", "description": "memo" }
+                    "bolt11": {
+                      "type": "string",
+                      "description": "bolt11"
+                    },
+                    "memo": {
+                      "type": "string",
+                      "description": "memo"
+                    }
                   },
                   "description": "payments"
                 }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2382,17 +2781,28 @@
                   "type": "string",
                   "description": "payment_secret"
                 },
-                "features": { "type": "string", "description": "features" },
-                "routes": { "type": "object", "description": "routes" },
+                "features": {
+                  "type": "string",
+                  "description": "features"
+                },
+                "routes": {
+                  "type": "object",
+                  "description": "routes"
+                },
                 "payment_hash": {
                   "type": "string",
                   "description": "payment_hash"
                 },
-                "signature": { "type": "string", "description": "signature" }
+                "signature": {
+                  "type": "string",
+                  "description": "signature"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2467,8 +2877,14 @@
                   "type": "integer",
                   "description": "created_at"
                 },
-                "parts": { "type": "integer", "description": "parts" },
-                "msatoshi": { "type": "integer", "description": "msatoshi" },
+                "parts": {
+                  "type": "integer",
+                  "description": "parts"
+                },
+                "msatoshi": {
+                  "type": "integer",
+                  "description": "msatoshi"
+                },
                 "amount_msat": {
                   "type": "string",
                   "description": "amount_msat"
@@ -2485,7 +2901,10 @@
                   "type": "string",
                   "description": "payment_preimage"
                 },
-                "status": { "type": "string", "description": "status" }
+                "status": {
+                  "type": "string",
+                  "description": "status"
+                }
               }
             }
           },
@@ -2494,11 +2913,26 @@
             "schema": {
               "type": "object",
               "properties": {
-                "type": { "type": "string", "description": "type" },
-                "name": { "type": "string", "description": "name" },
-                "message": { "type": "string", "description": "message" },
-                "code": { "type": "integer", "description": "code" },
-                "fullType": { "type": "string", "description": "fullType" }
+                "type": {
+                  "type": "string",
+                  "description": "type"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "name"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "message"
+                },
+                "code": {
+                  "type": "integer",
+                  "description": "code"
+                },
+                "fullType": {
+                  "type": "string",
+                  "description": "fullType"
+                }
               }
             }
           }
@@ -2525,10 +2959,17 @@
             "description": "Peer connected successfully",
             "schema": {
               "type": "object",
-              "properties": { "id": { "type": "string", "description": "id" } }
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "id"
+                }
+              }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2543,14 +2984,28 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": { "type": "string", "description": "id" },
-                "connected": { "type": "string", "description": "connected" },
-                "netaddr": { "type": "object", "description": "netaddr" },
-                "alias": { "type": "string", "description": "alias" }
+                "id": {
+                  "type": "string",
+                  "description": "id"
+                },
+                "connected": {
+                  "type": "string",
+                  "description": "connected"
+                },
+                "netaddr": {
+                  "type": "object",
+                  "description": "netaddr"
+                },
+                "alias": {
+                  "type": "string",
+                  "description": "alias"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2576,8 +3031,12 @@
           }
         ],
         "responses": {
-          "202": { "description": "Peer disconnected successfully" },
-          "500": { "description": "Server error" }
+          "202": {
+            "description": "Peer disconnected successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2603,8 +3062,12 @@
           }
         ],
         "responses": {
-          "200": { "description": "Information specific to the RPC command" },
-          "500": { "description": "Server error" }
+          "200": {
+            "description": "Information specific to the RPC command"
+          },
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     },
@@ -2647,7 +3110,9 @@
             "name": "utxos",
             "description": "Specifies the utxos to be used to fund the channel, as an array of \"txid:vout\"",
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -2656,12 +3121,20 @@
             "schema": {
               "type": "object",
               "properties": {
-                "tx": { "type": "string", "description": "tx" },
-                "txid": { "type": "string", "description": "txid" }
+                "tx": {
+                  "type": "string",
+                  "description": "tx"
+                },
+                "txid": {
+                  "type": "string",
+                  "description": "txid"
+                }
               }
             }
           },
-          "500": { "description": "Server error" }
+          "500": {
+            "description": "Server error"
+          }
         }
       }
     }

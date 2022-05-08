@@ -44,6 +44,7 @@ import type {
 } from "./UtilitySignMessage";
 import type { UtilityCheckMessageResponse } from "./UtilityCheckMessage";
 import type { UtilityDecodeResponse } from "./UtilityDecode";
+import type { UtilityListConfigsResponse } from "./UtilityListConfigs";
 import type { ListFundsResponse } from "./ListFunds";
 import type {
   InvoiceGenInvoiceResponse,
@@ -158,15 +159,15 @@ export default class RestApiClient extends ApiClient {
     queryParams: unknown,
     bodyParams?: unknown
   ): Promise<ReturnType> {
-    const generatedQuery = "?";
-    const queryParamsTyped = queryParams as Record<string, string>;
+    let generatedQuery = "?";
+    let queryParamsTyped = queryParams as Record<string, string>;
     if (queryParams) {
       let isFirst = true;
       for (const param in queryParamsTyped) {
         if (isFirst) {
-          queryParams += `${param}=${queryParamsTyped[param]}`;
+          generatedQuery += `${param}=${queryParamsTyped[param]}`;
         } else {
-          queryParams += `&${param}=${queryParamsTyped[param]}`;
+          generatedQuery += `&${param}=${queryParamsTyped[param]}`;
         }
         isFirst = false;
       }
@@ -308,6 +309,14 @@ export default class RestApiClient extends ApiClient {
 
   utilityDecode() {
     return this.req<UtilityDecodeResponse>("GET", "/utility/decode", null);
+  }
+
+  utilityListConfigs() {
+    return this.req<UtilityListConfigsResponse>(
+      "GET",
+      "/utility/listConfigs",
+      null
+    );
   }
 
   listFunds() {
