@@ -17,7 +17,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@core-ln/base@^0.2.0, @core-ln/base@workspace:packages/base":
+"@core-ln/base@^0.2.1-beta.1, @core-ln/base@workspace:packages/base":
   version: 0.0.0-use.local
   resolution: "@core-ln/base@workspace:packages/base"
   dependencies:
@@ -26,11 +26,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@core-ln/core@^0.2.0, @core-ln/core@workspace:packages/core":
+"@core-ln/core@^0.2.1-beta.1, @core-ln/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@core-ln/core@workspace:packages/core"
   dependencies:
-    "@core-ln/base": ^0.2.0
+    "@core-ln/base": ^0.2.1-beta.1
     jsonparse: ^1.3.1
     tsup: ^5.12.7
     typescript: ^4.6.3
@@ -41,7 +41,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@core-ln/plugin@workspace:packages/plugin"
   dependencies:
-    "@core-ln/core": ^0.2.0
+    "@core-ln/core": ^0.2.1-beta.1
     tsup: ^5.12.7
     typescript: ^4.6.3
   languageName: unknown
@@ -51,7 +51,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@core-ln/rest@workspace:packages/rest"
   dependencies:
-    "@core-ln/base": ^0.2.0
+    "@core-ln/base": ^0.2.1-beta.1
     tsup: ^5.12.7
     typescript: ^4.6.3
   languageName: unknown

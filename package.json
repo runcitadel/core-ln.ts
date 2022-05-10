@@ -1,6 +1,6 @@
 {
   "name": "c-lightning.ts",
-  "version": "0.2.0",
+  "version": "0.2.1-beta.1",
   "packageManager": "yarn@3.2.0",
   "private": true,
   "workspaces": [
@@ -33,5 +33,6 @@
     "lint": "eslint --fix packages && prettier -w \"packages/*/src/**/*.ts\"",
     "build": "yarn workspaces foreach install && yarn workspaces foreach run build && yarn workspaces foreach install",
     "docs": "typedoc --out docs --entryPointStrategy packages ."
-  }
+  },
+  "stableVersion": "0.2.0"
 }

@@ -1,14 +1,14 @@
 {
     "name": "@core-ln/core",
     "author": "Aaron Dewes <aaron.dewes@protonmail.com>",
-    "version": "0.2.0",
+    "version": "0.2.1-beta.1",
     "devDependencies": {
         "jsonparse": "^1.3.1",
         "tsup": "^5.12.7",
         "typescript": "^4.6.3"
     },
     "dependencies": {
-        "@core-ln/base": "^0.2.0"
+        "@core-ln/base": "^0.2.1-beta.1"
     },
     "scripts": {
         "build": "tsup src/index.ts --format cjs,esm --dts --clean",
@@ -25,5 +25,6 @@
         }
     },
     "license": "MIT",
-    "typedocMain": "src/index.ts"
+    "typedocMain": "src/index.ts",
+    "stableVersion": "0.2.0"
 }
