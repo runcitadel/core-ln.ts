@@ -3177,326 +3177,359 @@ export default abstract class RPCClient extends EventEmitter {
   }
 }
 
-export type { AddgossipRequest, AddgossipResponse } from "./addgossip";
-export type {
-  AutocleaninvoiceRequest,
-  AutocleaninvoiceResponse,
+export { type AddgossipRequest, type AddgossipResponse } from "./addgossip";
+export {
+  type AutocleaninvoiceRequest,
+  type AutocleaninvoiceResponse,
 } from "./autocleaninvoice";
-export type { CheckRequest, CheckResponse } from "./check";
-export type { CheckmessageRequest, CheckmessageResponse } from "./checkmessage";
-export type { CloseRequest, CloseResponse, Type as CloseType } from "./close";
-export type {
-  ConnectRequest,
-  ConnectResponse,
-  Address as ConnectAddress,
+export { type CheckRequest, type CheckResponse } from "./check";
+export {
+  type CheckmessageRequest,
+  type CheckmessageResponse,
+} from "./checkmessage";
+export {
+  type CloseRequest,
+  type CloseResponse,
+  Type as CloseType,
+} from "./close";
+export {
+  type ConnectRequest,
+  type ConnectResponse,
+  type Address as ConnectAddress,
   Type as ConnectType,
   Direction as ConnectDirection,
 } from "./connect";
-export type {
-  CreateinvoiceRequest,
-  CreateinvoiceResponse,
+export {
+  type CreateinvoiceRequest,
+  type CreateinvoiceResponse,
   Status as CreateinvoiceStatus,
 } from "./createinvoice";
-export type { CreateonionRequest, CreateonionResponse } from "./createonion";
-export type { DatastoreRequest, DatastoreResponse } from "./datastore";
-export type { DecodeRequest, DecodeResponse } from "./decode";
-export type {
-  DecodepayRequest,
-  DecodepayResponse,
-  Extra as DecodepayExtra,
-  Fallback as DecodepayFallback,
+export {
+  type CreateonionRequest,
+  type CreateonionResponse,
+} from "./createonion";
+export { type DatastoreRequest, type DatastoreResponse } from "./datastore";
+export {
+  type DecodeRequest,
+  type DecodeResponse,
+  Type as DecodeType,
+} from "./decode";
+export {
+  type DecodepayRequest,
+  type DecodepayResponse,
+  type Extra as DecodepayExtra,
+  type Fallback as DecodepayFallback,
   Type as DecodepayType,
-  Route as DecodepayRoute,
+  type Route as DecodepayRoute,
 } from "./decodepay";
-export type { DeldatastoreRequest, DeldatastoreResponse } from "./deldatastore";
-export type {
-  DelexpiredinvoiceRequest,
-  DelexpiredinvoiceResponse,
+export {
+  type DeldatastoreRequest,
+  type DeldatastoreResponse,
+} from "./deldatastore";
+export {
+  type DelexpiredinvoiceRequest,
+  type DelexpiredinvoiceResponse,
 } from "./delexpiredinvoice";
-export type {
-  DelinvoiceRequest,
-  DelinvoiceResponse,
+export {
+  type DelinvoiceRequest,
+  type DelinvoiceResponse,
   Status as DelinvoiceStatus,
 } from "./delinvoice";
-export type {
-  DelpayRequest,
-  DelpayResponse,
-  Payment as DelpayPayment,
+export {
+  type DelpayRequest,
+  type DelpayResponse,
+  type Payment as DelpayPayment,
   Status as DelpayStatus,
 } from "./delpay";
-export type { DisableofferRequest, DisableofferResponse } from "./disableoffer";
-export type { DisconnectRequest, DisconnectResponse } from "./disconnect";
-export type {
-  FeeratesRequest,
-  FeeratesResponse,
-  OnchainFeeEstimates as FeeratesOnchainFeeEstimates,
-  Perkb as FeeratesPerkb,
-  Perkw as FeeratesPerkw,
+export {
+  type DisableofferRequest,
+  type DisableofferResponse,
+} from "./disableoffer";
+export { type DisconnectRequest, type DisconnectResponse } from "./disconnect";
+export {
+  type FeeratesRequest,
+  type FeeratesResponse,
+  type OnchainFeeEstimates as FeeratesOnchainFeeEstimates,
+  type Perkb as FeeratesPerkb,
+  type Perkw as FeeratesPerkw,
 } from "./feerates";
-export type {
-  FetchinvoiceRequest,
-  FetchinvoiceResponse,
-  Changes as FetchinvoiceChanges,
-  NextPeriod as FetchinvoiceNextPeriod,
+export {
+  type FetchinvoiceRequest,
+  type FetchinvoiceResponse,
+  type Changes as FetchinvoiceChanges,
+  type NextPeriod as FetchinvoiceNextPeriod,
 } from "./fetchinvoice";
-export type { FundchannelRequest, FundchannelResponse } from "./fundchannel";
-export type {
-  FundchannelCancelRequest,
-  FundchannelCancelResponse,
+export {
+  type FundchannelRequest,
+  type FundchannelResponse,
+} from "./fundchannel";
+export {
+  type FundchannelCancelRequest,
+  type FundchannelCancelResponse,
 } from "./fundchannel_cancel";
-export type {
-  FundchannelCompleteRequest,
-  FundchannelCompleteResponse,
+export {
+  type FundchannelCompleteRequest,
+  type FundchannelCompleteResponse,
 } from "./fundchannel_complete";
-export type {
-  FundchannelStartRequest,
-  FundchannelStartResponse,
+export {
+  type FundchannelStartRequest,
+  type FundchannelStartResponse,
 } from "./fundchannel_start";
-export type {
-  FunderupdateRequest,
-  FunderupdateResponse,
+export {
+  type FunderupdateRequest,
+  type FunderupdateResponse,
   Policy as FunderupdatePolicy,
 } from "./funderupdate";
-export type {
-  FundpsbtRequest,
-  FundpsbtResponse,
-  Reservation as FundpsbtReservation,
+export {
+  type FundpsbtRequest,
+  type FundpsbtResponse,
+  type Reservation as FundpsbtReservation,
 } from "./fundpsbt";
-export type {
-  GetinfoRequest,
-  GetinfoResponse,
-  Address as GetinfoAddress,
+export {
+  type GetinfoRequest,
+  type GetinfoResponse,
+  type Address as GetinfoAddress,
   AddressType as GetinfoAddressType,
-  Binding as GetinfoBinding,
+  type Binding as GetinfoBinding,
   BindingType as GetinfoBindingType,
-  OurFeatures as GetinfoOurFeatures,
+  type OurFeatures as GetinfoOurFeatures,
 } from "./getinfo";
-export type {
-  GetlogRequest,
-  GetlogResponse,
-  Log as GetlogLog,
+export {
+  type GetlogRequest,
+  type GetlogResponse,
+  type Log as GetlogLog,
   Type as GetlogType,
 } from "./getlog";
-export type {
-  GetrouteRequest,
-  GetrouteResponse,
-  Route as GetrouteRoute,
+export {
+  type GetrouteRequest,
+  type GetrouteResponse,
+  type Route as GetrouteRoute,
   Style as GetrouteStyle,
 } from "./getroute";
-export type {
-  GetsharedsecretRequest,
-  GetsharedsecretResponse,
+export {
+  type GetsharedsecretRequest,
+  type GetsharedsecretResponse,
 } from "./getsharedsecret";
-export type { HelpRequest, HelpResponse, Help as HelpHelp } from "./help";
-export type { InvoiceRequest, InvoiceResponse } from "./invoice";
-export type {
-  KeysendRequest,
-  KeysendResponse,
+export {
+  type HelpRequest,
+  type HelpResponse,
+  type Help as HelpHelp,
+} from "./help";
+export { type InvoiceRequest, type InvoiceResponse } from "./invoice";
+export {
+  type KeysendRequest,
+  type KeysendResponse,
   Status as KeysendStatus,
 } from "./keysend";
-export type {
-  ListchannelsRequest,
-  ListchannelsResponse,
-  Channel as ListchannelsChannel,
+export {
+  type ListchannelsRequest,
+  type ListchannelsResponse,
+  type Channel as ListchannelsChannel,
 } from "./listchannels";
-export type {
-  ListconfigsRequest,
-  ListconfigsResponse,
-  ImportantPlugin as ListconfigsImportantPlugin,
-  Plugin as ListconfigsPlugin,
+export {
+  type ListconfigsRequest,
+  type ListconfigsResponse,
+  type ImportantPlugin as ListconfigsImportantPlugin,
+  type Plugin as ListconfigsPlugin,
 } from "./listconfigs";
-export type {
-  ListdatastoreRequest,
-  ListdatastoreResponse,
-  Datastore as ListdatastoreDatastore,
+export {
+  type ListdatastoreRequest,
+  type ListdatastoreResponse,
+  type Datastore as ListdatastoreDatastore,
 } from "./listdatastore";
-export type {
-  ListforwardsRequest,
-  ListforwardsResponse,
-  Forward as ListforwardsForward,
+export {
+  type ListforwardsRequest,
+  type ListforwardsResponse,
+  type Forward as ListforwardsForward,
   Status as ListforwardsStatus,
   Style as ListforwardsStyle,
 } from "./listforwards";
-export type {
-  ListfundsRequest,
-  ListfundsResponse,
-  Channel as ListfundsChannel,
+export {
+  type ListfundsRequest,
+  type ListfundsResponse,
+  type Channel as ListfundsChannel,
   State as ListfundsState,
-  Output as ListfundsOutput,
+  type Output as ListfundsOutput,
   Status as ListfundsStatus,
 } from "./listfunds";
-export type {
-  ListinvoicesRequest,
-  ListinvoicesResponse,
-  Invoice as ListinvoicesInvoice,
+export {
+  type ListinvoicesRequest,
+  type ListinvoicesResponse,
+  type Invoice as ListinvoicesInvoice,
   Status as ListinvoicesStatus,
 } from "./listinvoices";
-export type {
-  ListnodesRequest,
-  ListnodesResponse,
-  Node as ListnodesNode,
+export {
+  type ListnodesRequest,
+  type ListnodesResponse,
+  type Node as ListnodesNode,
 } from "./listnodes";
-export type {
-  ListoffersRequest,
-  ListoffersResponse,
-  Offer as ListoffersOffer,
+export {
+  type ListoffersRequest,
+  type ListoffersResponse,
+  type Offer as ListoffersOffer,
 } from "./listoffers";
-export type {
-  ListpaysRequest,
-  ListpaysResponse,
-  Pay as ListpaysPay,
+export {
+  type ListpaysRequest,
+  type ListpaysResponse,
+  type Pay as ListpaysPay,
   Status as ListpaysStatus,
 } from "./listpays";
-export type {
-  ListpeersRequest,
-  ListpeersResponse,
-  Peer as ListpeersPeer,
-  Channel as ListpeersChannel,
+export {
+  type ListpeersRequest,
+  type ListpeersResponse,
+  type Peer as ListpeersPeer,
+  type Channel as ListpeersChannel,
   Closer as ListpeersCloser,
   Feature as ListpeersFeature,
-  Feerate as ListpeersFeerate,
-  Funding as ListpeersFunding,
-  Htlc as ListpeersHtlc,
+  type Feerate as ListpeersFeerate,
+  type Funding as ListpeersFunding,
+  type Htlc as ListpeersHtlc,
   Direction as ListpeersDirection,
-  Inflight as ListpeersInflight,
+  type Inflight as ListpeersInflight,
   State as ListpeersState,
-  StateChange as ListpeersStateChange,
+  type StateChange as ListpeersStateChange,
   Cause as ListpeersCause,
-  Log as ListpeersLog,
+  type Log as ListpeersLog,
   Type as ListpeersType,
 } from "./listpeers";
-export type {
-  ListsendpaysRequest,
-  ListsendpaysResponse,
-  Payment as ListsendpaysPayment,
+export {
+  type ListsendpaysRequest,
+  type ListsendpaysResponse,
+  type Payment as ListsendpaysPayment,
   Status as ListsendpaysStatus,
 } from "./listsendpays";
-export type {
-  ListtransactionsRequest,
-  ListtransactionsResponse,
-  Transaction as ListtransactionsTransaction,
-  Input as ListtransactionsInput,
+export {
+  type ListtransactionsRequest,
+  type ListtransactionsResponse,
+  type Transaction as ListtransactionsTransaction,
+  type Input as ListtransactionsInput,
   Type as ListtransactionsType,
-  Output as ListtransactionsOutput,
+  type Output as ListtransactionsOutput,
 } from "./listtransactions";
-export type {
-  MultifundchannelRequest,
-  MultifundchannelResponse,
-  ChannelID as MultifundchannelChannelID,
-  Failed as MultifundchannelFailed,
-  Error as MultifundchannelError,
+export {
+  type MultifundchannelRequest,
+  type MultifundchannelResponse,
+  type ChannelID as MultifundchannelChannelID,
+  type Failed as MultifundchannelFailed,
+  type Error as MultifundchannelError,
   Method as MultifundchannelMethod,
 } from "./multifundchannel";
-export type {
-  MultiwithdrawRequest,
-  MultiwithdrawResponse,
+export {
+  type MultiwithdrawRequest,
+  type MultiwithdrawResponse,
 } from "./multiwithdraw";
-export type {
-  NotificationsRequest,
-  NotificationsResponse,
+export {
+  type NotificationsRequest,
+  type NotificationsResponse,
 } from "./notifications";
-export type { OfferRequest, OfferResponse } from "./offer";
-export type { OfferoutRequest, OfferoutResponse } from "./offerout";
-export type {
-  OpenchannelAbortRequest,
-  OpenchannelAbortResponse,
+export { type OfferRequest, type OfferResponse } from "./offer";
+export { type OfferoutRequest, type OfferoutResponse } from "./offerout";
+export {
+  type OpenchannelAbortRequest,
+  type OpenchannelAbortResponse,
 } from "./openchannel_abort";
-export type {
-  OpenchannelBumpRequest,
-  OpenchannelBumpResponse,
+export {
+  type OpenchannelBumpRequest,
+  type OpenchannelBumpResponse,
 } from "./openchannel_bump";
-export type {
-  OpenchannelInitRequest,
-  OpenchannelInitResponse,
+export {
+  type OpenchannelInitRequest,
+  type OpenchannelInitResponse,
 } from "./openchannel_init";
-export type {
-  OpenchannelSignedRequest,
-  OpenchannelSignedResponse,
+export {
+  type OpenchannelSignedRequest,
+  type OpenchannelSignedResponse,
 } from "./openchannel_signed";
-export type {
-  OpenchannelUpdateRequest,
-  OpenchannelUpdateResponse,
+export {
+  type OpenchannelUpdateRequest,
+  type OpenchannelUpdateResponse,
 } from "./openchannel_update";
-export type { ParsefeerateRequest, ParsefeerateResponse } from "./parsefeerate";
-export type { PayRequest, PayResponse, Status as PayStatus } from "./pay";
-export type { PingRequest, PingResponse } from "./ping";
-export type {
-  PluginRequest,
-  PluginResponse,
+export {
+  type ParsefeerateRequest,
+  type ParsefeerateResponse,
+} from "./parsefeerate";
+export { type PayRequest, type PayResponse, Status as PayStatus } from "./pay";
+export { type PingRequest, type PingResponse } from "./ping";
+export {
+  type PluginRequest,
+  type PluginResponse,
   Command as PluginCommand,
 } from "./plugin";
-export type {
-  ReserveinputsRequest,
-  ReserveinputsResponse,
-  Reservation as ReserveinputsReservation,
+export {
+  type ReserveinputsRequest,
+  type ReserveinputsResponse,
+  type Reservation as ReserveinputsReservation,
 } from "./reserveinputs";
-export type {
-  SendcustommsgRequest,
-  SendcustommsgResponse,
+export {
+  type SendcustommsgRequest,
+  type SendcustommsgResponse,
 } from "./sendcustommsg";
-export type {
-  SendinvoiceRequest,
-  SendinvoiceResponse,
+export {
+  type SendinvoiceRequest,
+  type SendinvoiceResponse,
   Status as SendinvoiceStatus,
 } from "./sendinvoice";
-export type {
-  SendonionRequest,
-  SendonionResponse,
+export {
+  type SendonionRequest,
+  type SendonionResponse,
   Status as SendonionStatus,
 } from "./sendonion";
-export type {
-  SendonionmessageRequest,
-  SendonionmessageResponse,
+export {
+  type SendonionmessageRequest,
+  type SendonionmessageResponse,
 } from "./sendonionmessage";
-export type {
-  SendpayRequest,
-  SendpayResponse,
+export {
+  type SendpayRequest,
+  type SendpayResponse,
   Status as SendpayStatus,
 } from "./sendpay";
-export type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt";
-export type {
-  SetchannelRequest,
-  SetchannelResponse,
-  Channel as SetchannelChannel,
+export { type SendpsbtRequest, type SendpsbtResponse } from "./sendpsbt";
+export {
+  type SetchannelRequest,
+  type SetchannelResponse,
+  type Channel as SetchannelChannel,
 } from "./setchannel";
-export type {
-  SetchannelfeeRequest,
-  SetchannelfeeResponse,
-  Channel as SetchannelfeeChannel,
+export {
+  type SetchannelfeeRequest,
+  type SetchannelfeeResponse,
+  type Channel as SetchannelfeeChannel,
 } from "./setchannelfee";
-export type { SignmessageRequest, SignmessageResponse } from "./signmessage";
-export type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt";
-export type { StopRequest, StopResponse } from "./stop";
-export type { TxdiscardRequest, TxdiscardResponse } from "./txdiscard";
-export type { TxprepareRequest, TxprepareResponse } from "./txprepare";
-export type { TxsendRequest, TxsendResponse } from "./txsend";
-export type {
-  UnreserveinputsRequest,
-  UnreserveinputsResponse,
-  Reservation as UnreserveinputsReservation,
+export {
+  type SignmessageRequest,
+  type SignmessageResponse,
+} from "./signmessage";
+export { type SignpsbtRequest, type SignpsbtResponse } from "./signpsbt";
+export { type StopRequest, type StopResponse } from "./stop";
+export { type TxdiscardRequest, type TxdiscardResponse } from "./txdiscard";
+export { type TxprepareRequest, type TxprepareResponse } from "./txprepare";
+export { type TxsendRequest, type TxsendResponse } from "./txsend";
+export {
+  type UnreserveinputsRequest,
+  type UnreserveinputsResponse,
+  type Reservation as UnreserveinputsReservation,
 } from "./unreserveinputs";
-export type {
-  UtxopsbtRequest,
-  UtxopsbtResponse,
-  Reservation as UtxopsbtReservation,
+export {
+  type UtxopsbtRequest,
+  type UtxopsbtResponse,
+  type Reservation as UtxopsbtReservation,
 } from "./utxopsbt";
-export type {
-  WaitanyinvoiceRequest,
-  WaitanyinvoiceResponse,
+export {
+  type WaitanyinvoiceRequest,
+  type WaitanyinvoiceResponse,
   Status as WaitanyinvoiceStatus,
 } from "./waitanyinvoice";
-export type {
-  WaitblockheightRequest,
-  WaitblockheightResponse,
+export {
+  type WaitblockheightRequest,
+  type WaitblockheightResponse,
 } from "./waitblockheight";
-export type {
-  WaitinvoiceRequest,
-  WaitinvoiceResponse,
+export {
+  type WaitinvoiceRequest,
+  type WaitinvoiceResponse,
   Status as WaitinvoiceStatus,
 } from "./waitinvoice";
-export type {
-  WaitsendpayRequest,
-  WaitsendpayResponse,
+export {
+  type WaitsendpayRequest,
+  type WaitsendpayResponse,
   Status as WaitsendpayStatus,
 } from "./waitsendpay";
-export type { WithdrawRequest, WithdrawResponse } from "./withdraw";
+export { type WithdrawRequest, type WithdrawResponse } from "./withdraw";

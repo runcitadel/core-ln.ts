@@ -1,7 +1,7 @@
 import AbstractApiClient from "./generated/main.ts";
 export default AbstractApiClient;
 
-export type { transformMap, transform } from "./generated/main.ts";
+export { transformMap, transform } from "./generated/main.ts";
 
 export type { AddgossipRequest, AddgossipResponse } from "./generated/addgossip.ts";
 export type {

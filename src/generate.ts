@@ -352,9 +352,10 @@ ${fullOutput}
       symbol.name === `${pascalcase(parsedSynopsis.name)}Request` ||
       symbol.name === `${pascalcase(parsedSynopsis.name)}Response`
     ) {
-      stringExports += `${symbol.name}, `;
+      stringExports += `type ${symbol.name}, `;
     } else {
-      stringExports += `${symbol.name} as ${
+      const isEnum = symbol.valueDeclaration?.kind === ts.SyntaxKind.EnumDeclaration;
+      stringExports += `${isEnum ? "" : "type "}${symbol.name} as ${
         joinUpperCaseFirst(
           fileName,
           symbol.name,
@@ -379,11 +380,11 @@ ${fullOutput}
   imports.node += `
 import type { ${requestType}, ${responseType} } from "./${fileName}";`;
   exports.node += `
-export type { ${stringExports} } from "./${fileName}";`;
+export { ${stringExports} } from "./${fileName}";`;
   imports.deno += `
 import type { ${requestType}, ${responseType} } from "./${fileName}.ts";`;
   exports.deno += `
-export type { ${stringExports} } from "./${fileName}.ts";`;
+export { ${stringExports} } from "./${fileName}.ts";`;
 }
 
 function generateOutput(target: "node" | "deno") {

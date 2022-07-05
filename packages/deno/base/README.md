@@ -8,7 +8,7 @@ Abstract API definitions for Core Lightning to build your own RPC client.
 If you want an easier solution, check out [@core-ln/core](https://npmjs.com/package/@core-ln/core) for communication over Core Lightning's native unix socket
 or [@core-ln/rest](https://npmjs.com/package/@core-ln/rest) for use with the [REST plugin](https://github.com/Ride-the-Lightning/c-lightning-REST).
 
-This definition covers 100% of the API provided by Core Lightning 0.10.2.
+This definition covers 100% of the API provided by Core Lightning 0.11.0.
 
 Please note that this is currently a work-in-progress and some types may be incorrect or parts of the response may be missing.
 
