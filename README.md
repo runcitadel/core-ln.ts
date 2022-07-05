@@ -13,3 +13,6 @@ This code was mostly automatically generated from the Core Lightning documentati
 
 If you notice a problem like missing elements in the response type or types being wrong, please open an issue or submit a pull request.
 
+### Building
+
+The generated code can be generated using `deno run --allow-env --allow-read --allow-write src/generate.ts`

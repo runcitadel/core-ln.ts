@@ -1,11 +1,11 @@
-import * as fs from "fs";
-import * as fsPromises from "fs/promises";
-import camelcase from "camelcase";
-import pascalcase from "pascalcase";
-import quicktypeCore from "quicktype-core";
-import ts from "typescript";
-import { resolve } from "path";
-import prettier from "prettier";
+import camelcase from "https://esm.sh/camelcase@7.0.0";
+import pascalcase from "https://esm.sh/pascalcase@2.0.0";
+import quicktypeCore from "https://esm.sh/quicktype-core@6.0.71";
+import ts from "https://esm.sh/typescript@4.7.4";
+import { resolve } from "https://deno.land/std@0.146.0/path/mod.ts";
+import prettier from "https://esm.sh/prettier@2.7.1";
+import parserTypescript from "https://esm.sh/prettier@2.7.1/parser-typescript.js";
+import parserEspree from "https://esm.sh/prettier@2.7.1/parser-espree.js";
 
 // Join two strings and make the first character of each uppercase
 function joinUpperCaseFirst(a: string, b: string) {
@@ -19,12 +19,9 @@ function joinUpperCaseFirst(a: string, b: string) {
 
 function getExports(
   tsFile: string,
-  complierOpts: ts.CompilerOptions = { allowJs: true }
+  complierOpts: ts.CompilerOptions = { allowJs: true },
 ): ts.Symbol[] {
   const fName = resolve(tsFile);
-  if (!fs.existsSync(fName)) {
-    throw new Error(`The file ${fName} does not exist`);
-  }
   const program = ts.createProgram([fName], complierOpts);
   const checker = program.getTypeChecker();
   const sourceFile = program.getSourceFile(fName);
@@ -33,7 +30,7 @@ function getExports(
   // @ts-expect-error see: https://stackoverflow.com/questions/62865648/how-should-i-get-common-js-exports-with-the-typescript-compiler-api
   const exps = checker.getExportsAndPropertiesOfModule(
     // @ts-expect-error see: https://stackoverflow.com/questions/62865648/how-should-i-get-common-js-exports-with-the-typescript-compiler-api
-    exportSymbol || sourceFile.symbol
+    exportSymbol || sourceFile.symbol,
   );
   return exps;
 }
@@ -160,7 +157,7 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
     if (parents.length !== 0) {
       const maybeAdd = parents.reduceRight(
         (all, item) => ({ [item]: all }),
-        {}
+        {},
       );
       mergeDeep(transformMap, maybeAdd);
       let lastElement = transformMap;
@@ -199,35 +196,41 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
         key !== "then" &&
         key !== "if" &&
         key !== "items"
-      )
+      ) {
         newParents.push(key);
+      }
       fixHex(obj[key], method, key, newParents);
     });
   }
 }
 
-const files = fs
-  .readdirSync("./lightning/doc")
-  .filter((file) => file.endsWith(".7.md"));
+const files = [...Deno.readDirSync("./lightning/doc")].filter((file) =>
+  file.name.endsWith(".7.md")
+);
 
-let imports = "";
-let exports = "";
+const imports = {
+  node: "",
+  deno: "",
+};
+const exports = {
+  node: "",
+  deno: "",
+};
 let generatedMethods = "";
 
-for (const file of files) {
+for (const fileIndex in files) {
+  const file = files[fileIndex];
   console.log(
-    `Parsing ${file} (${files.indexOf(file) + 1}/${files.length})...`
+    `Parsing ${file.name} (${Number(fileIndex) + 1}/${files.length})...`,
   );
-  const fileName = file.replace(".7.md", "").replace("lightning-", "");
-  const fileContents = fs
-    .readFileSync("./lightning/doc/" + file, "utf8")
+  const fileName = file.name.replace(".7.md", "").replace("lightning-", "");
+  const fileContents = Deno.readTextFileSync("./lightning/doc/" + file.name)
     .replaceAll("\\", "")
     .replaceAll("*/*", "* / *");
   const jsonSchema = JSON.parse(
-    fs.readFileSync(
+    Deno.readTextFileSync(
       "./lightning/doc/schemas/" + fileName + ".schema.json",
-      "utf8"
-    )
+    ),
   );
   const lines = fileContents.split("\n");
   const heading = lines[0];
@@ -238,16 +241,14 @@ for (const file of files) {
   const responseLine = lines.findIndex((line) => line.includes("RETURN VALUE"));
   // All lines between description and return value
   // Except the lines themselves and the line directly after the description
-  const descriptionLines =
-    "/**" +
+  const descriptionLines = "/**" +
     lines
       .slice(descriptionLine + 2, responseLine - 1)
       .join("\n * ")
       .replaceAll("\\", "")
       .replaceAll("*/", "*\\/") +
     "\n*/";
-  const methodDescriptionLines =
-    "/**" +
+  const methodDescriptionLines = "/**" +
     lines
       .slice(descriptionLine + 2, responseLine - 1)
       .join("\n   * ")
@@ -274,10 +275,9 @@ for (const file of files) {
   // Read the previous file
   let oldFile;
   try {
-    oldFile = fs
-      .readFileSync(`./packages/base/src/generated/${fileName}.ts`)
-      .toString("utf8")
-      .trim();
+    oldFile = Deno.readTextFileSync(
+      `./packages/base/src/generated/${fileName}.ts`,
+    ).trim();
   } catch {
     oldFile = "";
   }
@@ -292,9 +292,10 @@ for (const file of files) {
  */`,
         {
           parser: "espree",
-        }
+          plugins: [parserEspree],
+        },
       )
-      .trim()
+      .trim(),
   );
 
   const oldSynopsis = "export " + oldFile.split("export")[1]?.trim();
@@ -302,7 +303,7 @@ for (const file of files) {
   const { lines: outputLines } = await quicktypeJSONSchema(
     "typescript",
     pascalcase(parsedSynopsis.name) + "Response",
-    JSON.stringify(jsonSchema)
+    JSON.stringify(jsonSchema),
   );
   let fullOutput = outputLines.join("\n").replaceAll("*/*", "* / *");
   if (transformKeys[parsedSynopsis.name]) {
@@ -321,16 +322,27 @@ for (const file of files) {
 
 ${descriptionLines}
 ${
-  synopsisHasChanged ? parsedSynopsisToTsInterface(parsedSynopsis) : oldSynopsis
-}
+    synopsisHasChanged
+      ? parsedSynopsisToTsInterface(parsedSynopsis)
+      : oldSynopsis
+  }
 
 ${fullOutput}
 `;
-  await fsPromises.writeFile(
+  Deno.writeTextFileSync(
     `./packages/base/src/generated/${fileName}.ts`,
     prettier.format(tsFileContents, {
       parser: "typescript",
-    })
+      plugins: [parserTypescript],
+    }),
+  );
+
+  Deno.writeTextFileSync(
+    `./packages/deno/base/src/generated/${fileName}.ts`,
+    prettier.format(tsFileContents, {
+      parser: "typescript",
+      plugins: [parserTypescript],
+    }),
   );
 
   const _exports = getExports(`./packages/base/src/generated/${fileName}.ts`);
@@ -342,10 +354,12 @@ ${fullOutput}
     ) {
       stringExports += `${symbol.name}, `;
     } else {
-      stringExports += `${symbol.name} as ${joinUpperCaseFirst(
-        fileName,
-        symbol.name
-      )}, `;
+      stringExports += `${symbol.name} as ${
+        joinUpperCaseFirst(
+          fileName,
+          symbol.name,
+        )
+      }, `;
     }
   }
   stringExports = stringExports.slice(0, -2);
@@ -362,17 +376,23 @@ ${fullOutput}
     return this.call<${responseType}>("${parsedSynopsis.name}", payload);
   }
     `;
-  imports += `
+  imports.node += `
 import type { ${requestType}, ${responseType} } from "./${fileName}";`;
-  exports += `
+  exports.node += `
 export type { ${stringExports} } from "./${fileName}";`;
+  imports.deno += `
+import type { ${requestType}, ${responseType} } from "./${fileName}.ts";`;
+  exports.deno += `
+export type { ${stringExports} } from "./${fileName}.ts";`;
 }
 
-await fsPromises.writeFile(
-  "./packages/base/src/generated/main.ts",
-  prettier.format(
-    `import { EventEmitter } from "events";
-${imports}
+function generateOutput(target: "node" | "deno") {
+  const denoImport =
+    'import { EventEmitter } from "https://deno.land/std@0.146.0/node/events.ts";';
+
+  const nodeImport = `import { EventEmitter } from "events";`;
+  return `${target === "node" ? nodeImport : denoImport}
+${target === "node" ? imports.node : imports.deno}
 
 export const transformMap: any = ${JSON.stringify(transformMap, undefined, 2)}
 
@@ -429,18 +449,30 @@ export default abstract class RPCClient extends EventEmitter {
   ${generatedMethods}
 }
 
-${exports}
-`,
-    {
-      parser: "typescript",
-    }
-  )
+${target === "node" ? exports.node : exports.deno}
+`;
+}
+
+Deno.writeTextFileSync(
+  "./packages/base/src/generated/main.ts",
+  prettier.format(generateOutput("node"), {
+    parser: "typescript",
+    plugins: [parserTypescript],
+  }),
+);
+
+Deno.writeTextFileSync(
+  "./packages/deno/base/src/generated/main.ts",
+  prettier.format(generateOutput("deno"), {
+    parser: "typescript",
+    plugins: [parserTypescript],
+  }),
 );
 
 async function quicktypeJSONSchema(
   targetLanguage: string,
   typeName: string,
-  jsonSchemaString: string
+  jsonSchemaString: string,
 ) {
   const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore());
 

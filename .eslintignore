@@ -7,3 +7,4 @@ rollup.config*.js
 *.js
 cjs
 packages/*/src/generated
+packages/deno

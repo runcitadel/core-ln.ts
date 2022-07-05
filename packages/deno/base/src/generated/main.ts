@@ -1,157 +1,187 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from "https://deno.land/std@0.146.0/node/events.ts";
 
-import type { AddgossipRequest, AddgossipResponse } from "./addgossip";
+import type { AddgossipRequest, AddgossipResponse } from "./addgossip.ts";
 import type {
   AutocleaninvoiceRequest,
   AutocleaninvoiceResponse,
-} from "./autocleaninvoice";
-import type { CheckRequest, CheckResponse } from "./check";
-import type { CheckmessageRequest, CheckmessageResponse } from "./checkmessage";
-import type { CloseRequest, CloseResponse } from "./close";
-import type { ConnectRequest, ConnectResponse } from "./connect";
+} from "./autocleaninvoice.ts";
+import type { CheckRequest, CheckResponse } from "./check.ts";
+import type {
+  CheckmessageRequest,
+  CheckmessageResponse,
+} from "./checkmessage.ts";
+import type { CloseRequest, CloseResponse } from "./close.ts";
+import type { ConnectRequest, ConnectResponse } from "./connect.ts";
 import type {
   CreateinvoiceRequest,
   CreateinvoiceResponse,
-} from "./createinvoice";
-import type { CreateonionRequest, CreateonionResponse } from "./createonion";
-import type { DatastoreRequest, DatastoreResponse } from "./datastore";
-import type { DecodeRequest, DecodeResponse } from "./decode";
-import type { DecodepayRequest, DecodepayResponse } from "./decodepay";
-import type { DeldatastoreRequest, DeldatastoreResponse } from "./deldatastore";
+} from "./createinvoice.ts";
+import type { CreateonionRequest, CreateonionResponse } from "./createonion.ts";
+import type { DatastoreRequest, DatastoreResponse } from "./datastore.ts";
+import type { DecodeRequest, DecodeResponse } from "./decode.ts";
+import type { DecodepayRequest, DecodepayResponse } from "./decodepay.ts";
+import type {
+  DeldatastoreRequest,
+  DeldatastoreResponse,
+} from "./deldatastore.ts";
 import type {
   DelexpiredinvoiceRequest,
   DelexpiredinvoiceResponse,
-} from "./delexpiredinvoice";
-import type { DelinvoiceRequest, DelinvoiceResponse } from "./delinvoice";
-import type { DelpayRequest, DelpayResponse } from "./delpay";
-import type { DisableofferRequest, DisableofferResponse } from "./disableoffer";
-import type { DisconnectRequest, DisconnectResponse } from "./disconnect";
-import type { FeeratesRequest, FeeratesResponse } from "./feerates";
-import type { FetchinvoiceRequest, FetchinvoiceResponse } from "./fetchinvoice";
-import type { FundchannelRequest, FundchannelResponse } from "./fundchannel";
+} from "./delexpiredinvoice.ts";
+import type { DelinvoiceRequest, DelinvoiceResponse } from "./delinvoice.ts";
+import type { DelpayRequest, DelpayResponse } from "./delpay.ts";
+import type {
+  DisableofferRequest,
+  DisableofferResponse,
+} from "./disableoffer.ts";
+import type { DisconnectRequest, DisconnectResponse } from "./disconnect.ts";
+import type { FeeratesRequest, FeeratesResponse } from "./feerates.ts";
+import type {
+  FetchinvoiceRequest,
+  FetchinvoiceResponse,
+} from "./fetchinvoice.ts";
+import type { FundchannelRequest, FundchannelResponse } from "./fundchannel.ts";
 import type {
   FundchannelCancelRequest,
   FundchannelCancelResponse,
-} from "./fundchannel_cancel";
+} from "./fundchannel_cancel.ts";
 import type {
   FundchannelCompleteRequest,
   FundchannelCompleteResponse,
-} from "./fundchannel_complete";
+} from "./fundchannel_complete.ts";
 import type {
   FundchannelStartRequest,
   FundchannelStartResponse,
-} from "./fundchannel_start";
-import type { FunderupdateRequest, FunderupdateResponse } from "./funderupdate";
-import type { FundpsbtRequest, FundpsbtResponse } from "./fundpsbt";
-import type { GetinfoRequest, GetinfoResponse } from "./getinfo";
-import type { GetlogRequest, GetlogResponse } from "./getlog";
-import type { GetrouteRequest, GetrouteResponse } from "./getroute";
+} from "./fundchannel_start.ts";
+import type {
+  FunderupdateRequest,
+  FunderupdateResponse,
+} from "./funderupdate.ts";
+import type { FundpsbtRequest, FundpsbtResponse } from "./fundpsbt.ts";
+import type { GetinfoRequest, GetinfoResponse } from "./getinfo.ts";
+import type { GetlogRequest, GetlogResponse } from "./getlog.ts";
+import type { GetrouteRequest, GetrouteResponse } from "./getroute.ts";
 import type {
   GetsharedsecretRequest,
   GetsharedsecretResponse,
-} from "./getsharedsecret";
-import type { HelpRequest, HelpResponse } from "./help";
-import type { InvoiceRequest, InvoiceResponse } from "./invoice";
-import type { KeysendRequest, KeysendResponse } from "./keysend";
-import type { ListchannelsRequest, ListchannelsResponse } from "./listchannels";
-import type { ListconfigsRequest, ListconfigsResponse } from "./listconfigs";
+} from "./getsharedsecret.ts";
+import type { HelpRequest, HelpResponse } from "./help.ts";
+import type { InvoiceRequest, InvoiceResponse } from "./invoice.ts";
+import type { KeysendRequest, KeysendResponse } from "./keysend.ts";
+import type {
+  ListchannelsRequest,
+  ListchannelsResponse,
+} from "./listchannels.ts";
+import type { ListconfigsRequest, ListconfigsResponse } from "./listconfigs.ts";
 import type {
   ListdatastoreRequest,
   ListdatastoreResponse,
-} from "./listdatastore";
-import type { ListforwardsRequest, ListforwardsResponse } from "./listforwards";
-import type { ListfundsRequest, ListfundsResponse } from "./listfunds";
-import type { ListinvoicesRequest, ListinvoicesResponse } from "./listinvoices";
-import type { ListnodesRequest, Node, ListnodesResponse } from "./listnodes";
-import type { ListoffersRequest, ListoffersResponse } from "./listoffers";
-import type { ListpaysRequest, ListpaysResponse } from "./listpays";
-import type { ListpeersRequest, ListpeersResponse } from "./listpeers";
-import type { ListsendpaysRequest, ListsendpaysResponse } from "./listsendpays";
+} from "./listdatastore.ts";
+import type {
+  ListforwardsRequest,
+  ListforwardsResponse,
+} from "./listforwards.ts";
+import type { ListfundsRequest, ListfundsResponse } from "./listfunds.ts";
+import type {
+  ListinvoicesRequest,
+  ListinvoicesResponse,
+} from "./listinvoices.ts";
+import type { ListnodesRequest, Node, ListnodesResponse } from "./listnodes.ts";
+import type { ListoffersRequest, ListoffersResponse } from "./listoffers.ts";
+import type { ListpaysRequest, ListpaysResponse } from "./listpays.ts";
+import type { ListpeersRequest, ListpeersResponse } from "./listpeers.ts";
+import type {
+  ListsendpaysRequest,
+  ListsendpaysResponse,
+} from "./listsendpays.ts";
 import type {
   ListtransactionsRequest,
   ListtransactionsResponse,
-} from "./listtransactions";
+} from "./listtransactions.ts";
 import type {
   MultifundchannelRequest,
   MultifundchannelResponse,
-} from "./multifundchannel";
+} from "./multifundchannel.ts";
 import type {
   MultiwithdrawRequest,
   MultiwithdrawResponse,
-} from "./multiwithdraw";
+} from "./multiwithdraw.ts";
 import type {
   NotificationsRequest,
   NotificationsResponse,
-} from "./notifications";
-import type { OfferRequest, OfferResponse } from "./offer";
-import type { OfferoutRequest, OfferoutResponse } from "./offerout";
+} from "./notifications.ts";
+import type { OfferRequest, OfferResponse } from "./offer.ts";
+import type { OfferoutRequest, OfferoutResponse } from "./offerout.ts";
 import type {
   OpenchannelAbortRequest,
   OpenchannelAbortResponse,
-} from "./openchannel_abort";
+} from "./openchannel_abort.ts";
 import type {
   OpenchannelBumpRequest,
   OpenchannelBumpResponse,
-} from "./openchannel_bump";
+} from "./openchannel_bump.ts";
 import type {
   OpenchannelInitRequest,
   OpenchannelInitResponse,
-} from "./openchannel_init";
+} from "./openchannel_init.ts";
 import type {
   OpenchannelSignedRequest,
   OpenchannelSignedResponse,
-} from "./openchannel_signed";
+} from "./openchannel_signed.ts";
 import type {
   OpenchannelUpdateRequest,
   OpenchannelUpdateResponse,
-} from "./openchannel_update";
-import type { ParsefeerateRequest, ParsefeerateResponse } from "./parsefeerate";
-import type { PayRequest, PayResponse } from "./pay";
-import type { PingRequest, PingResponse } from "./ping";
-import type { PluginRequest, PluginResponse } from "./plugin";
+} from "./openchannel_update.ts";
+import type {
+  ParsefeerateRequest,
+  ParsefeerateResponse,
+} from "./parsefeerate.ts";
+import type { PayRequest, PayResponse } from "./pay.ts";
+import type { PingRequest, PingResponse } from "./ping.ts";
+import type { PluginRequest, PluginResponse } from "./plugin.ts";
 import type {
   ReserveinputsRequest,
   ReserveinputsResponse,
-} from "./reserveinputs";
+} from "./reserveinputs.ts";
 import type {
   SendcustommsgRequest,
   SendcustommsgResponse,
-} from "./sendcustommsg";
-import type { SendinvoiceRequest, SendinvoiceResponse } from "./sendinvoice";
-import type { SendonionRequest, SendonionResponse } from "./sendonion";
+} from "./sendcustommsg.ts";
+import type { SendinvoiceRequest, SendinvoiceResponse } from "./sendinvoice.ts";
+import type { SendonionRequest, SendonionResponse } from "./sendonion.ts";
 import type {
   SendonionmessageRequest,
   SendonionmessageResponse,
-} from "./sendonionmessage";
-import type { SendpayRequest, SendpayResponse } from "./sendpay";
-import type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt";
-import type { SetchannelRequest, SetchannelResponse } from "./setchannel";
+} from "./sendonionmessage.ts";
+import type { SendpayRequest, SendpayResponse } from "./sendpay.ts";
+import type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt.ts";
+import type { SetchannelRequest, SetchannelResponse } from "./setchannel.ts";
 import type {
   SetchannelfeeRequest,
   SetchannelfeeResponse,
-} from "./setchannelfee";
-import type { SignmessageRequest, SignmessageResponse } from "./signmessage";
-import type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt";
-import type { StopRequest, StopResponse } from "./stop";
-import type { TxdiscardRequest, TxdiscardResponse } from "./txdiscard";
-import type { TxprepareRequest, TxprepareResponse } from "./txprepare";
-import type { TxsendRequest, TxsendResponse } from "./txsend";
+} from "./setchannelfee.ts";
+import type { SignmessageRequest, SignmessageResponse } from "./signmessage.ts";
+import type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt.ts";
+import type { StopRequest, StopResponse } from "./stop.ts";
+import type { TxdiscardRequest, TxdiscardResponse } from "./txdiscard.ts";
+import type { TxprepareRequest, TxprepareResponse } from "./txprepare.ts";
+import type { TxsendRequest, TxsendResponse } from "./txsend.ts";
 import type {
   UnreserveinputsRequest,
   UnreserveinputsResponse,
-} from "./unreserveinputs";
-import type { UtxopsbtRequest, UtxopsbtResponse } from "./utxopsbt";
+} from "./unreserveinputs.ts";
+import type { UtxopsbtRequest, UtxopsbtResponse } from "./utxopsbt.ts";
 import type {
   WaitanyinvoiceRequest,
   WaitanyinvoiceResponse,
-} from "./waitanyinvoice";
+} from "./waitanyinvoice.ts";
 import type {
   WaitblockheightRequest,
   WaitblockheightResponse,
-} from "./waitblockheight";
-import type { WaitinvoiceRequest, WaitinvoiceResponse } from "./waitinvoice";
-import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay";
-import type { WithdrawRequest, WithdrawResponse } from "./withdraw";
+} from "./waitblockheight.ts";
+import type { WaitinvoiceRequest, WaitinvoiceResponse } from "./waitinvoice.ts";
+import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay.ts";
+import type { WithdrawRequest, WithdrawResponse } from "./withdraw.ts";
 
 export const transformMap: any = {
   createinvoice: {
@@ -3177,29 +3207,39 @@ export default abstract class RPCClient extends EventEmitter {
   }
 }
 
-export type { AddgossipRequest, AddgossipResponse } from "./addgossip";
+export type { AddgossipRequest, AddgossipResponse } from "./addgossip.ts";
 export type {
   AutocleaninvoiceRequest,
   AutocleaninvoiceResponse,
-} from "./autocleaninvoice";
-export type { CheckRequest, CheckResponse } from "./check";
-export type { CheckmessageRequest, CheckmessageResponse } from "./checkmessage";
-export type { CloseRequest, CloseResponse, Type as CloseType } from "./close";
+} from "./autocleaninvoice.ts";
+export type { CheckRequest, CheckResponse } from "./check.ts";
+export type {
+  CheckmessageRequest,
+  CheckmessageResponse,
+} from "./checkmessage.ts";
+export type {
+  CloseRequest,
+  CloseResponse,
+  Type as CloseType,
+} from "./close.ts";
 export type {
   ConnectRequest,
   ConnectResponse,
   Address as ConnectAddress,
   Type as ConnectType,
   Direction as ConnectDirection,
-} from "./connect";
+} from "./connect.ts";
 export type {
   CreateinvoiceRequest,
   CreateinvoiceResponse,
   Status as CreateinvoiceStatus,
-} from "./createinvoice";
-export type { CreateonionRequest, CreateonionResponse } from "./createonion";
-export type { DatastoreRequest, DatastoreResponse } from "./datastore";
-export type { DecodeRequest, DecodeResponse } from "./decode";
+} from "./createinvoice.ts";
+export type { CreateonionRequest, CreateonionResponse } from "./createonion.ts";
+export type { DatastoreRequest, DatastoreResponse } from "./datastore.ts";
+export type {
+  DecodeRequest,
+  DecodeResponse,
+} from "./decode.ts";
 export type {
   DecodepayRequest,
   DecodepayResponse,
@@ -3207,61 +3247,67 @@ export type {
   Fallback as DecodepayFallback,
   Type as DecodepayType,
   Route as DecodepayRoute,
-} from "./decodepay";
-export type { DeldatastoreRequest, DeldatastoreResponse } from "./deldatastore";
+} from "./decodepay.ts";
+export type {
+  DeldatastoreRequest,
+  DeldatastoreResponse,
+} from "./deldatastore.ts";
 export type {
   DelexpiredinvoiceRequest,
   DelexpiredinvoiceResponse,
-} from "./delexpiredinvoice";
+} from "./delexpiredinvoice.ts";
 export type {
   DelinvoiceRequest,
   DelinvoiceResponse,
   Status as DelinvoiceStatus,
-} from "./delinvoice";
+} from "./delinvoice.ts";
 export type {
   DelpayRequest,
   DelpayResponse,
   Payment as DelpayPayment,
   Status as DelpayStatus,
-} from "./delpay";
-export type { DisableofferRequest, DisableofferResponse } from "./disableoffer";
-export type { DisconnectRequest, DisconnectResponse } from "./disconnect";
+} from "./delpay.ts";
+export type {
+  DisableofferRequest,
+  DisableofferResponse,
+} from "./disableoffer.ts";
+export type { DisconnectRequest, DisconnectResponse } from "./disconnect.ts";
 export type {
   FeeratesRequest,
   FeeratesResponse,
   OnchainFeeEstimates as FeeratesOnchainFeeEstimates,
   Perkb as FeeratesPerkb,
   Perkw as FeeratesPerkw,
-} from "./feerates";
+} from "./feerates.ts";
 export type {
   FetchinvoiceRequest,
   FetchinvoiceResponse,
   Changes as FetchinvoiceChanges,
   NextPeriod as FetchinvoiceNextPeriod,
-} from "./fetchinvoice";
-export type { FundchannelRequest, FundchannelResponse } from "./fundchannel";
+} from "./fetchinvoice.ts";
+export type { FundchannelRequest, FundchannelResponse } from "./fundchannel.ts";
 export type {
   FundchannelCancelRequest,
   FundchannelCancelResponse,
-} from "./fundchannel_cancel";
+} from "./fundchannel_cancel.ts";
 export type {
   FundchannelCompleteRequest,
   FundchannelCompleteResponse,
-} from "./fundchannel_complete";
+} from "./fundchannel_complete.ts";
 export type {
   FundchannelStartRequest,
   FundchannelStartResponse,
-} from "./fundchannel_start";
+} from "./fundchannel_start.ts";
 export type {
   FunderupdateRequest,
   FunderupdateResponse,
   Policy as FunderupdatePolicy,
-} from "./funderupdate";
+} from "./funderupdate.ts";
 export type {
   FundpsbtRequest,
   FundpsbtResponse,
   Reservation as FundpsbtReservation,
-} from "./fundpsbt";
+} from "./fundpsbt.ts";
 export type {
   GetinfoRequest,
   GetinfoResponse,
@@ -3270,53 +3316,53 @@ export type {
   Binding as GetinfoBinding,
   BindingType as GetinfoBindingType,
   OurFeatures as GetinfoOurFeatures,
-} from "./getinfo";
+} from "./getinfo.ts";
 export type {
   GetlogRequest,
   GetlogResponse,
   Log as GetlogLog,
   Type as GetlogType,
-} from "./getlog";
+} from "./getlog.ts";
 export type {
   GetrouteRequest,
   GetrouteResponse,
   Route as GetrouteRoute,
   Style as GetrouteStyle,
-} from "./getroute";
+} from "./getroute.ts";
 export type {
   GetsharedsecretRequest,
   GetsharedsecretResponse,
-} from "./getsharedsecret";
-export type { HelpRequest, HelpResponse, Help as HelpHelp } from "./help";
-export type { InvoiceRequest, InvoiceResponse } from "./invoice";
+} from "./getsharedsecret.ts";
+export type { HelpRequest, HelpResponse, Help as HelpHelp } from "./help.ts";
+export type { InvoiceRequest, InvoiceResponse } from "./invoice.ts";
 export type {
   KeysendRequest,
   KeysendResponse,
   Status as KeysendStatus,
-} from "./keysend";
+} from "./keysend.ts";
 export type {
   ListchannelsRequest,
   ListchannelsResponse,
   Channel as ListchannelsChannel,
-} from "./listchannels";
+} from "./listchannels.ts";
 export type {
   ListconfigsRequest,
   ListconfigsResponse,
   ImportantPlugin as ListconfigsImportantPlugin,
   Plugin as ListconfigsPlugin,
-} from "./listconfigs";
+} from "./listconfigs.ts";
 export type {
   ListdatastoreRequest,
   ListdatastoreResponse,
   Datastore as ListdatastoreDatastore,
-} from "./listdatastore";
+} from "./listdatastore.ts";
 export type {
   ListforwardsRequest,
   ListforwardsResponse,
   Forward as ListforwardsForward,
   Status as ListforwardsStatus,
   Style as ListforwardsStyle,
-} from "./listforwards";
+} from "./listforwards.ts";
 export type {
   ListfundsRequest,
   ListfundsResponse,
@@ -3324,29 +3370,29 @@ export type {
   State as ListfundsState,
   Output as ListfundsOutput,
   Status as ListfundsStatus,
-} from "./listfunds";
+} from "./listfunds.ts";
 export type {
   ListinvoicesRequest,
   ListinvoicesResponse,
   Invoice as ListinvoicesInvoice,
   Status as ListinvoicesStatus,
-} from "./listinvoices";
+} from "./listinvoices.ts";
 export type {
   ListnodesRequest,
   ListnodesResponse,
   Node as ListnodesNode,
-} from "./listnodes";
+} from "./listnodes.ts";
 export type {
   ListoffersRequest,
   ListoffersResponse,
   Offer as ListoffersOffer,
-} from "./listoffers";
+} from "./listoffers.ts";
 export type {
   ListpaysRequest,
   ListpaysResponse,
   Pay as ListpaysPay,
   Status as ListpaysStatus,
-} from "./listpays";
+} from "./listpays.ts";
 export type {
   ListpeersRequest,
   ListpeersResponse,
@@ -3364,13 +3410,13 @@ export type {
   Cause as ListpeersCause,
   Log as ListpeersLog,
   Type as ListpeersType,
-} from "./listpeers";
+} from "./listpeers.ts";
 export type {
   ListsendpaysRequest,
   ListsendpaysResponse,
   Payment as ListsendpaysPayment,
   Status as ListsendpaysStatus,
-} from "./listsendpays";
+} from "./listsendpays.ts";
 export type {
   ListtransactionsRequest,
   ListtransactionsResponse,
@@ -3378,7 +3424,7 @@ export type {
   Input as ListtransactionsInput,
   Type as ListtransactionsType,
   Output as ListtransactionsOutput,
-} from "./listtransactions";
+} from "./listtransactions.ts";
 export type {
   MultifundchannelRequest,
   MultifundchannelResponse,
@@ -3386,117 +3432,120 @@ export type {
   Failed as MultifundchannelFailed,
   Error as MultifundchannelError,
   Method as MultifundchannelMethod,
-} from "./multifundchannel";
+} from "./multifundchannel.ts";
 export type {
   MultiwithdrawRequest,
   MultiwithdrawResponse,
-} from "./multiwithdraw";
+} from "./multiwithdraw.ts";
 export type {
   NotificationsRequest,
   NotificationsResponse,
-} from "./notifications";
-export type { OfferRequest, OfferResponse } from "./offer";
-export type { OfferoutRequest, OfferoutResponse } from "./offerout";
+} from "./notifications.ts";
+export type { OfferRequest, OfferResponse } from "./offer.ts";
+export type { OfferoutRequest, OfferoutResponse } from "./offerout.ts";
 export type {
   OpenchannelAbortRequest,
   OpenchannelAbortResponse,
-} from "./openchannel_abort";
+} from "./openchannel_abort.ts";
 export type {
   OpenchannelBumpRequest,
   OpenchannelBumpResponse,
-} from "./openchannel_bump";
+} from "./openchannel_bump.ts";
 export type {
   OpenchannelInitRequest,
   OpenchannelInitResponse,
-} from "./openchannel_init";
+} from "./openchannel_init.ts";
 export type {
   OpenchannelSignedRequest,
   OpenchannelSignedResponse,
-} from "./openchannel_signed";
+} from "./openchannel_signed.ts";
 export type {
   OpenchannelUpdateRequest,
   OpenchannelUpdateResponse,
-} from "./openchannel_update";
-export type { ParsefeerateRequest, ParsefeerateResponse } from "./parsefeerate";
-export type { PayRequest, PayResponse, Status as PayStatus } from "./pay";
-export type { PingRequest, PingResponse } from "./ping";
+} from "./openchannel_update.ts";
+export type {
+  ParsefeerateRequest,
+  ParsefeerateResponse,
+} from "./parsefeerate.ts";
+export type { PayRequest, PayResponse, Status as PayStatus } from "./pay.ts";
+export type { PingRequest, PingResponse } from "./ping.ts";
 export type {
   PluginRequest,
   PluginResponse,
   Command as PluginCommand,
-} from "./plugin";
+} from "./plugin.ts";
 export type {
   ReserveinputsRequest,
   ReserveinputsResponse,
   Reservation as ReserveinputsReservation,
-} from "./reserveinputs";
+} from "./reserveinputs.ts";
 export type {
   SendcustommsgRequest,
   SendcustommsgResponse,
-} from "./sendcustommsg";
+} from "./sendcustommsg.ts";
 export type {
   SendinvoiceRequest,
   SendinvoiceResponse,
   Status as SendinvoiceStatus,
-} from "./sendinvoice";
+} from "./sendinvoice.ts";
 export type {
   SendonionRequest,
   SendonionResponse,
   Status as SendonionStatus,
-} from "./sendonion";
+} from "./sendonion.ts";
 export type {
   SendonionmessageRequest,
   SendonionmessageResponse,
-} from "./sendonionmessage";
+} from "./sendonionmessage.ts";
 export type {
   SendpayRequest,
   SendpayResponse,
   Status as SendpayStatus,
-} from "./sendpay";
-export type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt";
+} from "./sendpay.ts";
+export type { SendpsbtRequest, SendpsbtResponse } from "./sendpsbt.ts";
 export type {
   SetchannelRequest,
   SetchannelResponse,
   Channel as SetchannelChannel,
-} from "./setchannel";
+} from "./setchannel.ts";
 export type {
   SetchannelfeeRequest,
   SetchannelfeeResponse,
   Channel as SetchannelfeeChannel,
-} from "./setchannelfee";
-export type { SignmessageRequest, SignmessageResponse } from "./signmessage";
-export type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt";
-export type { StopRequest, StopResponse } from "./stop";
-export type { TxdiscardRequest, TxdiscardResponse } from "./txdiscard";
-export type { TxprepareRequest, TxprepareResponse } from "./txprepare";
-export type { TxsendRequest, TxsendResponse } from "./txsend";
+} from "./setchannelfee.ts";
+export type { SignmessageRequest, SignmessageResponse } from "./signmessage.ts";
+export type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt.ts";
+export type { StopRequest, StopResponse } from "./stop.ts";
+export type { TxdiscardRequest, TxdiscardResponse } from "./txdiscard.ts";
+export type { TxprepareRequest, TxprepareResponse } from "./txprepare.ts";
+export type { TxsendRequest, TxsendResponse } from "./txsend.ts";
 export type {
   UnreserveinputsRequest,
   UnreserveinputsResponse,
   Reservation as UnreserveinputsReservation,
-} from "./unreserveinputs";
+} from "./unreserveinputs.ts";
 export type {
   UtxopsbtRequest,
   UtxopsbtResponse,
   Reservation as UtxopsbtReservation,
-} from "./utxopsbt";
+} from "./utxopsbt.ts";
 export type {
   WaitanyinvoiceRequest,
   WaitanyinvoiceResponse,
   Status as WaitanyinvoiceStatus,
-} from "./waitanyinvoice";
+} from "./waitanyinvoice.ts";
 export type {
   WaitblockheightRequest,
   WaitblockheightResponse,
-} from "./waitblockheight";
+} from "./waitblockheight.ts";
 export type {
   WaitinvoiceRequest,
   WaitinvoiceResponse,
   Status as WaitinvoiceStatus,
-} from "./waitinvoice";
+} from "./waitinvoice.ts";
 export type {
   WaitsendpayRequest,
   WaitsendpayResponse,
   Status as WaitsendpayStatus,
-} from "./waitsendpay";
-export type { WithdrawRequest, WithdrawResponse } from "./withdraw";
+} from "./waitsendpay.ts";
+export type { WithdrawRequest, WithdrawResponse } from "./withdraw.ts";
