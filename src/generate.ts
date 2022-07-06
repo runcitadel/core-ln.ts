@@ -343,14 +343,14 @@ ${fullOutput}
   );
 
   Deno.writeTextFileSync(
-    `./packages/deno/base/src/generated/${fileName}.ts`,
+    `./packages/deno/base/generated/${fileName}.ts`,
     prettier.format(tsFileContents, {
       parser: "typescript",
       plugins: [parserTypescript],
     }),
   );
 
-  const _exports = getExports(`./packages/base/src/generated/${fileName}.ts`);
+  const _exports = getExports(`./packages/base/generated/${fileName}.ts`);
   let stringExports = "";
   for (const symbol of _exports) {
     if (
@@ -424,7 +424,7 @@ Deno.writeTextFileSync(
 );
 
 Deno.writeTextFileSync(
-  "./packages/deno/base/src/generated/main.ts",
+  "./packages/deno/base/generated/main.ts",
   generateOutput("deno"),
 );
 
