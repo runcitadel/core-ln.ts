@@ -1,7 +1,7 @@
 import ApiClient, {
   transform,
   transformMap,
-} from "https://deno.land/x/core_ln_base@v0.2.0-deno.2/src/index.ts";
+} from "https://deno.land/x/core_ln_base@v0.2.0-deno.3/mod.ts";
 import {
   createConnection,
   type Socket,
@@ -109,4 +109,4 @@ export default class SocketApiClient extends ApiClient {
   }
 }
 
-export * from "https://deno.land/x/core_ln_base@v0.2.0-deno.2/src/index.ts";
+export * from "https://deno.land/x/core_ln_base@v0.2.0-deno.3/mod.ts";
