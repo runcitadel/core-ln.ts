@@ -1,5 +1,4 @@
-import camelcase from "https://esm.sh/camelcase@7.0.0";
-import pascalcase from "https://esm.sh/pascalcase@2.0.0";
+import { camelCase, pascalCase } from "https://deno.land/x/case@2.1.1/mod.ts";
 import quicktypeCore from "https://esm.sh/quicktype-core@6.0.71";
 import ts from "https://esm.sh/typescript@4.7.4";
 import { resolve } from "https://deno.land/std@0.146.0/path/mod.ts";
@@ -35,8 +34,8 @@ function getExports(
   return exps;
 }
 
-export function isObject(item: any): boolean {
-  return item && typeof item === "object" && !Array.isArray(item);
+export function isObject(item: unknown): boolean {
+  return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
 /**
@@ -44,7 +43,10 @@ export function isObject(item: any): boolean {
  * @param target
  * @param ...sources
  */
-export function mergeDeep(target: any, ...sources: any[]): any {
+export function mergeDeep(
+  target: Record<string, unknown>,
+  ...sources: Record<string, unknown>[]
+): Record<string, unknown> {
   if (!sources.length) return target;
   const source = sources.shift();
 
@@ -52,7 +54,10 @@ export function mergeDeep(target: any, ...sources: any[]): any {
     for (const key in source) {
       if (isObject(source[key])) {
         if (!target[key]) Object.assign(target, { [key]: {} });
-        mergeDeep(target[key], source[key]);
+        mergeDeep(
+          target[key] as Record<string, unknown>,
+          source[key] as Record<string, unknown>,
+        );
       } else {
         Object.assign(target, { [key]: source[key] });
       }
@@ -123,7 +128,7 @@ function parsedSynopsisToTsInterface(synopsis: {
   parameters: string[];
   optionalParameters: string[];
 }) {
-  let result = `export interface ${pascalcase(synopsis.name)}Request {`;
+  let result = `export interface ${pascalCase(synopsis.name)}Request {`;
   synopsis.parameters.forEach((p) => {
     result += `\n  ${p}: /* GUESSED */ string;`;
   });
@@ -302,7 +307,7 @@ for (const fileIndex in files) {
 
   const { lines: outputLines } = await quicktypeJSONSchema(
     "typescript",
-    pascalcase(parsedSynopsis.name) + "Response",
+    pascalCase(parsedSynopsis.name) + "Response",
     JSON.stringify(jsonSchema),
   );
   let fullOutput = outputLines.join("\n").replaceAll("*/*", "* / *");
@@ -349,12 +354,13 @@ ${fullOutput}
   let stringExports = "";
   for (const symbol of _exports) {
     if (
-      symbol.name === `${pascalcase(parsedSynopsis.name)}Request` ||
-      symbol.name === `${pascalcase(parsedSynopsis.name)}Response`
+      symbol.name === `${pascalCase(parsedSynopsis.name)}Request` ||
+      symbol.name === `${pascalCase(parsedSynopsis.name)}Response`
     ) {
       stringExports += `type ${symbol.name}, `;
     } else {
-      const isEnum = symbol.valueDeclaration?.kind === ts.SyntaxKind.EnumDeclaration;
+      const isEnum =
+        symbol.valueDeclaration?.kind === ts.SyntaxKind.EnumDeclaration;
       stringExports += `${isEnum ? "" : "type "}${symbol.name} as ${
         joinUpperCaseFirst(
           fileName,
@@ -366,14 +372,14 @@ ${fullOutput}
   stringExports = stringExports.slice(0, -2);
 
   let fnArguments = "";
-  const requestType = pascalcase(parsedSynopsis.name) + "Request";
-  const responseType = pascalcase(parsedSynopsis.name) + "Response";
+  const requestType = pascalCase(parsedSynopsis.name) + "Request";
+  const responseType = pascalCase(parsedSynopsis.name) + "Response";
   fnArguments = "payload: " + requestType;
   // If the parsed synopsis has no required parameters, then we can use an empty payload
   if (parsedSynopsis.parameters.length == 0) fnArguments += " = {}";
   generatedMethods += `
   ${methodDescriptionLines}
-  ${camelcase(parsedSynopsis.name)}(${fnArguments}): Promise<${responseType}> {
+  ${camelCase(parsedSynopsis.name)}(${fnArguments}): Promise<${responseType}> {
     return this.call<${responseType}>("${parsedSynopsis.name}", payload);
   }
     `;
@@ -392,59 +398,13 @@ function generateOutput(target: "node" | "deno") {
     'import { EventEmitter } from "https://deno.land/std@0.146.0/node/events.ts";';
 
   const nodeImport = `import { EventEmitter } from "events";`;
-  return `${target === "node" ? nodeImport : denoImport}
+  const output = `${target === "node" ? nodeImport : denoImport}
 ${target === "node" ? imports.node : imports.deno}
 
 export const transformMap: any = ${JSON.stringify(transformMap, undefined, 2)}
 
+${Deno.readTextFileSync("./src/templates/transform-functions.ts")}
 
-function transformOne(element: string, to: "msat" | string): string | number | bigint {
-  if(!element) {
-    return element;
-  }
-  if(to === "msat") {
-    // If element ends with msat, remove it and convert to bigint
-    return BigInt(element.endsWith("msat") ? element.slice(0, -4) : element);
-  }
-  throw new Error("Transform not supported");
-}
-
-export function transform<ReturnType = unknown>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transformMapData: any,
-): ReturnType {
-  if(typeof transformMapData === "string") return transformOne(data, transformMapData) as unknown as ReturnType;
-  let key: string | Record<string, string> | Record<string, Record<string, string>>;
-  for(key of Object.keys(transformMapData)) {
-    if(!data[key]) continue;
-    if(Array.isArray(data[key])) {
-      //transformMapData[key] is an object.
-      // For every key of that object, transform the value by converting every array element which matches the key
-      // with _transformOne
-      // data[key] is an array of objects
-      data[key] = data[key].map((obj: Record<string, string | number | bigint>) => {
-        for(const objKey of Object.keys(transformMapData[key as string])) {
-          if(!obj || !obj[objKey] || !transformMapData[key as string][objKey]) continue;
-          obj[objKey] = transform(obj[objKey] as string, transformMapData[key as string][objKey]);
-        }
-        return obj;
-      });
-    } else if(typeof data[key] !== "string") {
-      // data[key] is an object
-      //transformMapData[key] is an object.
-      // For every key of transformMapData[key], transform the corresponing value of data[key] by converting with _transformOne
-      for(const objKey of Object.keys(transformMapData[key as string])) {
-        if(!data[key][objKey]) continue;
-        data[key][objKey] = transform(data[key][objKey] as string, transformMapData[key as string][objKey]);
-      }
-    } else {
-      data[key] = transformOne(data[key], transformMapData[key as string]);
-    }
-  }
-    return data;
-}
 export default abstract class RPCClient extends EventEmitter {
   abstract call<ReturnType extends {} = {}>(method: string, params: unknown): Promise<ReturnType>
   ${generatedMethods}
@@ -452,22 +412,20 @@ export default abstract class RPCClient extends EventEmitter {
 
 ${target === "node" ? exports.node : exports.deno}
 `;
+  return prettier.format(output, {
+    parser: "typescript",
+    plugins: [parserTypescript],
+  });
 }
 
 Deno.writeTextFileSync(
   "./packages/base/src/generated/main.ts",
-  prettier.format(generateOutput("node"), {
-    parser: "typescript",
-    plugins: [parserTypescript],
-  }),
+  generateOutput("node"),
 );
 
 Deno.writeTextFileSync(
   "./packages/deno/base/src/generated/main.ts",
-  prettier.format(generateOutput("deno"), {
-    parser: "typescript",
-    plugins: [parserTypescript],
-  }),
+  generateOutput("deno"),
 );
 
 async function quicktypeJSONSchema(
