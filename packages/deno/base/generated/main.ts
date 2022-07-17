@@ -3242,7 +3242,6 @@ export { type DatastoreRequest, type DatastoreResponse } from "./datastore.ts";
 export {
   type DecodeRequest,
   type DecodeResponse,
-  Type as DecodeType,
 } from "./decode.ts";
 export {
   type DecodepayRequest,
