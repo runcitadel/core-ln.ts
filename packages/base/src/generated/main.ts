@@ -3212,7 +3212,6 @@ export { type DatastoreRequest, type DatastoreResponse } from "./datastore";
 export {
   type DecodeRequest,
   type DecodeResponse,
-  Type as DecodeType,
 } from "./decode";
 export {
   type DecodepayRequest,
