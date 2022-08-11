@@ -30,7 +30,7 @@ jobs:
                   node-version: "18"
 
             - name: Cache yarn packages
-              uses: actions/cache@v23
+              uses: actions/cache@v3
               with:
                   path: |
                       .yarn/cache
