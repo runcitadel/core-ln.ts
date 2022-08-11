@@ -6,38 +6,59 @@ on:
             - main
             - master
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
     build:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
             - name: Install Node.js
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
-                  node-version: "16"
+                  node-version: "18"
 
             - name: Cache yarn packages
-              uses: actions/cache@v2
+              uses: actions/cache@v23
               with:
                   path: |
                       .yarn/cache
                   key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
 
+            - name: Setup Pages
+                id: pages
+                uses: actions/configure-pages@v1
+    
             - name: Install dependencies & build
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   yarn
                   yarn build
                   yarn docs
-                  # Prevent GitHub from trying to use Jekyll
-                  touch docs/.nojekyll
                   echo "core-ln.js.org" > docs/CNAME
 
-            - name: Deploy
-              uses: peaceiris/actions-gh-pages@v3
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v1
               with:
-                  publish_dir: ./docs
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                path: docs/
+
+    deploy:
+        environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - name: Deploy to GitHub Pages
+                id: deployment
+                uses: actions/deploy-pages@v1
