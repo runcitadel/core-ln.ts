@@ -37,8 +37,8 @@ jobs:
                   key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
 
             - name: Setup Pages
-                id: pages
-                uses: actions/configure-pages@v1
+              id: pages
+              uses: actions/configure-pages@v1
     
             - name: Install dependencies & build
               run: |
@@ -60,5 +60,5 @@ jobs:
         needs: build
         steps:
             - name: Deploy to GitHub Pages
-                id: deployment
-                uses: actions/deploy-pages@v1
+              id: deployment
+              uses: actions/deploy-pages@v1
