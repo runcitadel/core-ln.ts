@@ -70,8 +70,6 @@ export function mergeDeep(
 const { quicktype, InputData, JSONSchemaInput, FetchingJSONSchemaStore } =
   quicktypeCore;
 
-const transformMap: any = {};
-const transformKeys: Record<string, string[]> = {};
 /**
  * Parse a synopsis
  *
@@ -110,10 +108,12 @@ function parseSynopsis(synopsis: string): {
     const split = parts[2].split("[");
     split.shift();
     split.forEach((p) => {
+      let split = p.split("*")[1] || p.substring(0, p.length - 1);
       if (!p.split("*")[1]) {
         console.log(p);
+        console.log(`Resolved to ${split}`);
       }
-      optionalParameters.push(p.split("*")[1].trim().replaceAll("\\", ""));
+      optionalParameters.push(split.trim().replaceAll("\\", ""));
     });
   }
   return {
@@ -140,7 +140,7 @@ function parsedSynopsisToTsInterface(synopsis: {
 }
 
 // Recursively find all keys of an object called "type", then set them to "string" if they are "hex"
-function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
+function fixHex(obj: any) {
   if (
     obj &&
     (obj.type === "hex" ||
@@ -159,30 +159,6 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
     obj.type = `number`;
   }
   if (obj && obj.type === "msat") {
-    if (parents.length !== 0) {
-      const maybeAdd = parents.reduceRight(
-        (all, item) => ({ [item]: all }),
-        {},
-      );
-      mergeDeep(transformMap, maybeAdd);
-      let lastElement = transformMap;
-      for (const key of parents) {
-        if (parents.indexOf(key) === parents.length - 1) {
-          lastElement[key] = obj.type;
-        }
-        lastElement = lastElement[key];
-      }
-      // This is just a hack for nested properties and will lead to issues if there are
-      // multiple properties with the same name
-      // TODO: Improve this logic
-      if (!transformKeys[method]) transformKeys[method] = [];
-      transformKeys[method].push(key);
-    } else {
-      if (!transformMap[method]) transformMap[method] = {};
-      if (!transformKeys[method]) transformKeys[method] = [];
-      if (!transformMap[method][key]) transformMap[method][key] = obj.type;
-      transformKeys[method].push(key);
-    }
     obj.type = `number`;
   }
   if (obj && obj.type === "u64") {
@@ -192,19 +168,7 @@ function fixHex(obj: any, method: string, key: string, parents: string[] = []) {
   if (obj && typeof obj === "object") {
     Object.keys(obj).forEach((key) => {
       if (obj[key] && obj[key].deprecated) delete obj[key];
-      const newParents = [...parents];
-      if (
-        key !== "properties" &&
-        key !== "allOf" &&
-        key !== "oneOf" &&
-        Number.isNaN(Number(key)) &&
-        key !== "then" &&
-        key !== "if" &&
-        key !== "items"
-      ) {
-        newParents.push(key);
-      }
-      fixHex(obj[key], method, key, newParents);
+      fixHex(obj[key]);
     });
   }
 }
@@ -229,6 +193,10 @@ for (const fileIndex in files) {
     `Parsing ${file.name} (${Number(fileIndex) + 1}/${files.length})...`,
   );
   const fileName = file.name.replace(".7.md", "").replace("lightning-", "");
+  if (fileName === "plugin" || fileName === "commando") {
+    // Currently some details unknown, skip until I figured it out
+    continue;
+  }
   const fileContents = Deno.readTextFileSync("./lightning/doc/" + file.name)
     .replaceAll("\\", "")
     .replaceAll("*/*", "* / *");
@@ -263,7 +231,7 @@ for (const fileIndex in files) {
   // Go backwards in lines from descriptionLine - 2 until we find an empty line,
   // Then join the lines with a space
   let realSynopsis = "";
-  for (let i = descriptionLine - 2; i >= 0; i--) {
+  for (let i = descriptionLine - (fileName === "plugin" ? 3 : 2); i >= 0; i--) {
     if (lines[i].trim() === "") {
       break;
     }
@@ -275,7 +243,7 @@ for (const fileIndex in files) {
     realSynopsis = lines[i] + " " + realSynopsis;
   }
   const parsedSynopsis = parseSynopsis(realSynopsis);
-  fixHex(jsonSchema, parsedSynopsis.name, "", [parsedSynopsis.name]);
+  fixHex(jsonSchema);
 
   // Read the previous file
   let oldFile;
@@ -310,14 +278,7 @@ for (const fileIndex in files) {
     pascalCase(parsedSynopsis.name) + "Response",
     JSON.stringify(jsonSchema),
   );
-  let fullOutput = outputLines.join("\n").replaceAll("*/*", "* / *");
-  if (transformKeys[parsedSynopsis.name]) {
-    for (const key of transformKeys[parsedSynopsis.name]) {
-      fullOutput = fullOutput
-        .replaceAll(`${key}: number;`, `${key}: bigint;`)
-        .replaceAll(`${key}?: number;`, `${key}?: bigint;`);
-    }
-  }
+  const fullOutput = outputLines.join("\n").replaceAll("*/*", "* / *")
   const tsFileContents = `/**
  * ${heading}
  * 
@@ -332,11 +293,11 @@ ${
       : oldSynopsis
   }
 
-${fullOutput}
+${fileName === "decode" ? "export * from \"./decode/response.ts\";" : fullOutput}
 `;
   Deno.writeTextFileSync(
     `./packages/base/src/generated/${fileName}.ts`,
-    prettier.format(tsFileContents, {
+    prettier.format(tsFileContents.replace("export * from \"./decode/response.ts\";", "export * from \"./decode/response\";"), {
       parser: "typescript",
       plugins: [parserTypescript],
     }),
@@ -400,8 +361,6 @@ function generateOutput(target: "node" | "deno") {
   const nodeImport = `import { EventEmitter } from "events";`;
   const output = `${target === "node" ? nodeImport : denoImport}
 ${target === "node" ? imports.node : imports.deno}
-
-export const transformMap: any = ${JSON.stringify(transformMap, undefined, 2)}
 
 ${Deno.readTextFileSync("./src/templates/transform-functions.ts")}
 
