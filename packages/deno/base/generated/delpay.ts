@@ -38,11 +38,11 @@ export interface Payment {
   /**
    * the amount the destination received, if known
    */
-  amount_msat?: bigint;
+  amount_msat?: number;
   /**
    * the amount we actually sent, including fees
    */
-  amount_sent_msat: bigint;
+  amount_sent_msat: number;
   /**
    * the bolt11 string (if pay supplied one)
    */

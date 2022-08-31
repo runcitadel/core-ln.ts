@@ -7,7 +7,7 @@
 
 /**
  * The **listforwards** RPC command displays all htlcs that have been
- * attempted to be forwarded by the Core LLightningightning node.
+ * attempted to be forwarded by the Core Lightning node.
  *
  * If *status* is specified, then only the forwards with the given status are returned.
  * *status* can be either *offered* or *settled* or *failed* or *local_failed*
@@ -33,9 +33,9 @@ export interface Forward {
   /**
    * the value of the incoming HTLC
    */
-  in_msat: bigint;
+  in_msat: number;
   /**
-   * the channel that the HTLC was forwarded to
+   * the channel that the HTLC (trying to) forward to
    */
   out_channel?: string;
   /**
@@ -54,14 +54,6 @@ export interface Forward {
    * Either a legacy onion format or a modern tlv format
    */
   style?: Style;
-  /**
-   * the amount this paid in fees
-   */
-  fee_msat?: bigint;
-  /**
-   * the amount we sent out the *out_channel*
-   */
-  out_msat?: bigint;
 }
 
 /**

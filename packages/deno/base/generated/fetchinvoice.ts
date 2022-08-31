@@ -71,6 +71,11 @@ export interface FetchinvoiceResponse {
  */
 export interface Changes {
   /**
+   * the amount, if different from the offer amount multiplied by any *quantity* (or the offer
+   * had no amount, or was not in BTC).
+   */
+  amount_msat?: number;
+  /**
    * a completely replaced *description* field
    */
   description?: string;
@@ -78,11 +83,6 @@ export interface Changes {
    * extra characters appended to the *description* field.
    */
   description_appended?: string;
-  /**
-   * the amount, if different from the offer amount multiplied by any *quantity* (or the offer
-   * had no amount, or was not in BTC).
-   */
-  msat?: bigint;
   /**
    * a completely replaced *vendor* field
    */

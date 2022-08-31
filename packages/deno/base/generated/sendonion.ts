@@ -38,6 +38,10 @@
  * }
  * ```
  *
+ * If the first element of *route* does not have "channel" set, a
+ * suitable channel (if any) will be chosen, otherwise that specific
+ * short-channel-id is used.
+ *
  * The *payment_hash* parameter specifies the 32 byte hex-encoded hash to use as
  * a challenge to the HTLC that we are sending. It is specific to the onion and
  * has to match the one the onion was created with.
@@ -95,11 +99,11 @@ export interface SendonionResponse {
   /**
    * The amount delivered to destination (if known)
    */
-  amount_msat?: bigint;
+  amount_msat?: number;
   /**
    * The amount sent
    */
-  amount_sent_msat: bigint;
+  amount_sent_msat: number;
   /**
    * the bolt11 string (if supplied)
    */

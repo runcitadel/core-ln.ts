@@ -26,7 +26,7 @@ export interface Channel {
   /**
    * total channel value
    */
-  amount_msat: bigint;
+  amount_msat: number;
   /**
    * whether the channel peer is connected
    */
@@ -42,7 +42,7 @@ export interface Channel {
   /**
    * available satoshis on our node's end of the channel
    */
-  our_amount_msat: bigint;
+  our_amount_msat: number;
   /**
    * the peer with which the channel is opened
    */
@@ -78,7 +78,7 @@ export interface Output {
   /**
    * the amount of the output
    */
-  amount_msat: bigint;
+  amount_msat: number;
   /**
    * the index within *txid*
    */
@@ -88,6 +88,10 @@ export interface Output {
    */
   redeemscript?: string;
   /**
+   * whether this UTXO is currently reserved for an in-flight tx
+   */
+  reserved: boolean;
+  /**
    * the scriptPubkey of the output
    */
   scriptpubkey: string;
@@ -96,7 +100,6 @@ export interface Output {
    * the ID of the spendable transaction
    */
   txid: string;
-  reserved: any;
 }
 
 export enum Status {

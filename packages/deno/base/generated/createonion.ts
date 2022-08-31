@@ -67,7 +67,7 @@
  *  - The final payload is a copy of the last payload sans `channel`
  *
  * These rules are directly derived from the onion construction. Please refer
- * [BOLT 04][bolt04] for details and rationale.
+ * [BOLT 04](https://github.com/lightning/bolts/blob/master/04-onion-routing.md) for details and rationale.
  *
  * The *assocdata* parameter specifies the associated data that the onion should
  * commit to. If the onion is to be used to send a payment later it MUST match

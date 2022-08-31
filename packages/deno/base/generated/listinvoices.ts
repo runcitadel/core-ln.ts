@@ -29,7 +29,7 @@ export interface Invoice {
   /**
    * the amount required to pay this invoice
    */
-  amount_msat?: bigint;
+  amount_msat?: number;
   /**
    * the BOLT11 string (always present unless *bolt12* is)
    */

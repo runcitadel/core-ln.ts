@@ -43,7 +43,7 @@ export interface Channel {
   /**
    * the total capacity of this channel (always a whole number of satoshis)
    */
-  amount_msat: bigint;
+  amount_msat: number;
   /**
    * Base fee changed by *source* to use this channel
    */
@@ -71,11 +71,11 @@ export interface Channel {
   /**
    * The largest payment *source* will allow via this channel
    */
-  htlc_maximum_msat?: bigint;
+  htlc_maximum_msat?: number;
   /**
    * The smallest payment *source* will allow via this channel
    */
-  htlc_minimum_msat: bigint;
+  htlc_minimum_msat: number;
   /**
    * UNIX timestamp on the last channel_update from *source*
    */

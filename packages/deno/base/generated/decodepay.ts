@@ -18,7 +18,7 @@ export interface DecodepayResponse {
   /**
    * Amount the invoice asked for
    */
-  amount_msat?: bigint;
+  amount_msat?: number;
   /**
    * the UNIX-style timestamp of the invoice
    */

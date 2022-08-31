@@ -45,7 +45,7 @@ export interface GetinfoResponse {
   /**
    * Total routing fees collected by this node
    */
-  fees_collected_msat: bigint;
+  fees_collected_msat: number;
   /**
    * The public key unique to this node
    */

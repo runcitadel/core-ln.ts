@@ -5,7 +5,7 @@
 
 A lightweight and easy to use Core Lightning client and plugin framework with zero dependencies, built in TypeScript.
 
-This client covers 100% of the API provided by Core Lightning 0.11.0.
+This client covers 100% of the API provided by Core Lightning 0.12.0.
 
 Please note that this is currently a work-in-progress and some types may be incorrect or parts of the response may be missing.
 

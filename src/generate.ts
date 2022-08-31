@@ -356,7 +356,7 @@ export { ${stringExports} } from "./${fileName}.ts";`;
 
 function generateOutput(target: "node" | "deno") {
   const denoImport =
-    'import { EventEmitter } from "https://deno.land/std@0.146.0/node/events.ts";';
+    'import { EventEmitter } from "https://deno.land/std@0.153.0/node/events.ts";';
 
   const nodeImport = `import { EventEmitter } from "events";`;
   const output = `${target === "node" ? nodeImport : denoImport}

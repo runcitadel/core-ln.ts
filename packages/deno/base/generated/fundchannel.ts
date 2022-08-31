@@ -99,6 +99,10 @@ export interface FundchannelResponse {
    */
   close_to?: string;
   /**
+   * Number of confirmations before we consider the channel active.
+   */
+  mindepth?: number;
+  /**
    * The 0-based output index showing which output funded the channel
    */
   outnum: number;

@@ -35,17 +35,20 @@
  * proportional fee of 1,000 satoshi is added, resulting in a 0.1% fee.
  *
  * *htlcmin* is an optional value that limits how small an HTLC we will
- * send: if omitted, it is unchanged (the default is no lower limit). It
+ * forward: if omitted, it is unchanged (the default is no lower limit). It
  * can be a whole number, or a whole number ending in *msat* or *sat*, or
  * a number with three decimal places ending in *sat*, or a number with 1
- * to 11 decimal places ending in *btc*.  The peer also enforces a
- * minimum for the channel: setting it below will be ignored.
+ * to 11 decimal places ending in *btc*.  Note that the peer also enforces a
+ * minimum for the channel: setting it below that will simply set it to
+ * that value with a warning.  Also note that *htlcmin* only applies to forwarded
+ * HTLCs: we can still send smaller payments ourselves.
  *
  * *htlcmax* is an optional value that limits how large an HTLC we will
- * send: if omitted, it is unchanged (the default is no effective
+ * forward: if omitted, it is unchanged (the default is no effective
  * limit). It can be a whole number, or a whole number ending in *msat*
  * or *sat*, or a number with three decimal places ending in *sat*, or a
- * number with 1 to 11 decimal places ending in *btc*.
+ * number with 1 to 11 decimal places ending in *btc*.  Note that *htlcmax*
+ * only applies to forwarded HTLCs: we can still send larger payments ourselves.
  *
  * *enforcedelay* is the number of seconds to delay before enforcing the
  * new fees/htlc max (default 600, which is ten minutes).  This gives the
@@ -80,7 +83,7 @@ export interface Channel {
   /**
    * The resulting feebase (this is the BOLT #7 name)
    */
-  fee_base_msat: bigint;
+  fee_base_msat: number;
   /**
    * The resulting feeppm (this is the BOLT #7 name)
    */
@@ -88,11 +91,11 @@ export interface Channel {
   /**
    * The resulting htlcmax we will advertize (the BOLT #7 name is htlc_maximum_msat)
    */
-  maximum_htlc_out_msat: bigint;
+  maximum_htlc_out_msat: number;
   /**
    * The resulting htlcmin we will advertize (the BOLT #7 name is htlc_minimum_msat)
    */
-  minimum_htlc_out_msat: bigint;
+  minimum_htlc_out_msat: number;
   /**
    * The node_id of the peer
    */

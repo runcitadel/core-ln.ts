@@ -1,4 +1,4 @@
-import { EventEmitter } from "https://deno.land/std@0.146.0/node/events.ts";
+import { EventEmitter } from "https://deno.land/std@0.153.0/node/events.ts";
 
 import type { AddgossipRequest, AddgossipResponse } from "./addgossip.ts";
 import type {
@@ -61,10 +61,6 @@ import type { FundpsbtRequest, FundpsbtResponse } from "./fundpsbt.ts";
 import type { GetinfoRequest, GetinfoResponse } from "./getinfo.ts";
 import type { GetlogRequest, GetlogResponse } from "./getlog.ts";
 import type { GetrouteRequest, GetrouteResponse } from "./getroute.ts";
-import type {
-  GetsharedsecretRequest,
-  GetsharedsecretResponse,
-} from "./getsharedsecret.ts";
 import type { HelpRequest, HelpResponse } from "./help.ts";
 import type { InvoiceRequest, InvoiceResponse } from "./invoice.ts";
 import type { KeysendRequest, KeysendResponse } from "./keysend.ts";
@@ -138,7 +134,6 @@ import type {
 } from "./parsefeerate.ts";
 import type { PayRequest, PayResponse } from "./pay.ts";
 import type { PingRequest, PingResponse } from "./ping.ts";
-import type { PluginRequest, PluginResponse } from "./plugin.ts";
 import type {
   ReserveinputsRequest,
   ReserveinputsResponse,
@@ -161,7 +156,48 @@ import type {
   SetchannelfeeResponse,
 } from "./setchannelfee.ts";
 import type { SignmessageRequest, SignmessageResponse } from "./signmessage.ts";
+import type {
+  BkprChannelsapyRequest,
+  BkprChannelsapyResponse,
+} from "./bkpr-channelsapy.ts";
+import type {
+  BkprDumpincomecsvRequest,
+  BkprDumpincomecsvResponse,
+} from "./bkpr-dumpincomecsv.ts";
+import type {
+  BkprInspectRequest,
+  BkprInspectResponse,
+} from "./bkpr-inspect.ts";
+import type {
+  BkprListaccounteventsRequest,
+  BkprListaccounteventsResponse,
+} from "./bkpr-listaccountevents.ts";
+import type {
+  BkprListbalancesRequest,
+  BkprListbalancesResponse,
+} from "./bkpr-listbalances.ts";
+import type {
+  BkprListincomeRequest,
+  BkprListincomeResponse,
+} from "./bkpr-listincome.ts";
+import type {
+  CommandoRuneRequest,
+  CommandoRuneResponse,
+} from "./commando-rune.ts";
+import type {
+  EmergencyrecoverRequest,
+  EmergencyrecoverResponse,
+} from "./emergencyrecover.ts";
+import type { MakesecretRequest, MakesecretResponse } from "./makesecret.ts";
+import type {
+  RecoverchannelRequest,
+  RecoverchannelResponse,
+} from "./recoverchannel.ts";
 import type { SignpsbtRequest, SignpsbtResponse } from "./signpsbt.ts";
+import type {
+  StaticbackupRequest,
+  StaticbackupResponse,
+} from "./staticbackup.ts";
 import type { StopRequest, StopResponse } from "./stop.ts";
 import type { TxdiscardRequest, TxdiscardResponse } from "./txdiscard.ts";
 import type { TxprepareRequest, TxprepareResponse } from "./txprepare.ts";
@@ -183,261 +219,37 @@ import type { WaitinvoiceRequest, WaitinvoiceResponse } from "./waitinvoice.ts";
 import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay.ts";
 import type { WithdrawRequest, WithdrawResponse } from "./withdraw.ts";
 
-export const transformMap: any = {
-  createinvoice: {
-    amount_msat: "msat",
-    amount_received_msat: "msat",
-  },
-  decode: {
-    amount_msat: "msat",
-  },
-  decodepay: {
-    amount_msat: "msat",
-  },
-  delinvoice: {
-    amount_msat: "msat",
-    amount_received_msat: "msat",
-  },
-  delpay: {
-    payments: {
-      amount_sent_msat: "msat",
-      amount_msat: "msat",
-    },
-  },
-  fetchinvoice: {
-    changes: {
-      msat: "msat",
-    },
-  },
-  funderupdate: {
-    min_their_funding_msat: "msat",
-    max_their_funding_msat: "msat",
-    per_channel_min_msat: "msat",
-    per_channel_max_msat: "msat",
-    reserve_tank_msat: "msat",
-    lease_fee_base_msat: "msat",
-    channel_fee_max_base_msat: "msat",
-  },
-  fundpsbt: {
-    excess_msat: "msat",
-  },
-  getinfo: {
-    fees_collected_msat: "msat",
-  },
-  getroute: {
-    route: {
-      amount_msat: "msat",
-    },
-  },
-  keysend: {
-    amount_msat: "msat",
-    amount_sent_msat: "msat",
-  },
-  listchannels: {
-    channels: {
-      amount_msat: "msat",
-      htlc_minimum_msat: "msat",
-      htlc_maximum_msat: "msat",
-    },
-  },
-  listconfigs: {
-    "htlc-minimum-msat": "msat",
-    "htlc-maximum-msat": "msat",
-    "max-dust-htlc-exposure-msat": "msat",
-  },
-  listforwards: {
-    forwards: {
-      in_msat: "msat",
-      fee_msat: "msat",
-      out_msat: "msat",
-    },
-  },
-  listfunds: {
-    outputs: {
-      amount_msat: "msat",
-    },
-    channels: {
-      our_amount_msat: "msat",
-      amount_msat: "msat",
-    },
-  },
-  listinvoices: {
-    invoices: {
-      amount_msat: "msat",
-      amount_received_msat: "msat",
-    },
-  },
-  listnodes: {
-    nodes: {
-      option_will_fund: {
-        lease_fee_base_msat: "msat",
-        channel_fee_max_base_msat: "msat",
-      },
-    },
-  },
-  listpays: {
-    pays: {
-      amount_msat: "msat",
-      amount_sent_msat: "msat",
-    },
-  },
-  listpeers: {
-    peers: {
-      channels: {
-        inflight: {
-          total_funding_msat: "msat",
-          our_funding_msat: "msat",
-        },
-        funding: {
-          local_msat: "msat",
-          remote_msat: "msat",
-          pushed_msat: "msat",
-        },
-        to_us_msat: "msat",
-        min_to_us_msat: "msat",
-        max_to_us_msat: "msat",
-        total_msat: "msat",
-        fee_base_msat: "msat",
-        dust_limit_msat: "msat",
-        max_total_htlc_in_msat: "msat",
-        their_reserve_msat: "msat",
-        our_reserve_msat: "msat",
-        spendable_msat: "msat",
-        receivable_msat: "msat",
-        minimum_htlc_in_msat: "msat",
-        minimum_htlc_out_msat: "msat",
-        maximum_htlc_out_msat: "msat",
-        in_offered_msat: "msat",
-        in_fulfilled_msat: "msat",
-        out_offered_msat: "msat",
-        out_fulfilled_msat: "msat",
-        htlcs: {
-          amount_msat: "msat",
-        },
-        last_tx_fee_msat: "msat",
-      },
-    },
-  },
-  listsendpays: {
-    payments: {
-      amount_msat: "msat",
-      amount_sent_msat: "msat",
-    },
-  },
-  listtransactions: {
-    transactions: {
-      outputs: {
-        msat: "msat",
-      },
-    },
-  },
-  pay: {
-    amount_msat: "msat",
-    amount_sent_msat: "msat",
-  },
-  sendinvoice: {
-    amount_msat: "msat",
-    amount_received_msat: "msat",
-  },
-  sendonion: {
-    amount_msat: "msat",
-    amount_sent_msat: "msat",
-  },
-  sendpay: {
-    amount_msat: "msat",
-    amount_sent_msat: "msat",
-  },
-  setchannel: {
-    channels: {
-      fee_base_msat: "msat",
-      minimum_htlc_out_msat: "msat",
-      maximum_htlc_out_msat: "msat",
-    },
-  },
-  utxopsbt: {
-    excess_msat: "msat",
-  },
-  waitanyinvoice: {
-    amount_msat: "msat",
-    amount_received_msat: "msat",
-  },
-  waitinvoice: {
-    amount_msat: "msat",
-    amount_received_msat: "msat",
-  },
-  waitsendpay: {
-    amount_msat: "msat",
-    amount_sent_msat: "msat",
-  },
-};
-
-function transformOne(
-  element: string,
-  to: "msat" | string
-): string | number | bigint {
+function transformOne(element: string | number | bigint): number | undefined {
   if (!element) {
-    return element;
+    return element as number | undefined;
   }
-  if (to === "msat") {
-    // If element ends with msat, remove it and convert to bigint
-    return BigInt(element.endsWith("msat") ? element.slice(0, -4) : element);
-  }
-  throw new Error("Transform not supported");
+  // If element ends with msat, remove it and convert to number
+  return Number(
+    element.toString().endsWith("msat")
+      ? element.toString().slice(0, -4)
+      : element
+  );
 }
 
+// Recursively loop through an object and change values ending in _msat by running transformOne() on them
+// Also handle array inside the object if the array contains objects
 export function transform<ReturnType = unknown>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  transformMapData: any
+  data: any
 ): ReturnType {
-  if (typeof transformMapData === "string")
-    return transformOne(data, transformMapData) as unknown as ReturnType;
-  let key:
-    | string
-    | Record<string, string>
-    | Record<string, Record<string, string>>;
-  for (key of Object.keys(transformMapData)) {
-    if (!data[key]) continue;
-    if (Array.isArray(data[key])) {
-      //transformMapData[key] is an object.
-      // For every key of that object, transform the value by converting every array element which matches the key
-      // with _transformOne
-      // data[key] is an array of objects
-      data[key] = data[key].map(
-        (obj: Record<string, string | number | bigint>) => {
-          for (const objKey of Object.keys(transformMapData[key as string])) {
-            if (
-              !obj ||
-              !obj[objKey] ||
-              !transformMapData[key as string][objKey]
-            )
-              continue;
-            obj[objKey] = transform(
-              obj[objKey] as string,
-              transformMapData[key as string][objKey]
-            );
-          }
-          return obj;
-        }
-      );
-    } else if (typeof data[key] !== "string") {
-      // data[key] is an object
-      //transformMapData[key] is an object.
-      // For every key of transformMapData[key], transform the corresponing value of data[key] by converting with _transformOne
-      for (const objKey of Object.keys(transformMapData[key as string])) {
-        if (!data[key][objKey]) continue;
-        data[key][objKey] = transform(
-          data[key][objKey] as string,
-          transformMapData[key as string][objKey]
-        );
-      }
-    } else {
-      data[key] = transformOne(data[key], transformMapData[key as string]);
-    }
+  if (Array.isArray(data)) {
+    return data.map((element) => transform(element)) as unknown as ReturnType;
   }
-  return data;
+  if (typeof data === "object") {
+    return Object.fromEntries(
+      Object.entries(data).map(
+        ([key, value]) => [key, transform(value)] as [string, ReturnType]
+      )
+    ) as unknown as ReturnType;
+  }
+  return transformOne(data) as unknown as ReturnType;
 }
+
 export default abstract class RPCClient extends EventEmitter {
   abstract call<ReturnType extends {} = {}>(
     method: string,
@@ -506,6 +318,10 @@ export default abstract class RPCClient extends EventEmitter {
    * known node key (as per *listnodes*), and verification succeeds if it
    * matches for any one of them.  Note: this is implemented far more
    * efficiently than trying each one, so performance is not a concern.
+   *
+   * On failure, an error is returned and core lightning exit with the following error code:
+   * - -32602: Parameter missed or malformed;
+   * - 1301: *pubkey* not found in the graph.
    */
   checkmessage(payload: CheckmessageRequest): Promise<CheckmessageResponse> {
     return this.call<CheckmessageResponse>("checkmessage", payload);
@@ -616,7 +432,11 @@ export default abstract class RPCClient extends EventEmitter {
    *
    * *host* is the peer's hostname or IP address.
    *
-   * If not specified, the *port* defaults to 9735.
+   * If not specified, the *port* depends on the current network:
+   * - bitcoin **mainnet**: 9735.
+   * - bitcoin **testnet**: 19735.
+   * - bitcoin **signet**: 39735.
+   * - bitcoin **regtest**: 19846.
    *
    * If *host* is not specified (or doesn't work), the connection will be attempted to an IP
    * belonging to *id* obtained through gossip with other already connected
@@ -725,7 +545,7 @@ export default abstract class RPCClient extends EventEmitter {
    *  - The final payload is a copy of the last payload sans `channel`
    *
    * These rules are directly derived from the onion construction. Please refer
-   * [BOLT 04][bolt04] for details and rationale.
+   * [BOLT 04](https://github.com/lightning/bolts/blob/master/04-onion-routing.md) for details and rationale.
    *
    * The *assocdata* parameter specifies the associated data that the onion should
    * commit to. If the onion is to be used to send a payment later it MUST match
@@ -771,10 +591,14 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **decode** RPC command checks and parses a *bolt11* or *bolt12*
-   * string (optionally prefixed by `lightning:` or `LIGHTNING:`) as
-   * specified by the BOLT 11 and BOLT 12 specifications.  It may decode
-   * other formats in future.
+   * The **decode** RPC command checks and parses:
+   *
+   * - a *bolt11* or *bolt12* string (optionally prefixed by `lightning:`
+   *   or `LIGHTNING:`) as specified by the BOLT 11 and BOLT 12
+   *   specifications.
+   * - a *rune* as created by lightning-commando-rune(7).
+   *
+   * It may decode other formats in future.
    */
   decode(payload: DecodeRequest): Promise<DecodeResponse> {
     return this.call<DecodeResponse>("decode", payload);
@@ -902,11 +726,11 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **feerates** command returns the feerates that C-lightning will use.
+   * The **feerates** command returns the feerates that CLN will use.
    * The feerates will be based on the recommended feerates from the backend.
    * The backend may fail to provide estimates, but if it was able to provide
-   * estimates in the past, C-lightning will continue to use those for a while.
-   * C-lightning will also smoothen feerate estimations from the backend.
+   * estimates in the past, CLN will continue to use those for a while.
+   * CLN will also smoothen feerate estimations from the backend.
    *
    * *style* is either of the two strings:
    *
@@ -1600,18 +1424,6 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **getsharedsecret** RPC command computes a shared secret from a
-   * given public *point*, and the secret key of this node.
-   * The *point* is a hexadecimal string of the compressed public
-   * key DER-encoding of the SECP256K1 point.
-   */
-  getsharedsecret(
-    payload: GetsharedsecretRequest
-  ): Promise<GetsharedsecretResponse> {
-    return this.call<GetsharedsecretResponse>("getsharedsecret", payload);
-  }
-
-  /**
    * The **help** is a RPC command which is possible consult all information about the RPC commands, or a specific command if *command* is given.
    *
    * Note that the lightning-cli(1) tool will prefer to list a man page when a
@@ -1639,7 +1451,7 @@ export default abstract class RPCClient extends EventEmitter {
    * *route hint* description of an incoming channel with capacity to pay the
    * invoice, if any exists.
    *
-   * The *msatoshi* parameter can be the string "any", which creates an
+   * The *amount_msat* parameter can be the string "any", which creates an
    * invoice that can be paid with any amount. Otherwise it is a positive value in
    * millisatoshi precision; it can be a whole number, or a whole number
    * ending in *msat* or *sat*, or a number with three decimal places ending
@@ -1677,7 +1489,7 @@ export default abstract class RPCClient extends EventEmitter {
    * logic, which will use unpublished channels only if there are no
    * published channels. If *true* unpublished channels are always considered
    * as a route hint candidate; if *false*, never.  If it is a short channel id
-   * (e.g. *1x1x3*) or array of short channel ids, only those specific channels
+   * (e.g. *1x1x3*) or array of short channel ids (or a remote alias), only those specific channels
    * will be considered candidates, even if they are public or dead-ends.
    *
    * The route hint is selected from the set of incoming channels of which:
@@ -1690,7 +1502,7 @@ export default abstract class RPCClient extends EventEmitter {
    * If specified, *cltv* sets the *min_final_cltv_expiry* for the invoice.
    * Otherwise, it's set to the parameter **cltv-final**.
    *
-   * If *deschash* is true (default false), then the bolt11 returned
+   * If *deschashonly* is true (default false), then the bolt11 returned
    * contains a hash of the *description*, rather than the *description*
    * itself: this allows much longer descriptions, but they must be
    * communicated via some other mechanism.
@@ -1783,7 +1595,9 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **listconfigs** RPC command to list all configuration options, or with *config*, just that one.
+   * *config* (optional) is a configuration option name, or "plugin" to show plugin options
+   *
+   * The **listconfigs** RPC command to list all configuration options, or with *config* only a selection.
    *
    * The returned values reflect the current configuration, including
    * showing default values (`dev-` options are not shown).
@@ -2104,10 +1918,11 @@ export default abstract class RPCClient extends EventEmitter {
    * `3MZxzq3jBSKNQ2e7dzneo9hy4FvNzmMmt3` on bitcoin mainnet) or *bech32*
    * (e.g. `tb1qu9j4lg5f9rgjyfhvfd905vw46eg39czmktxqgg` on bitcoin testnet
    * or `bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej` on
-   * bitcoin mainnet). The special value *all* generates both address types
-   * for the same underlying key.
+   * bitcoin mainnet).
    *
    * If no *addresstype* is specified the address generated is a *bech32* address.
+   *
+   * To send an on-chain payment _from_ the Core Lightning node wallet, use {@link withdraw}.
    */
   async newaddr(
     addressType: "p2sh-segwit" | "bech32" = "bech32"
@@ -2552,34 +2367,6 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
-   * The **plugin** RPC command allows to manage plugins without having to
-   * restart lightningd. It takes 1 to 3 parameters: a command
-   * (start/stop/startdir/rescan/list) which describes the action to take and
-   * optionally one or two parameters which describes the plugin on which the
-   * action has to be taken.
-   *
-   * The *start* command takes a path as the first parameter and will load
-   * the plugin available from this path.  Any additional parameters are
-   * passed to the plugin. It will wait for the plugin to complete the
-   * handshake with `lightningd` for 20 seconds at the most.
-   *
-   * The *stop* command takes a plugin name as parameter. It will kill and
-   * unload the specified plugin.
-   *
-   * The *startdir* command takes a directory path as first parameter and will
-   * load all plugins this directory contains. It will wait for each plugin to
-   * complete the handshake with `lightningd` for 20 seconds at the most.
-   *
-   * The *rescan* command starts all not-already-loaded plugins from the
-   * default plugins directory (by default *~/.lightning/plugins*).
-   *
-   * The *list* command will return all the active plugins.
-   */
-  plugin(payload: PluginRequest): Promise<PluginResponse> {
-    return this.call<PluginResponse>("plugin", payload);
-  }
-
-  /**
    * The **reserveinputs** RPC command places (or increases) reservations on any
    * inputs specified in *psbt* which are known to lightningd.  It will fail
    * with an error if any of the inputs are known to be spent, and ignore inputs
@@ -2688,6 +2475,10 @@ export default abstract class RPCClient extends EventEmitter {
    *   "delay": 21,
    * }
    * ```
+   *
+   * If the first element of *route* does not have "channel" set, a
+   * suitable channel (if any) will be chosen, otherwise that specific
+   * short-channel-id is used.
    *
    * The *payment_hash* parameter specifies the 32 byte hex-encoded hash to use as
    * a challenge to the HTLC that we are sending. It is specific to the onion and
@@ -2857,17 +2648,20 @@ export default abstract class RPCClient extends EventEmitter {
    * proportional fee of 1,000 satoshi is added, resulting in a 0.1% fee.
    *
    * *htlcmin* is an optional value that limits how small an HTLC we will
-   * send: if omitted, it is unchanged (the default is no lower limit). It
+   * forward: if omitted, it is unchanged (the default is no lower limit). It
    * can be a whole number, or a whole number ending in *msat* or *sat*, or
    * a number with three decimal places ending in *sat*, or a number with 1
-   * to 11 decimal places ending in *btc*.  The peer also enforces a
-   * minimum for the channel: setting it below will be ignored.
+   * to 11 decimal places ending in *btc*.  Note that the peer also enforces a
+   * minimum for the channel: setting it below that will simply set it to
+   * that value with a warning.  Also note that *htlcmin* only applies to forwarded
+   * HTLCs: we can still send smaller payments ourselves.
    *
    * *htlcmax* is an optional value that limits how large an HTLC we will
-   * send: if omitted, it is unchanged (the default is no effective
+   * forward: if omitted, it is unchanged (the default is no effective
    * limit). It can be a whole number, or a whole number ending in *msat*
    * or *sat*, or a number with three decimal places ending in *sat*, or a
-   * number with 1 to 11 decimal places ending in *btc*.
+   * number with 1 to 11 decimal places ending in *btc*.  Note that *htlcmax*
+   * only applies to forwarded HTLCs: we can still send larger payments ourselves.
    *
    * *enforcedelay* is the number of seconds to delay before enforcing the
    * new fees/htlc max (default 600, which is ten minutes).  This gives the
@@ -2877,8 +2671,6 @@ export default abstract class RPCClient extends EventEmitter {
    * only applied to a single rate increase per channel (we don't remember
    * an arbitrary number of prior feerates) and if the node is restarted
    * the updated configuration is enforced immediately.
-   * 
-   * @since Core Lightning 0.11.0
    */
   setchannel(payload: SetchannelRequest): Promise<SetchannelResponse> {
     return this.call<SetchannelResponse>("setchannel", payload);
@@ -2938,6 +2730,317 @@ export default abstract class RPCClient extends EventEmitter {
   }
 
   /**
+   * The **bkpr-channelsapy** RPC command lists stats on routing income, leasing income,
+   * and various calculated APYs for channel routed funds.
+   *
+   * The **start_time** is a UNIX timestamp (in seconds) that filters events after the provided timestamp. Defaults to zero.
+   *
+   * The **end_time** is a UNIX timestamp (in seconds) that filters events up to and at the provided timestamp. Defaults to max-int.
+   *
+   */
+  bkprChannelsapy(
+    payload: BkprChannelsapyRequest = {}
+  ): Promise<BkprChannelsapyResponse> {
+    return this.call<BkprChannelsapyResponse>("bkpr-channelsapy", payload);
+  }
+
+  /**
+   * The **bkpr-dumpincomcsv** RPC command writes a CSV file to disk at *csv_file*
+   * location. This is a formatted output of the **listincome** RPC command.
+   */
+  bkprDumpincomecsv(
+    payload: BkprDumpincomecsvRequest
+  ): Promise<BkprDumpincomecsvResponse> {
+    return this.call<BkprDumpincomecsvResponse>("bkpr-dumpincomecsv", payload);
+  }
+
+  /**
+   * The **bkpr-inspect** RPC command lists all known on-chain transactions and
+   * associated events for the provided account. Useful for inspecting unilateral
+   * closes for a given channel account. Only valid for channel accounts.
+   */
+  bkprInspect(payload: BkprInspectRequest): Promise<BkprInspectResponse> {
+    return this.call<BkprInspectResponse>("bkpr-inspect", payload);
+  }
+
+  /**
+   * The **bkpr-listaccountevents** RPC command is a list of all bookkeeping events that have been recorded for this node.
+   *
+   * If the optional parameter **account** is set, we only emit events for the
+   * specified account, if exists.
+   *
+   * Note that the type **onchain_fees** that are emitted are of opposite credit/debit than as they appear in **listincome**, as **listincome** shows all events from the perspective of the node, whereas **listaccountevents** just dumps the event data as we've got it. Onchain fees are updated/recorded as we get more information about input and output spends -- the total onchain fees that were recorded for a transaction for an account can be found by summing all onchain fee events and taking the difference between the **credit_msat** and **debit_msat** for these events. We do this so that successive calls to **listaccountevents** always
+   * produce the same list of events -- no previously emitted event will be
+   * subsequently updated, rather we add a new event to the list.
+   *
+   */
+  bkprListaccountevents(
+    payload: BkprListaccounteventsRequest = {}
+  ): Promise<BkprListaccounteventsResponse> {
+    return this.call<BkprListaccounteventsResponse>(
+      "bkpr-listaccountevents",
+      payload
+    );
+  }
+
+  /**
+   * The **bkpr-listbalances** RPC command is a list of all current and historical account balances. An account is either the on-chain *wallet* or a channel balance.
+   * Any funds sent to an *external* account will not be accounted for here.
+   *
+   * Note that any channel that was recorded will be listed. Closed channel balances
+   * will be 0msat.
+   */
+  bkprListbalances(
+    payload: BkprListbalancesRequest = {}
+  ): Promise<BkprListbalancesResponse> {
+    return this.call<BkprListbalancesResponse>("bkpr-listbalances", payload);
+  }
+
+  /**
+   * The **bkpr-listincome** RPC command is a list of all income impacting events that the bookkeeper plugin has recorded for this node.
+   *
+   * If **consolidate_fees** is true, we emit a single, consolidated event for
+   * any onchain-fees for a txid and account. Otherwise, events for every update to
+   * the onchain fee calculation for this account and txid will be printed. Defaults to true. Note that this means that the events emitted are non-stable,
+   * i.e. calling **listincome** twice may result in different onchain fee events
+   * being emitted, depending on how much information we've logged for that
+   * transaction.
+   *
+   * The **start_time** is a UNIX timestamp (in seconds) that filters events after the provided timestamp. Defaults to zero.
+   *
+   * The **end_time** is a UNIX timestamp (in seconds) that filters events up to and at the provided timestamp. Defaults to max-int.
+   */
+  bkprListincome(
+    payload: BkprListincomeRequest = {}
+  ): Promise<BkprListincomeResponse> {
+    return this.call<BkprListincomeResponse>("bkpr-listincome", payload);
+  }
+
+  /**
+   * The **commando-rune** RPC command creates a base64 string called a
+   * *rune* which can be used to access commands on this node.  Each *rune*
+   * contains a unique id (a number starting at 0), and can have
+   * restrictions inside it.  Nobody can remove restrictions from a rune: if
+   * you try, the rune will be rejected.  There is no limit on how many
+   * runes you can issue: the node doesn't store them, but simply decodes
+   * and checks them as they are received.
+   *
+   * If *rune* is supplied, the restrictions are simple appended to that
+   * *rune* (it doesn't need to be a rune belonging to this node).  If no
+   * *rune* is supplied, a new one is constructed, with a new unique id.
+   *
+   * *restrictions* can be the string "readonly" (creates a rune which
+   * allows most *get* and *list* commands, and the *summary* command), or
+   * an array of restrictions, or a single resriction.
+   *
+   * Each restriction is a set of one or more alternatives, such as "method
+   * is listpeers", or "method is listpeers OR time is before 2023".
+   * Alternatives use a simple language to examine the command which is
+   * being run:
+   *
+   * * time: the current UNIX time, e.g. "time<1656759180".
+   * * id: the node_id of the peer, e.g. "id=024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605".
+   * * method: the command being run, e.g. "method=withdraw".
+   * * rate: the rate limit, per minute, e.g. "rate=60".
+   * * pnum: the number of parameters. e.g. "pnum<2".
+   * * pnameX: the parameter named X. e.g. "pnamedestination=1RustyRX2oai4EYYDpQGWvEL62BBGqN9T".
+   * * parrN: the N'th parameter. e.g. "parr0=1RustyRX2oai4EYYDpQGWvEL62BBGqN9T".
+   *
+   * RESTRICTION FORMAT
+   * ------------------
+   *
+   * Restrictions are one or more alternatives, separated by `|`.  Each
+   * alternative is *name* *operator* *value*.  The valid names are shown
+   * above.  If a value contains `|`, `&` or ``, it must be preceeded by
+   * a ``.
+   *
+   * * `=`: passes if equal ie. identical. e.g. `method=withdraw`
+   * * `/`: not equals, e.g. `method/withdraw`
+   * * `^`: starts with, e.g. `id^024b9a1fa8e006f1e3937f`
+   * * `$`: ends with, e.g. `id$381df1cc449605`.
+   * * `~`: contains, e.g. `id~006f1e3937f65f66c40`.
+   * * `<`: is a decimal integer, and is less than. e.g. `time<1656759180`
+   * * `>`: is a decimal integer, and is greater than. e.g. `time>1656759180`
+   * * `{`: preceeds in alphabetical order (or matches but is shorter), e.g. `id{02ff`.
+   * * `}`: follows in alphabetical order (or matches but is longer), e.g. `id}02ff`.
+   * * `#`: a comment, ignored, e.g. `dumb example#`.
+   * * `!`: only passes if the *name* does *not* exist. e.g. `pnamedestination!`.
+   *        Every other operator except `#` fails if *name* does not exist!
+   *
+   * EXAMPLES
+   * --------
+   *
+   * This creates a fresh rune which can do anything:
+   *
+   *     $ lightning-cli commando-rune
+   *     {
+   *        "rune": "KUhZzNlECC7pYsz3QVbF1TqjIUYi3oyESTI7n60hLMs9MA==",
+   *        "unique_id": "0"
+   *     }
+   *
+   * We can add restrictions to that rune, like so:
+   *
+   *     $ lightning-cli commando-rune rune=KUhZzNlECC7pYsz3QVbF1TqjIUYi3oyESTI7n60hLMs9MA== restrictions=readonly
+   *     {
+   *        "rune": "NbL7KkXcPQsVseJ9TdJNjJK2KsPjnt_q4cE_wvc873I9MCZtZXRob2RebGlzdHxtZXRob2ReZ2V0fG1ldGhvZD1zdW1tYXJ5Jm1ldGhvZC9saXN0ZGF0YXN0b3Jl",
+   *        "unique_id": "0"
+   *     }
+   *
+   * The "readonly" restriction is a short-cut for two restrictions:
+   *
+   * 1. `method^list|method^get|method=summary`: You may call list, get or summary.
+   * 2. `method/listdatastore`: But not listdatastore: that contains sensitive stuff!
+   *
+   * We can do the same manually, like so:
+   *
+   *     $ lightning-cli commando-rune rune=KUhZzNlECC7pYsz3QVbF1TqjIUYi3oyESTI7n60hLMs9MA== restrictions='["method^list|method^get|method=summary","method/listdatastore"]'
+   *     {
+   *        "rune": "NbL7KkXcPQsVseJ9TdJNjJK2KsPjnt_q4cE_wvc873I9MCZtZXRob2RebGlzdHxtZXRob2ReZ2V0fG1ldGhvZD1zdW1tYXJ5Jm1ldGhvZC9saXN0ZGF0YXN0b3Jl",
+   *        "unique_id": "0"
+   *     }
+   *
+   * Let's create a rune which lets a specific peer
+   * (024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605)
+   * run "listpeers" on themselves:
+   *
+   *     $ lightning-cli commando-rune restrictions='["id=024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605","method=listpeers","pnum=1","pnameid=024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605|parr0=024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605"]'
+   *     {
+   *        "rune": "FE8GHiGVvxcFqCQcClVRRiNE_XEeLYQzyG2jmqto4jM9MiZpZD0wMjRiOWExZmE4ZTAwNmYxZTM5MzdmNjVmNjZjNDA4ZTZkYThlMWNhNzI4ZWE0MzIyMmE3MzgxZGYxY2M0NDk2MDUmbWV0aG9kPWxpc3RwZWVycyZwbnVtPTEmcG5hbWVpZD0wMjRiOWExZmE4ZTAwNmYxZTM5MzdmNjVmNjZjNDA4ZTZkYThlMWNhNzI4ZWE0MzIyMmE3MzgxZGYxY2M0NDk2MDV8cGFycjA9MDI0YjlhMWZhOGUwMDZmMWUzOTM3ZjY1ZjY2YzQwOGU2ZGE4ZTFjYTcyOGVhNDMyMjJhNzM4MWRmMWNjNDQ5NjA1",
+   *        "unique_id": "2"
+   *     }
+   *
+   * This allows `listpeers` with 1 argument (`pnum=1`), which is either by name (`pnameid`), or position (`parr0`).  We could shorten this in several ways: either allowing only positional or named parameters, or by testing the start of the parameters only.  Here's an example which only checks the first 9 bytes of the `listpeers` parameter:
+   *
+   *     $ lightning-cli commando-rune restrictions='["id=024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605","method=listpeers","pnum=1","pnameid^024b9a1fa8e006f1e393|parr0^024b9a1fa8e006f1e393"]'
+   *      {
+   *        "rune": "fTQnfL05coEbiBO8SS0cvQwCcPLxE9c02pZCC6HRVEY9MyZpZD0wMjRiOWExZmE4ZTAwNmYxZTM5MzdmNjVmNjZjNDA4ZTZkYThlMWNhNzI4ZWE0MzIyMmE3MzgxZGYxY2M0NDk2MDUmbWV0aG9kPWxpc3RwZWVycyZwbnVtPTEmcG5hbWVpZF4wMjRiOWExZmE4ZTAwNmYxZTM5M3xwYXJyMF4wMjRiOWExZmE4ZTAwNmYxZTM5Mw==",
+   *        "unique_id": "3"
+   *     }
+   *
+   * Before we give this to our peer, let's add two more restrictions: that
+   * it only be usable for 24 hours from now (`time<`), and that it can only
+   * be used twice a minute (`rate=2`).  `date +%s` can give us the current
+   * time in seconds:
+   *
+   *     $ lightning-cli commando-rune rune=fTQnfL05coEbiBO8SS0cvQwCcPLxE9c02pZCC6HRVEY9MyZpZD0wMjRiOWExZmE4ZTAwNmYxZTM5MzdmNjVmNjZjNDA4ZTZkYThlMWNhNzI4ZWE0MzIyMmE3MzgxZGYxY2M0NDk2MDUmbWV0aG9kPWxpc3RwZWVycyZwbnVtPTEmcG5hbWVpZF4wMjRiOWExZmE4ZTAwNmYxZTM5M3xwYXJyMF4wMjRiOWExZmE4ZTAwNmYxZTM5Mw== restrictions='["time<'$(($(date +%s) + 24*60*60))'","rate=2"]'
+   *     {
+   *        "rune": "tU-RLjMiDpY2U0o3W1oFowar36RFGpWloPbW9-RuZdo9MyZpZD0wMjRiOWExZmE4ZTAwNmYxZTM5MzdmNjVmNjZjNDA4ZTZkYThlMWNhNzI4ZWE0MzIyMmE3MzgxZGYxY2M0NDk2MDUmbWV0aG9kPWxpc3RwZWVycyZwbnVtPTEmcG5hbWVpZF4wMjRiOWExZmE4ZTAwNmYxZTM5M3xwYXJyMF4wMjRiOWExZmE4ZTAwNmYxZTM5MyZ0aW1lPDE2NTY5MjA1MzgmcmF0ZT0y",
+   *        "unique_id": "3"
+   *     }
+   *
+   * You can also use lightning-decode(7) to examine runes you have been given:
+   *
+   *     $ .lightning-cli decode tU-RLjMiDpY2U0o3W1oFowar36RFGpWloPbW9-RuZdo9MyZpZD0wMjRiOWExZmE4ZTAwNmYxZTM5MzdmNjVmNjZjNDA4ZTZkYThlMWNhNzI4ZWE0MzIyMmE3MzgxZGYxY2M0NDk2MDUmbWV0aG9kPWxpc3RwZWVycyZwbnVtPTEmcG5hbWVpZF4wMjRiOWExZmE4ZTAwNmYxZTM5M3xwYXJyMF4wMjRiOWExZmE4ZTAwNmYxZTM5MyZ0aW1lPDE2NTY5MjA1MzgmcmF0ZT0y
+   *     {
+   *        "type": "rune",
+   *        "unique_id": "3",
+   *        "string": "b54f912e33220e9636534a375b5a05a306abdfa4451a95a5a0f6d6f7e46e65da:=3&id=024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605&method=listpeers&pnum=1&pnameid^024b9a1fa8e006f1e393|parr0^024b9a1fa8e006f1e393&time<1656920538&rate=2",
+   *        "restrictions": [
+   *           {
+   *              "alternatives": [
+   *                 "id=024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605"
+   *              ],
+   *              "summary": "id (of commanding peer) equal to '024b9a1fa8e006f1e3937f65f66c408e6da8e1ca728ea43222a7381df1cc449605'"
+   *           },
+   *           {
+   *              "alternatives": [
+   *                 "method=listpeers"
+   *              ],
+   *              "summary": "method (of command) equal to 'listpeers'"
+   *           },
+   *           {
+   *              "alternatives": [
+   *                 "pnum=1"
+   *              ],
+   *              "summary": "pnum (number of command parameters) equal to 1"
+   *           },
+   *           {
+   *              "alternatives": [
+   *                 "pnameid^024b9a1fa8e006f1e393",
+   *                 "parr0^024b9a1fa8e006f1e393"
+   *              ],
+   *              "summary": "pnameid (object parameter 'id') starts with '024b9a1fa8e006f1e393' OR parr0 (array parameter #0) starts with '024b9a1fa8e006f1e393'"
+   *           },
+   *           {
+   *              "alternatives": [
+   *                 "time<1656920538"
+   *              ],
+   *              "summary": "time (in seconds since 1970) less than 1656920538 (approximately 19 hours 18 minutes from now)"
+   *           },
+   *           {
+   *              "alternatives": [
+   *                 "rate=2"
+   *              ],
+   *              "summary": "rate (max per minute) equal to 2"
+   *           }
+   *        ],
+   *        "valid": true
+   *     }
+   *
+   *
+   * SHARING RUNES
+   * -------------
+   *
+   * Because anyone can add a restriction to a rune, you can always turn a
+   * normal rune into a read-only rune, or restrict access for 30 minutes
+   * from the time you give it to someone.  Adding restrictions before
+   * sharing runes is best practice.
+   *
+   * If a rune has a ratelimit, any derived rune will have the same id, and
+   * thus will compete for that ratelimit.  You might want to consider
+   * adding a tighter ratelimit to a rune before sharing it, so you will
+   * keep the remainder.  For example, if you rune has a limit of 60 times
+   * per minute, adding a limit of 5 times per minute and handing that rune
+   * out means you can still use your original rune 55 times per minute.
+   */
+  commandoRune(
+    payload: CommandoRuneRequest = {}
+  ): Promise<CommandoRuneResponse> {
+    return this.call<CommandoRuneResponse>("commando-rune", payload);
+  }
+
+  /**
+   * The **emergencyrecover** RPC command fetches data from the emergency.recover
+   * file and tries to reconnect to the peer and force him to close the channel.
+   * The data in this file has enough information to reconnect and sweep the funds.
+   *
+   * This recovery method is not spontaneous and it depends on the peer, so it should
+   * be used as a last resort to recover the funds stored in a channel in case of severe
+   * data loss.
+   */
+  emergencyrecover(
+    payload: EmergencyrecoverRequest = {}
+  ): Promise<EmergencyrecoverResponse> {
+    return this.call<EmergencyrecoverResponse>("emergencyrecover", payload);
+  }
+
+  /**
+   * The **makesecret** RPC command derives a secret key from the HSM_secret.
+   *
+   * The *hex* can be any hex data.
+   */
+  makesecret(payload: MakesecretRequest): Promise<MakesecretResponse> {
+    return this.call<MakesecretResponse>("makesecret", payload);
+  }
+
+  /**
+   * The **recoverchannel** RPC command tries to force the peer (with whom you
+   * already had a channel) to close the channel and sweeps on-chain fund. This
+   * method is not spontaneous and depends on the peer, so use it in case of
+   * severe data loss.
+   *
+   * The *scb* parameter is an array containing minimum required info to
+   * reconnect and sweep funds. You can get the scb for already stored channels
+   * by using the RPC command 'staticbackup'
+   *
+   */
+  recoverchannel(
+    payload: RecoverchannelRequest
+  ): Promise<RecoverchannelResponse> {
+    return this.call<RecoverchannelResponse>("recoverchannel", payload);
+  }
+
+  /**
    * **signpsbt** is a low-level RPC command which signs a PSBT as defined by
    * BIP-174.
    *
@@ -2966,6 +3069,16 @@ export default abstract class RPCClient extends EventEmitter {
    */
   signpsbt(payload: SignpsbtRequest): Promise<SignpsbtResponse> {
     return this.call<SignpsbtResponse>("signpsbt", payload);
+  }
+
+  /**
+   * The **staticbackup** RPC command returns an object with SCB of all the channels in an array.
+   *
+   */
+  staticbackup(
+    payload: StaticbackupRequest = {}
+  ): Promise<StaticbackupResponse> {
+    return this.call<StaticbackupResponse>("staticbackup", payload);
   }
 
   /**
