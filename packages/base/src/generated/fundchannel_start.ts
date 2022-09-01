@@ -52,6 +52,10 @@ export interface FundchannelStartResponse {
    */
   funding_address: string;
   /**
+   * Number of confirmations before we consider the channel active.
+   */
+  mindepth?: number;
+  /**
    * The raw scriptPubkey for the address
    */
   scriptpubkey: string;

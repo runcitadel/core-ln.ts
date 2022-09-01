@@ -67,7 +67,7 @@ export interface Node {
     /**
      * the fixed fee for a lease (whole number of satoshis)
      */
-    lease_fee_base_msat?: bigint;
+    lease_fee_base_msat?: number;
     /**
      * the proportional fee in basis points (parts per 10,000) for a lease
      */
@@ -79,7 +79,7 @@ export interface Node {
     /**
      * the maximum base routing fee this node will charge during the lease
      */
-    channel_fee_max_base_msat: bigint;
+    channel_fee_max_base_msat: number;
     /**
      * the maximum proportional routing fee this node will charge during the lease (in thousandths, not millionths like channel_update)
      */

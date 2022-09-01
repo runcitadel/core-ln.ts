@@ -32,11 +32,11 @@ export interface CreateinvoiceResponse {
   /**
    * The amount of the invoice (if it has one)
    */
-  amount_msat?: bigint;
+  amount_msat?: number;
   /**
    * Amount actually received (**status** *paid* only)
    */
-  amount_received_msat?: bigint;
+  amount_received_msat?: number;
   /**
    * the bolt11 string (always present unless **bolt12** is)
    */

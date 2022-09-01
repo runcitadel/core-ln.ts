@@ -110,6 +110,10 @@ export enum Type {
 
 export interface Output {
   /**
+   * the amount of the output
+   */
+  amount_msat: number;
+  /**
    * the channel this output is associated with (*EXPERIMENTAL_FEATURES* only)
    */
   channel?: string;
@@ -117,10 +121,6 @@ export interface Output {
    * the 0-based output number
    */
   index: number;
-  /**
-   * the amount of the output
-   */
-  msat: bigint;
   /**
    * the scriptPubKey
    */

@@ -42,7 +42,7 @@ export interface SendinvoiceResponse {
   /**
    * the amount required to pay this invoice
    */
-  amount_msat?: bigint;
+  amount_msat?: number;
   /**
    * the BOLT12 string
    */

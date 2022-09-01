@@ -58,6 +58,7 @@ export interface Peer {
 }
 
 export interface Channel {
+  alias?: Alias;
   /**
    * The full channel_id
    */
@@ -67,18 +68,18 @@ export interface Channel {
    */
   close_to?: string;
   /**
-   * Who initiated the channel close (`null` is deprecated!)
+   * Who initiated the channel close
    */
-  closer?: Closer | null;
+  closer?: Closer;
   /**
    * minimum amount for an output on the channel transactions
    */
-  dust_limit_msat?: bigint;
+  dust_limit_msat?: number;
   features: Feature[];
   /**
    * amount we charge to use the channel
    */
-  fee_base_msat?: bigint;
+  fee_base_msat?: number;
   /**
    * amount we charge to use the channel in parts-per-million
    */
@@ -103,11 +104,11 @@ export interface Channel {
   /**
    * Total amount of successful incoming payment attempts
    */
-  in_fulfilled_msat?: bigint;
+  in_fulfilled_msat?: number;
   /**
    * Total amount of incoming payment attempts
    */
-  in_offered_msat?: bigint;
+  in_offered_msat?: number;
   /**
    * Number of successful incoming payment attempts
    */
@@ -135,27 +136,27 @@ export interface Channel {
   /**
    * most amount owed to us ever
    */
-  max_to_us_msat?: bigint;
+  max_to_us_msat?: number;
   /**
    * max amount accept in a single payment
    */
-  max_total_htlc_in_msat?: bigint;
+  max_total_htlc_in_msat?: number;
   /**
    * the maximum amount HTLC we will send
    */
-  maximum_htlc_out_msat?: bigint;
+  maximum_htlc_out_msat?: number;
   /**
    * least amount owed to us ever
    */
-  min_to_us_msat?: bigint;
+  min_to_us_msat?: number;
   /**
    * the minimum amount HTLC we accept
    */
-  minimum_htlc_in_msat?: bigint;
+  minimum_htlc_in_msat?: number;
   /**
    * the minimum amount HTLC we will send
    */
-  minimum_htlc_out_msat?: bigint;
+  minimum_htlc_out_msat?: number;
   /**
    * For inflight opens, the next feerate step we'll use for the channel open
    */
@@ -171,7 +172,7 @@ export interface Channel {
   /**
    * minimum they insist we keep in channel
    */
-  our_reserve_msat?: bigint;
+  our_reserve_msat?: number;
   /**
    * the number of blocks before we can take our funds if we unilateral close
    */
@@ -179,11 +180,11 @@ export interface Channel {
   /**
    * Total amount of successful outgoing payment attempts
    */
-  out_fulfilled_msat?: bigint;
+  out_fulfilled_msat?: number;
   /**
    * Total amount of outgoing payment attempts
    */
-  out_offered_msat?: bigint;
+  out_offered_msat?: number;
   /**
    * Number of successful outgoing payment attempts
    */
@@ -203,7 +204,7 @@ export interface Channel {
   /**
    * total peer could send through channel
    */
-  receivable_msat?: bigint;
+  receivable_msat?: number;
   /**
    * The txid we would use if we went onchain now
    */
@@ -215,7 +216,7 @@ export interface Channel {
   /**
    * total we could send through channel
    */
-  spendable_msat?: bigint;
+  spendable_msat?: number;
   /**
    * the channel state, in particular "CHANNELD_NORMAL" means the channel can be used normally
    */
@@ -228,7 +229,7 @@ export interface Channel {
   /**
    * minimum we insist they keep in channel
    */
-  their_reserve_msat?: bigint;
+  their_reserve_msat?: number;
   /**
    * the number of blocks before they can take their funds if they unilateral close
    */
@@ -236,14 +237,27 @@ export interface Channel {
   /**
    * how much of channel is owed to us
    */
-  to_us_msat?: bigint;
+  to_us_msat?: number;
   /**
    * total amount in the channel
    */
-  total_msat?: bigint;
+  total_msat?: number;
+}
+
+export interface Alias {
+  /**
+   * An alias assigned by this node to this channel, used for outgoing payments
+   */
+  local?: string;
+  /**
+   * An alias assigned by the remote node to this channel, usable in routehints and invoices
+   */
+  remote?: string;
 }
 
 /**
+ * Who initiated the channel close
+ *
  * Who initiated the channel
  */
 export enum Closer {
@@ -257,6 +271,7 @@ export enum Closer {
 export enum Feature {
   OptionAnchorOutputs = "option_anchor_outputs",
   OptionStaticRemotekey = "option_static_remotekey",
+  OptionZeroconf = "option_zeroconf",
 }
 
 /**
@@ -275,24 +290,40 @@ export interface Feerate {
 
 export interface Funding {
   /**
+   * Amount we paid peer at open
+   */
+  fee_paid_msat?: number;
+  /**
+   * Amount we were paid by peer at open
+   */
+  fee_rcvd_msat?: number;
+  /**
    * Amount of channel we funded
    */
-  local_msat: bigint;
+  local_funds_msat: number;
+  /**
+   * Amount of channel we funded (deprecated)
+   */
+  local_msat?: number;
   /**
    * Amount pushed from opener to peer
    */
-  pushed_msat: bigint;
+  pushed_msat?: number;
   /**
    * Amount of channel they funded
    */
-  remote_msat: bigint;
+  remote_funds_msat: number;
+  /**
+   * Amount of channel they funded (deprecated)
+   */
+  remote_msat?: number;
 }
 
 export interface Htlc {
   /**
    * Amount send/received for this HTLC
    */
-  amount_msat: bigint;
+  amount_msat: number;
   /**
    * Whether it came from peer, or is going to peer
    */
@@ -344,7 +375,7 @@ export interface Inflight {
   /**
    * amount we have in the channel
    */
-  our_funding_msat: bigint;
+  our_funding_msat: number;
   /**
    * The commitment transaction txid we would use if we went onchain now
    */
@@ -352,7 +383,7 @@ export interface Inflight {
   /**
    * total amount in the channel
    */
-  total_funding_msat: bigint;
+  total_funding_msat: number;
 }
 
 /**

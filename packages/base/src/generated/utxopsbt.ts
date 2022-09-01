@@ -63,7 +63,7 @@ export interface UtxopsbtResponse {
    * The amount above *satoshi* which is available.  This could be zero, or dust; it will be
    * zero if *change_outnum* is also returned
    */
-  excess_msat: bigint;
+  excess_msat: number;
   /**
    * The feerate used to create the PSBT, in satoshis-per-kiloweight
    */

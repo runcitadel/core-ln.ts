@@ -26,7 +26,7 @@ export interface DelinvoiceResponse {
   /**
    * the amount required to pay this invoice
    */
-  amount_msat?: bigint;
+  amount_msat?: number;
   /**
    * BOLT11 string
    */
