@@ -1,4 +1,4 @@
-import ApiClient, { transform, transformMap } from "@core-ln/base";
+import ApiClient, { transform } from "@core-ln/base";
 import { createConnection, type Socket } from "net";
 // @ts-expect-error No type definition for this yet
 import JSONParser from "jsonparse";
@@ -90,9 +90,7 @@ export default class SocketApiClient extends ApiClient {
           this.once("res:" + callInt, (res) =>
             res.error == null
               ? resolve(
-                  this._transform && transformMap[method]
-                    ? transform<ReturnType>(res.result, transformMap[method])
-                    : res.result
+                  transform<ReturnType>(res.result)
                 )
               : reject(res.error)
           );

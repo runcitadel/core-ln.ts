@@ -1,7 +1,7 @@
 import AbstractApiClient from "./generated/main.js";
 export default AbstractApiClient;
 
-export { transformMap, transform } from "./generated/main.js";
+export { transform } from "./generated/main.js";
 
 export { AddgossipRequest, AddgossipResponse } from "./generated/addgossip";
 export {

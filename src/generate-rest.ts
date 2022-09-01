@@ -115,7 +115,7 @@ await fs.writeFile(
     `/// <reference lib="DOM" />
 
 ${typeImports}
-import ApiClient, { transform, transformMap } from "@core-ln/base";
+import ApiClient, { transform } from "@core-ln/base";
 
 /**
  * An API client for the c-lightning REST plugin
@@ -148,9 +148,7 @@ export default class RestApiClient extends ApiClient {
             }),
         });
         const parsedData = await data.json();
-        return (this._transform && transformMap[method])
-            ? transform<ReturnType>(parsedData, transformMap[method])
-            : (parsedData as ReturnType);
+        return transform<ReturnType>(parsedData);
     }
 
     async req<ReturnType>(

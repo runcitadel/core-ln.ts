@@ -1,6 +1,5 @@
 import ApiClient, {
   transform,
-  transformMap,
 } from "https://deno.land/x/core_ln_base@v0.2.0-deno.4/mod.ts";
 import {
   createConnection,
@@ -95,9 +94,7 @@ export default class SocketApiClient extends ApiClient {
           this.once("res:" + callInt, (res) =>
             res.error == null
               ? resolve(
-                this._transform && transformMap[method]
-                  ? transform<ReturnType>(res.result, transformMap[method])
-                  : res.result,
+                transform<ReturnType>(res.result)
               )
               : reject(res.error));
         }),
