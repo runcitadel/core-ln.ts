@@ -108,7 +108,7 @@ function parseSynopsis(synopsis: string): {
     const split = parts[2].split("[");
     split.shift();
     split.forEach((p) => {
-      let split = p.split("*")[1] || p.substring(0, p.length - 1);
+      const split = p.split("*")[1] || p.substring(0, p.length - 1);
       if (!p.split("*")[1]) {
         console.log(p);
         console.log(`Resolved to ${split}`);
