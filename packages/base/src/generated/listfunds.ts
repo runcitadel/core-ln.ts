@@ -14,7 +14,7 @@
  * in addition to the unspent ones. Default is false.
  */
 export interface ListfundsRequest {
-  spent?: /* GUESSED */ string;
+  spent?: boolean;
 }
 
 export interface ListfundsResponse {
@@ -70,7 +70,7 @@ export enum State {
   Openingd = "OPENINGD",
 }
 
-export interface Output {
+export type Output = {
   /**
    * the bitcoin address of the output
    */
@@ -88,19 +88,32 @@ export interface Output {
    */
   redeemscript?: string;
   /**
-   * whether this UTXO is currently reserved for an in-flight tx
-   */
-  reserved: boolean;
-  /**
    * the scriptPubkey of the output
    */
   scriptpubkey: string;
-  status: Status;
   /**
    * the ID of the spendable transaction
    */
   txid: string;
-}
+} & ({
+  status: Status.Confirmed;
+  blockheight: number;
+} | {
+  status: Status.Unconfirmed | Status.Spent;
+  blockheight: number;
+}) & ({
+  /**
+   * whether this UTXO is currently reserved for an in-flight tx
+   */
+   reserved: false;
+} | {
+  /**
+   * whether this UTXO is currently reserved for an in-flight tx
+   */
+   reserved: true;
+   /** Block height where reservation will expire */
+   reserved_to_block: number;
+})
 
 export enum Status {
   Confirmed = "confirmed",

@@ -1,13 +1,13 @@
 {
     "name": "@core-ln/plugin",
     "author": "Aaron Dewes <aaron.dewes@protonmail.com>",
-    "version": "0.3.0-rc.2",
+    "version": "0.3.0-rc.3",
     "devDependencies": {
         "tsup": "^5.12.7",
         "typescript": "^4.6.3"
     },
     "dependencies": {
-        "@core-ln/core": "^0.2.1-beta.1"
+        "@core-ln/core": "^0.3.0-rc.3"
     },
     "scripts": {
         "build": "tsup src/index.ts --format cjs,esm --dts --clean",

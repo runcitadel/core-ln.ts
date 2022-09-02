@@ -40,12 +40,12 @@ export interface ListpeersResponse {
   peers: Peer[];
 }
 
-export interface Peer {
+export type Peer = {
   channels: Channel[];
   /**
    * True if the peer is currently connected
    */
-  connected: boolean;
+  connected: false;
   /**
    * the public key of the peer
    */
@@ -54,6 +54,25 @@ export interface Peer {
    * if *level* is specified, logs for this peer
    */
   log?: Log[];
+} | {
+  channels: Channel[];
+  /**
+   * True if the peer is currently connected
+   */
+  connected: true;
+  /**
+   * the public key of the peer
+   */
+  id: string;
+  /**
+   * if *level* is specified, logs for this peer
+   */
+  log?: Log[];
+  netaddr: [string];
+  /** The public IPv4/6 address the peer sees us from, e.g. 1.2.3.4:1234 */
+  remote_addr: string;
+  /** bitmap of BOLT #9 features from peer's INIT message */
+  features: string;
 }
 
 export interface Channel {
