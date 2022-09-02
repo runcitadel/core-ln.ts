@@ -11,16 +11,16 @@
  * It is possible filter the payments also by *status*.
  */
 export interface ListpaysRequest {
-  bolt11?: /* GUESSED */ string;
-  payment_hash?: /* GUESSED */ string;
-  status?: /* GUESSED */ string;
+  bolt11?: string;
+  payment_hash?: string;
+  status?: Status;
 }
 
 export interface ListpaysResponse {
   pays: Pay[];
 }
 
-export interface Pay {
+export type Pay = {
   /**
    * the bolt11 string (if pay supplied one)
    */
@@ -49,11 +49,48 @@ export interface Pay {
    * the hash of the *payment_preimage* which will prove payment
    */
   payment_hash: string;
+} & ({
   /**
    * status of the payment
    */
-  status: Status;
-}
+   status: Status.Pending;
+   /**
+    * the amount the destination received, if known
+    */
+   amount_msat: number;
+   /**
+    * the amount we actually sent, including fees
+    */
+   amount_sent_msat: string;
+} | {
+  /**
+   * status of the payment
+   */
+   status: Status.Complete;
+   /**
+    * the amount the destination received, if known
+    */
+   amount_msat: number;
+   /**
+    * the amount we actually sent, including fees
+    */
+   amount_sent_msat: string;
+   /**
+    * proof of payment
+    */
+   preimage: string;
+   /** 
+    * the number of parts for a successful payment (only if more than one).
+   */
+   number_of_parts: number;
+} | {
+  /**
+   * status of the payment
+   */
+  status: Status.Failed;
+  /** the onion message returned */
+  erroronion: string;
+})
 
 /**
  * status of the payment

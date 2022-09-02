@@ -183,8 +183,8 @@
  * out means you can still use your original rune 55 times per minute.
  */
 export interface CommandoRuneRequest {
-  rune?: string;
-  restrictions?: string | string[];
+  rune?: /* GUESSED */ string | string[];
+  restrictions?: /* GUESSED */ string;
 }
 
 export interface CommandoRuneResponse {

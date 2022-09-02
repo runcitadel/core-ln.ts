@@ -2,7 +2,6 @@
  * lightning-listpeers -- Command returning data on connected lightning nodes
  *
  * **listpeers** [*id*] [*level*]
- *
  */
 
 /**
@@ -41,12 +40,12 @@ export interface ListpeersResponse {
   peers: Peer[];
 }
 
-export interface Peer {
+export type Peer = {
   channels: Channel[];
   /**
    * True if the peer is currently connected
    */
-  connected: boolean;
+  connected: false;
   /**
    * the public key of the peer
    */
@@ -55,6 +54,25 @@ export interface Peer {
    * if *level* is specified, logs for this peer
    */
   log?: Log[];
+} | {
+  channels: Channel[];
+  /**
+   * True if the peer is currently connected
+   */
+  connected: true;
+  /**
+   * the public key of the peer
+   */
+  id: string;
+  /**
+   * if *level* is specified, logs for this peer
+   */
+  log?: Log[];
+  netaddr: [string];
+  /** The public IPv4/6 address the peer sees us from, e.g. 1.2.3.4:1234 */
+  remote_addr: string;
+  /** bitmap of BOLT #9 features from peer's INIT message */
+  features: string;
 }
 
 export interface Channel {
@@ -319,7 +337,7 @@ export interface Funding {
   remote_msat?: number;
 }
 
-export interface Htlc {
+export type Htlc = {
   /**
    * Amount send/received for this HTLC
    */
@@ -327,7 +345,7 @@ export interface Htlc {
   /**
    * Whether it came from peer, or is going to peer
    */
-  direction: Direction;
+  direction: Direction.Out;
   /**
    * Block this HTLC expires at
    */
@@ -348,8 +366,41 @@ export interface Htlc {
    * set if this HTLC is currently waiting on a hook (and shows what plugin)
    */
   status?: string;
-  state: any;
-}
+  /**
+   * Status of the HTLC
+   */
+  state: OutState;
+} | {
+  /**
+   * Amount send/received for this HTLC
+   */
+  amount_msat: number;
+  /**
+   * Whether it came from peer, or is going to peer
+   */
+  direction: Direction.In;
+  /**
+   * Block this HTLC expires at
+   */
+  expiry: number;
+  /**
+   * Unique ID for this htlc on this channel in this direction
+   */
+  id: number;
+  /**
+   * if this is too small to enforce onchain
+   */
+  local_trimmed?: boolean;
+  /**
+   * the hash of the payment_preimage which will prove payment
+   */
+  payment_hash: string;
+  /**
+   * set if this HTLC is currently waiting on a hook (and shows what plugin)
+   */
+  status?: string;
+  state: OutState;
+};
 
 /**
  * Whether it came from peer, or is going to peer
@@ -408,6 +459,32 @@ export enum State {
   Openingd = "OPENINGD",
 }
 
+export enum OutState {
+  SentAddHtlc = "SENT_ADD_HTLC",
+  SentAddCommit = "SENT_ADD_COMMIT",
+  RcvdAddRecovation = "RCVD_ADD_REVOCATION",
+  RcvdAddAckCommit = "RCVD_ADD_ACK_COMMIT",
+  SentAddAckRecovation = "SENT_ADD_ACK_REVOCATION",
+  RcvdRemoveHtlc = "RCVD_REMOVE_HTLC",
+  RcvdRemoveCommit = "RCVD_REMOVE_COMMIT",
+  SentRemoveRevocation = "SENT_REMOVE_REVOCATION",
+  SentRemoveAckCommit = "SENT_REMOVE_ACK_COMMIT",
+  RcvdRemoveAckRevocation = "RCVD_REMOVE_ACK_REVOCATION",
+}
+
+export enum InState {
+  RcvdAddHtlc = "RCVD_ADD_HTLC",
+  RcvdAddCommit = "RCVD_ADD_COMMIT",
+  SendAddRecovation = "SENT_ADD_REVOCATION",
+  SentAddAckCommit = "SENT_ADD_ACK_COMMIT",
+  RcvdAddAckRevocation = "RCVD_ADD_ACK_REVOCATION",
+  SentRemoveHtlc = "SENT_REMOVE_HTLC",
+  SentRemoveCommit = "SENT_REMOVE_COMMIT",
+  RcvdRemoveRevocation = "RCVD_REMOVE_REVOCATION",
+  RcvdRemoveAckCommit = "RCVD_REMOVE_ACK_COMMIT",
+  SentRemoveAckRevocation = "SENT_REMOVE_ACK_REVOCATION"
+}
+
 export interface StateChange {
   /**
    * What caused the change
@@ -443,9 +520,32 @@ export enum Cause {
   User = "user",
 }
 
-export interface Log {
-  type: Type;
-}
+export type Log = {
+  type: Type.Skipped;
+  num_skipped: number;
+} | {
+  type: Type.Broken | Type.Unusual | Type.Info | Type.Debug;
+  /** UNIX timestamp with 9 decimal places */
+  time: string;
+  /** The particular logbook this was found in */
+  source: string;
+  /** The actual log message */
+  log: string;
+  /** The peer this is associated with */
+  node_id: string;
+} | {
+  type: Type.IoIn | Type.IoOut;
+  /** UNIX timestamp with 9 decimal places */
+  time: string;
+  /** The particular logbook this was found in */
+  source: string;
+  /** The actual log message */
+  log: string;
+  /** The peer this is associated with */
+  node_id: string;
+  /** The IO which occurred */
+  data: string;
+};
 
 export enum Type {
   Broken = "BROKEN",
