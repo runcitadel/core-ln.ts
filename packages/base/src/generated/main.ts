@@ -188,11 +188,9 @@ function transformOne(element: string | number | bigint): number | undefined {
     return element as number | undefined;
   }
   // If element ends with msat, remove it and convert to number
-  return Number(
-    element.toString().endsWith("msat")
-      ? element.toString().slice(0, -4)
-      : element
-  );
+  return element.toString().endsWith("msat")
+      ? Number(element.toString().slice(0, -4))
+      : element;
 }
 
 // Recursively loop through an object and change values ending in _msat by running transformOne() on them
