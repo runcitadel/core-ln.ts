@@ -1,6 +1,6 @@
 import ApiClient, {
   transform,
-} from "https://deno.land/x/core_ln_base@v0.3.2/mod.ts";
+} from "https://deno.land/x/core_ln_base@v0.3.4/mod.ts";
 
 /**
  * An API client for Core Lightning over an unix socket
@@ -63,4 +63,4 @@ import ApiClient, {
   }
 }
 
-export * from "https://deno.land/x/core_ln_base@v0.3.2/mod.ts";
+export * from "https://deno.land/x/core_ln_base@v0.3.4/mod.ts";
