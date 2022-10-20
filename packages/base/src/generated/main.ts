@@ -183,13 +183,13 @@ import type { WaitinvoiceRequest, WaitinvoiceResponse } from "./waitinvoice";
 import type { WaitsendpayRequest, WaitsendpayResponse } from "./waitsendpay";
 import type { WithdrawRequest, WithdrawResponse } from "./withdraw";
 
-function transformOne(element: string | number | bigint): number | undefined {
+function transformOne(element: unknown): unknown {
   if (!element) {
-    return element as number | undefined;
+    return element;
   }
   // If element ends with msat, remove it and convert to number
-  return element.toString().endsWith("msat")
-      ? Number(element.toString().slice(0, -4))
+  return (element as string).toString().endsWith("msat")
+      ? Number((element as string).toString().slice(0, -4))
       : element;
 }
 
