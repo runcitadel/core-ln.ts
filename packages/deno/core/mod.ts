@@ -1,109 +1,66 @@
 import ApiClient, {
   transform,
-} from "https://deno.land/x/core_ln_base@v0.2.0-deno.4/mod.ts";
-import {
-  createConnection,
-  type Socket,
-} from "https://deno.land/std@0.146.0/node/net.ts";
-import JSONParser from "https://esm.sh/jsonparse@1.3.1";
+} from "https://deno.land/x/core_ln_base@v0.3.2/mod.ts";
 
 /**
  * An API client for Core Lightning over an unix socket
  *
  * Doesn't require a Core Lightning plugin, but doesn't work in web apps
- */
-export default class SocketApiClient extends ApiClient {
-  private _reconnectWait = 0.5;
-  private _client: Socket;
-  private _reqcount = 0;
-  private _parser: any;
-  private _reconnectTimeout: number | null = null;
-  private _clientConnectionPromise: Promise<void>;
-  constructor(private _socketPath: string, private _transform = true) {
+ */export default class SocketApiClient extends ApiClient {
+  #connection: Deno.UnixConn | null = null;
+  #connectionPromise: Promise<Deno.UnixConn> | null;
+  #requests = 0;
+  constructor(
+    private _socketPath: string
+  ) {
     super();
-    this._reconnectWait = 0.5;
-    this._reconnectTimeout = null;
-    this._parser = new JSONParser();
-
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const _self = this;
-
-    this._client = createConnection(_socketPath);
-    this._clientConnectionPromise = new Promise((resolve) => {
-      this._client.on("connect", () => {
-        this._reconnectWait = 1;
-        resolve();
-      });
-
-      this._client.on("end", () => {
-        this.increaseWaitTime();
-        this.reconnect();
-      });
-
-      this._client.on("error", (error) => {
-        this.emit("error", error);
-        this.increaseWaitTime();
-        this.reconnect();
-      });
+    this.#connectionPromise = Deno.connect({
+      transport: "unix",
+      path: _socketPath,
     });
-
-    this._client.on("data", (data: unknown) => this._handledata(data));
-
-    this._parser.onValue = function (val: any) {
-      if (this.stack.length) return; // top-level objects only
-      _self.emit("res:" + val.id, val);
-    };
   }
 
-  increaseWaitTime() {
-    if (this._reconnectWait >= 16) {
-      this._reconnectWait = 16;
+  async _connectClient() {
+    if (this.#connectionPromise) {
+      this.#connection = await this.#connectionPromise;
     } else {
-      this._reconnectWait *= 2;
+      this.#connection = await Deno.connect({
+        transport: "unix",
+        path: this._socketPath,
+      });
     }
   }
 
-  reconnect() {
-    if (this._reconnectTimeout) {
-      return;
-    }
-
-    this._reconnectTimeout = setTimeout(() => {
-      this._client.connect(this._socketPath);
-      this._reconnectTimeout = null;
-    }, this._reconnectWait * 1000);
+  async disconnectClient() {
+    await this.#connection?.close();
+    this.#connection = null;
   }
 
-  call<ReturnType>(method: string, params: unknown): Promise<ReturnType> {
-    const callInt = ++this._reqcount;
-    const sendObj = {
-      jsonrpc: "2.0",
-      method,
-      params,
-      id: `${callInt}`,
-    };
-
-    // Wait for the client to connect
-    return this._clientConnectionPromise.then(
-      () =>
-        new Promise((resolve, reject) => {
-          // Send the command
-          this._client.write(JSON.stringify(sendObj));
-
-          // Wait for a response
-          this.once("res:" + callInt, (res) =>
-            res.error == null
-              ? resolve(
-                transform<ReturnType>(res.result)
-              )
-              : reject(res.error));
-        }),
+  async call<ReturnType extends unknown = unknown>(method: string, params: unknown, bufferSize = 32 * 1024): Promise<ReturnType> {
+    this.#requests++;
+    if (!this.#connection) {
+      await this._connectClient();
+    }
+    const id = this.#requests;
+    await this.#connection!.write(
+      new TextEncoder().encode(
+        JSON.stringify({
+          jsonrpc: "2.0",
+          id,
+          method,
+          params,
+        }) + "\r\n",
+      ),
     );
-  }
-
-  private _handledata(data: unknown) {
-    this._parser.write(data);
+    const buffer = new Uint8Array(bufferSize);
+    const read = await this.#connection!.read(buffer);
+    const content = buffer.slice(0, read!);
+    const data = JSON.parse(new TextDecoder().decode(content!));
+    if (data.id !== id) {
+      throw new Error("Response id does not match request ID!");
+    }
+    return transform(data.result);
   }
 }
 
-export * from "https://deno.land/x/core_ln_base@v0.2.0-deno.4/mod.ts";
+export * from "https://deno.land/x/core_ln_base@v0.3.2/mod.ts";
