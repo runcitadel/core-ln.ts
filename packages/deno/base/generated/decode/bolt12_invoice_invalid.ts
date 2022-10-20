@@ -22,7 +22,7 @@ export interface InvalidBolt12InvoiceDecodeResponse {
     send_invoice?:          any;
     signature?:             any;
     timestamp?:             any;
-    type:                   "bolt12 invoice"
+    type:                   "bolt12_invoice"
     valid:                  boolean;
     vendor?:                any;
     /**

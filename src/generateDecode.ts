@@ -1,10 +1,7 @@
-import { camelCase, pascalCase } from "https://deno.land/x/case@2.1.1/mod.ts";
+import { snakeCase, pascalCase } from "https://deno.land/x/case@2.1.1/mod.ts";
 import quicktypeCore from "https://esm.sh/quicktype-core@6.0.71";
 import ts from "https://esm.sh/typescript@4.7.4";
 import { resolve } from "https://deno.land/std@0.146.0/path/mod.ts";
-import prettier from "https://esm.sh/prettier@2.7.1";
-import parserTypescript from "https://esm.sh/prettier@2.7.1/parser-typescript.js";
-import parserEspree from "https://esm.sh/prettier@2.7.1/parser-espree.js";
 
 function getExports(
     tsFile: string,
@@ -92,8 +89,8 @@ for (const e of allOfs) {
     const typeExportIndex = outputLines.indexOf("export enum Type {");
     outputLines.splice(typeExportIndex, 3);
     let unprocessedOutput = outputLines.join("\n");
-    unprocessedOutput = unprocessedOutput.replace(" Type;", ` "${e.if.properties.type.enum[0]}"`);
-    const outputFile = `${e.if.properties.type.enum[0]}_${e.if.properties.valid.enum[0] ? "valid": "invalid"}.ts`;
+    unprocessedOutput = unprocessedOutput.replace(" Type;", ` "${snakeCase(e.if.properties.type.enum[0])}"`);
+    const outputFile = `${snakeCase(e.if.properties.type.enum[0])}_${e.if.properties.valid.enum[0] ? "valid": "invalid"}.ts`;
     Deno.writeTextFileSync(`./packages/base/src/generated/decode/${outputFile}`, unprocessedOutput);
     Deno.writeTextFileSync(`./packages/deno/base/generated/decode/${outputFile}`, unprocessedOutput);
     outputImports += `import { ${mainName} } from "./${outputFile}";\n`;
@@ -111,7 +108,7 @@ export type DecodeResponse = ${types.join(" | ")};
 ${outputExports}
 `;
     
-Deno.writeTextFileSync(`./packages/base/src/generated/decode/response.ts`, finalOutput);
+Deno.writeTextFileSync(`./packages/base/src/generated/decode/response.ts`, finalOutput.replaceAll(".ts\";", "\";"));
 Deno.writeTextFileSync(`./packages/deno/base/generated/decode/response.ts`, finalOutput);
 
 

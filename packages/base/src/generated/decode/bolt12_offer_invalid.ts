@@ -16,7 +16,7 @@ export interface InvalidBolt12OfferDecodeResponse {
     refund_for?:      any;
     send_invoice?:    any;
     signature?:       any;
-    type:             "bolt12 offer"
+    type:             "bolt12_offer"
     valid:            boolean;
     vendor?:          any;
     /**

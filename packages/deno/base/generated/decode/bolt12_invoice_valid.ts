@@ -87,7 +87,7 @@ export interface ValidBolt12InvoiceDecodeResponse {
      * BIP-340 signature of the *node_id* on this offer
      */
     signature: string;
-    type:      "bolt12 invoice"
+    type:      "bolt12_invoice"
     valid:     boolean;
     /**
      * the name of the vendor for this offer

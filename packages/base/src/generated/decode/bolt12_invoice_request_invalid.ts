@@ -9,7 +9,7 @@ export interface InvalidBolt12InvoiceRequestDecodeResponse {
     recurrence_counter?:   any;
     recurrence_signature?: any;
     recurrence_start?:     any;
-    type:                  "bolt12 invoice_request"
+    type:                  "bolt12_invoice_request"
     valid:                 boolean;
     /**
      * **recurrence_signature** incorrect

@@ -67,7 +67,7 @@ export interface ValidBolt12OfferDecodeResponse {
      * BIP-340 signature of the *node_id* on this offer
      */
     signature?: string;
-    type:       "bolt12 offer"
+    type:       "bolt12_offer"
     valid:      boolean;
     /**
      * the name of the vendor for this offer

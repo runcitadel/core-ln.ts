@@ -39,7 +39,7 @@ export interface ValidBolt12InvoiceRequestDecodeResponse {
      * the optional start period for a recurring payment
      */
     recurrence_start?: number;
-    type:              "bolt12 invoice_request"
+    type:              "bolt12_invoice_request"
     valid:             boolean;
 }
 
